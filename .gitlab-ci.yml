@@ -1,0 +1,30 @@
+stages:
+  - test
+  - build
+
+# -------------------------- Test -------------------------- #
+Test:
+  stage: test
+  image: maven:latest
+  tags:
+    - dalfcs_docker_autoscale
+  script:
+    - mvn clean verify
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - server/target/surefire-reports/TEST-*.xml
+        - server/target/failsafe-reports/TEST-*.xml
+    
+# -------------------------- Build Server for Dev -------------------------- #
+Build:
+  stage: build
+  image: maven:latest
+  tags:
+    - dalfcs_docker_autoscale
+  script:
+    - mvn clean package -DskipTests=true
+  artifacts:
+    paths:
+       - target/*.jar
