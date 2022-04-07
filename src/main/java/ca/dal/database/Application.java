@@ -2,6 +2,7 @@ package ca.dal.database;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.UUID;
 import java.util.logging.LogManager;
 
 /**
@@ -14,9 +15,7 @@ public class Application {
     }
 
 
-    public static void main(String[] args) {
-
-    }
+    public static void main(String[] args) {}
 
     public static void setup() {
         try {
