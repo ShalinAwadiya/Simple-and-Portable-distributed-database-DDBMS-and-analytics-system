@@ -23,7 +23,6 @@ public class QueryParser {
     }
 
     public static void evaluateQuery(String query) {
-
         String[] token = query.split(" ");
 
         if (token.length == 0) {
