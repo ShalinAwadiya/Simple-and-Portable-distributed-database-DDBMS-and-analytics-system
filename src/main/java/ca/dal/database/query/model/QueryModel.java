@@ -96,6 +96,15 @@ public class QueryModel {
         model.setType(QueryType.USE_DATABASE);
     }
 
+    public static void createTableQuery(String tableName, List<String> columns, Map<String, String> columnDefinition, String rawQuery) {
+        QueryModel model = new QueryModel();
+        model.setTableName(tableName);
+        model.setColumns(columns);
+        model.setColumnDefinition(columnDefinition);
+        model.setRawQuery(rawQuery);
+        model.setType(QueryType.CREATE_TABLE);
+    }
+
     public static void selectQuery(String tableName, List<String> columns, Map<String, Object> condition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
@@ -130,5 +139,29 @@ public class QueryModel {
         model.setCondition(condition);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.DELETE_ROW);
+    }
+
+    public static void startTransactionQuery(String rawQuery) {
+        QueryModel model = new QueryModel();
+        model.setRawQuery(rawQuery);
+        model.setType(QueryType.START_TRANSACTION);
+    }
+
+    public static void endTransactionQuery(String rawQuery) {
+        QueryModel model = new QueryModel();
+        model.setRawQuery(rawQuery);
+        model.setType(QueryType.END_TRANSACTION);
+    }
+
+    public static void commitQuery(String rawQuery) {
+        QueryModel model = new QueryModel();
+        model.setRawQuery(rawQuery);
+        model.setType(QueryType.COMMIT);
+    }
+
+    public static void rollbackQuery(String rawQuery) {
+        QueryModel model = new QueryModel();
+        model.setRawQuery(rawQuery);
+        model.setType(QueryType.ROLLBACK);
     }
 }
