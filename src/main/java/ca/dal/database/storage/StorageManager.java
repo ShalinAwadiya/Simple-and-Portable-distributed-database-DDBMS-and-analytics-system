@@ -1,5 +1,6 @@
 package ca.dal.database.storage;
 
+import ca.dal.database.storage.model.RowModel;
 import ca.dal.database.storage.model.TableMetadataModel;
 import ca.dal.database.transaction.TransactionManager;
 import ca.dal.database.utils.FileUtils;
@@ -8,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static ca.dal.database.constant.ApplicationConstants.DOT;
+import static ca.dal.database.utils.FileUtils.append;
 import static ca.dal.database.utils.FileUtils.write;
 import static ca.dal.database.utils.StringUtils.valueOf;
 
@@ -42,7 +44,6 @@ public class StorageManager {
         FileUtils.createDirectory(ROOT, databaseName, tableName);
 
         StringBuilder tableBuilder = new StringBuilder(tableName);
-
         tableBuilder.append(TABLE_FILE_EXTENSION);
         FileUtils.createFile(ROOT, databaseName, tableName, tableBuilder.toString());
 
@@ -53,6 +54,15 @@ public class StorageManager {
         int result = write(metadata.toList(), ROOT, databaseName, tableName, tableMetaBuilder.toString());
 
         logger.log(Level.INFO, valueOf(result));
+    }
+
+    public void insertRow(String databaseName, String tableName, RowModel row){
+
+        StringBuilder tableBuilder = new StringBuilder(tableName);
+        tableBuilder.append(TABLE_FILE_EXTENSION);
+
+        int result = append(row.toString(), ROOT, databaseName, tableName, tableBuilder.toString());
+
     }
 
 }
