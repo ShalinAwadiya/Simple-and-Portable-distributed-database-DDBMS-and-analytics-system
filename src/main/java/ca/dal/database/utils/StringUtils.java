@@ -14,6 +14,9 @@ public class StringUtils {
         if(str == null){
             return false;
         }
+
+        str = str.trim();
+
         return str.length() != 0;
     }
 
