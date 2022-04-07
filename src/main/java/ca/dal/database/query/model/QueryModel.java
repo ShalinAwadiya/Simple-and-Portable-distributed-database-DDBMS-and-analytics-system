@@ -80,38 +80,27 @@ public class QueryModel {
         this.columnDefinition = columnDefinition;
     }
 
-    public static void createDBQuery(String tableName, List<String> columns, Map<String, String> columnDefinition, String rawQuery) {
+    public static void createDBQuery(String databaseName, String rawQuery) {
         QueryModel model = new QueryModel();
-        model.setTableName(tableName);
-        model.setColumns(columns);
-        model.setColumnDefinition(columnDefinition);
+        model.setDatabaseName(databaseName);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.CREATE_DATABASE);
     }
 
-    public static void useDBQuery(String databaseName, String rawQuery) {
+    public static QueryModel useDBQuery(String databaseName, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setDatabaseName(databaseName);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.USE_DATABASE);
+        return model;
     }
 
-    public static void createTableQuery(String tableName, List<String> columns, Map<String, String> columnDefinition, String rawQuery) {
+    public static void createTableQuery(String tableName, Map<String, String> columnDefinition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
-        model.setColumns(columns);
         model.setColumnDefinition(columnDefinition);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.CREATE_TABLE);
-    }
-
-    public static void selectQuery(String tableName, List<String> columns, Map<String, Object> condition, String rawQuery) {
-        QueryModel model = new QueryModel();
-        model.setTableName(tableName);
-        model.setColumns(columns);
-        model.setCondition(condition);
-        model.setRawQuery(rawQuery);
-        model.setType(QueryType.SELECT_ROW);
     }
 
     public static void insertQuery(String tableName, List<String> columns, List<Object> values, String rawQuery) {
@@ -121,6 +110,15 @@ public class QueryModel {
         model.setValues(values);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.INSERT_ROW);
+    }
+
+    public static void selectQuery(String tableName, List<String> columns, Map<String, Object> condition, String rawQuery) {
+        QueryModel model = new QueryModel();
+        model.setTableName(tableName);
+        model.setColumns(columns);
+        model.setCondition(condition);
+        model.setRawQuery(rawQuery);
+        model.setType(QueryType.SELECT_ROW);
     }
 
     public static void updateQuery(String tableName, List<String> columns, List<Object> values, Map<String, Object> condition, String rawQuery) {
