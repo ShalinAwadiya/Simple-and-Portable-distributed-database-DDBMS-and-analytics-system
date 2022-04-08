@@ -2,6 +2,7 @@ package ca.dal.database;
 
 import ca.dal.database.connection.Connection;
 import ca.dal.database.query.executor.QueryExecutor;
+import ca.dal.database.security.Authentication;
 import ca.dal.database.storage.StorageManager;
 
 import java.io.IOException;
@@ -20,16 +21,10 @@ public class Application {
         setup();
     }
 
-    private static final QueryExecutor queryExecutor = new QueryExecutor();
-
+    private static Authentication authentication = new Authentication();
 
     public static void main(String[] args) {
-        QueryExecutor queryExecutor = new QueryExecutor(new Connection("harsh"));
-
-
-        StorageManager manager = new StorageManager();
-        manager.updateRow("user","people", "name", "Harsh", "Me-Harsh");
-
+        authentication.init();
     }
 
     public static void setup() {
