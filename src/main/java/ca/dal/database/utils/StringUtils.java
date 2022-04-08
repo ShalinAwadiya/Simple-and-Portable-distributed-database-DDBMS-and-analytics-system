@@ -1,6 +1,16 @@
 package ca.dal.database.utils;
 
+import ca.dal.database.storage.StorageManager;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class StringUtils {
+
+    private static final Logger logger = Logger.getLogger(StringUtils.class.getName());
 
     private StringUtils(){}
 
@@ -71,4 +81,36 @@ public class StringUtils {
     public static String valueOf(Object value){
         return String.valueOf(value);
     }
+
+    /**
+     * @param string
+     * @return
+     */
+    public static String getHash(String string){
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            logger.log(Level.SEVERE, e.getMessage());
+        }
+        return bytesToHex(digest.digest(string.getBytes(StandardCharsets.UTF_8)));
+    }
+
+    /**
+     * @param hash
+     * @return
+     */
+    private static String bytesToHex(byte[] hash) {
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+
+
 }

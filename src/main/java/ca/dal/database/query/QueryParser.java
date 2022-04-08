@@ -1,9 +1,10 @@
 package ca.dal.database.query;
 
 import ca.dal.database.query.model.QueryModel;
+import ca.dal.database.storage.model.column.ColumnMetadataModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -17,7 +18,7 @@ public class QueryParser {
         String[] token = query.split(" ");
         List<String> columns = new ArrayList<>();
         List<Object> values = new ArrayList<>();
-        Map<String, Object> condition = new HashMap<>();
+        Map<String, Object> conditionNew = new LinkedHashMap<>();
 
         if (token.length == 0) {
             logger.log(Level.INFO, "EMPTY QUERY");
@@ -25,7 +26,7 @@ public class QueryParser {
             switch (token[0].toUpperCase()) {
                 case "CREATE":
                     if (token[1].equalsIgnoreCase("DATABASE")) {
-                       return createDBQuery(token, query);
+                        return createDBQuery(token, query);
                     } else if (token[1].equalsIgnoreCase("TABLE")) {
                         return createTableQuery(token, query);
                     } else {
@@ -33,19 +34,15 @@ public class QueryParser {
                     }
                     break;
                 case "USE":
-                    parseUseDBQuery(token, query);
-                    break;
+                    return useDBQuery(token, query);
                 case "INSERT":
                     return insertQuery(token, query);
                 case "SELECT":
-                    selectQuery(query, columns, condition);
-                    break;
+                    return selectQuery(query, columns, conditionNew);
                 case "UPDATE":
-                    updateQuery(token, query, columns, values, condition);
-                    break;
+                    return updateQuery(token, query, columns, values, conditionNew);
                 case "DELETE":
-                    deleteQuery(token, query);
-                    break;
+                    return deleteQuery(token, query);
                 default:
                     logger.log(Level.INFO, "INVALID QUERY");
             }
@@ -53,19 +50,19 @@ public class QueryParser {
         return null;
     }
 
-    public static void parseUseDBQuery(String[] token, String query) {
+    public static QueryModel useDBQuery(String[] token, String query) {
         if (token.length == 2) {
-            String databaseName = token[1].toUpperCase();
-            QueryModel.useDBQuery(databaseName, query);
+            String databaseName = token[1];
+            return QueryModel.useDBQuery(databaseName, query);
         } else {
             logger.log(Level.INFO, "Enter Valid Use Database Query");
         }
-
+        return null;
     }
 
     public static QueryModel createDBQuery(String[] token, String query) {
         if (token.length == 3) {
-            String databaseName = token[2].toUpperCase();
+            String databaseName = token[2];
             return QueryModel.createDBQuery(databaseName, query);
         } else {
             logger.log(Level.INFO, "Enter Valid Create Database Query");
@@ -74,82 +71,100 @@ public class QueryParser {
     }
 
     public static QueryModel createTableQuery(String[] token, String query) {
-        // if(token[2].matches("^[a-zA-Z]")){
-        // System.out.println("INSIDE REGEX");
-        // }
-        String tableName = token[2].toUpperCase();
+        String tableName = token[2];
         String queryManipulation = query.substring(query.indexOf("(") + 1, query.length() - 1).trim();
         String[] queryToken = queryManipulation.split(",");
-        Map<String, String> columnDefinition = new HashMap<>();
+        List<ColumnMetadataModel> columnDefinition = new ArrayList<>();
+
         for (int i = 0; i < queryToken.length; i++) {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
-            columnDefinition.put(queryFinalToken[0], queryFinalToken[1]);
+
+            if (queryFinalToken.length >= 3) {
+                if (queryFinalToken[2].equalsIgnoreCase("primary")) {
+                    columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1], true));
+                } else if (queryFinalToken[2].equalsIgnoreCase("foreign")) {
+                    String[] newQueryToken = queryFinalToken[5].split("\\(");
+                    String subQueryToken = newQueryToken[1].substring(0, newQueryToken[1].indexOf(")"));
+
+                    columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1], newQueryToken[0], subQueryToken));
+                }
+            }
         }
         return QueryModel.createTableQuery(tableName, columnDefinition, query);
     }
 
     public static QueryModel insertQuery(String[] token, String query) {
-        String tableName = token[2].toUpperCase();
-        String substring = query.substring(query.indexOf("(") + 1, query.indexOf(")"));
-        String queryManipulation = substring.trim();
+        String tableName = token[2];
+        String queryManipulation = query.substring(query.indexOf("(") + 1, query.indexOf(")")).trim();
         String[] queryToken = queryManipulation.split(",");
         List<String> columns = new ArrayList<>();
         for (int i = 0; i < queryToken.length; i++) {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
             columns.add(queryFinalToken[0]);
         }
-        String queryManipulationValues = query.substring(
-                query.indexOf("(", query.indexOf(")")+1)+1,
-                query.length() - 1);
+        String queryManipulationValues = query.substring(query.indexOf("(", query.indexOf(")") + 1) + 1, query.length() - 1);
         String[] queryTokenValues = queryManipulationValues.split(",");
         List<Object> values = new ArrayList<>();
-        for (int i = 0; i < queryTokenValues.length; i++) {
-            String[] queryFinalTokenValue = queryTokenValues[i].trim().split(" ");
-            values.add(queryFinalTokenValue[0]);
-        }
+        String queryTokenNew = queryTokenValues[1].substring(queryTokenValues[1].indexOf("\"") + 1, queryTokenValues[1].length() - 2);
+
+        values.add(queryTokenValues[0]);
+        values.add(queryTokenNew);
+
         return QueryModel.insertQuery(tableName, columns, values, query);
     }
 
-    public static void deleteQuery(String[] token, String query) {
+    public static QueryModel deleteQuery(String[] token, String query) {
         if (token.length == 5) {
-            String tableName = token[2].toUpperCase();
-            Map<String, Object> condition = new HashMap<>();
-            String queryManipulation = query.substring(query.indexOf("where"), query.length() - 1).trim();
-            String[] queryToken = queryManipulation.split(" ");
-            String[] conditionLogic = queryToken[1].split("=");
-            condition.put(conditionLogic[0], conditionLogic[1]);
-            QueryModel.deleteQuery(tableName, condition, query);
+            String tableName = token[2];
+            Map<String, Object> conditionNew = new LinkedHashMap<>();
+            queryManipulation(query, conditionNew);
+            return QueryModel.deleteQuery(tableName, conditionNew, query);
         } else {
             logger.log(Level.INFO, "Enter Valid Delete Query");
         }
+        return null;
     }
 
-    public static void updateQuery(String[] token, String query, List<String> columns, List<Object> values, Map<String, Object> condition) {
-        String tableName = token[1].toUpperCase();
+    public static QueryModel updateQuery(String[] token, String query, List<String> columns, List<Object> values, Map<String, Object> conditionNew) {
+        String tableName = token[1];
         String queryManipulation = query.substring(query.indexOf("set"), query.length() - 1).trim();
         String[] queryToken = queryManipulation.split(" ");
         String[] columnLogic = queryToken[1].split("=");
         columns.add(columnLogic[0]);
-        values.add(columnLogic[1]);
+        String queryTokenNew = columnLogic[1].substring(columnLogic[1].indexOf("\"") + 1, columnLogic[1].length() - 1);
+
+        values.add(queryTokenNew);
         String[] conditionLogic = queryToken[3].split("=");
-        condition.put(conditionLogic[0], conditionLogic[1]);
-        QueryModel.updateQuery(tableName, columns, values, condition, query);
+
+        String conditionLogicNew = conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1, conditionLogic[1].length() - 1);
+        conditionNew.put(conditionLogic[0], conditionLogicNew);
+
+        return QueryModel.updateQuery(tableName, columns, values, conditionNew, query);
     }
 
-    public static void selectQuery(String query, List<String> columns, Map<String, Object> condition) {
+    public static QueryModel selectQuery(String query, List<String> columns, Map<String, Object> conditionNew) {
         String substring = query.substring(query.indexOf("from"), query.length() - 1);
         String[] queryToken = substring.split(" ");
-        String tableName = queryToken[1].toUpperCase();
-        String columnsSelect = query.substring(query.indexOf("select") + 7, query.indexOf("from"));
-        String[] selectTokenSplit = columnsSelect.split(" ");
-        String colResult = selectTokenSplit[0].substring(0, selectTokenSplit[0].length() - 1);
-        String[] colResultArr = colResult.split(" ");
-        columns.add(colResultArr[0]);
-        columns.add(selectTokenSplit[1]);
+        String tableName = queryToken[1];
+        String columnsSelect = query.substring(query.indexOf("select") + 7, query.indexOf("from") - 1);
+
+        String[] selectTokenSplit = columnsSelect.split(",");
+
+        for (int i = 0; i < selectTokenSplit.length; i++) {
+            columns.add(selectTokenSplit[i]);
+        }
+        queryManipulation(query, conditionNew);
+
+        return QueryModel.selectQuery(tableName, columns, conditionNew, query);
+    }
+
+    private static void queryManipulation(String query, Map<String, Object> conditionNew) {
         String queryManipulation = query.substring(query.indexOf("where"), query.length() - 1).trim();
         String[] queryTokenNew = queryManipulation.split(" ");
         String[] conditionLogic = queryTokenNew[1].split("=");
-        condition.put(conditionLogic[0], conditionLogic[1]);
-        QueryModel.selectQuery(tableName, columns, condition, query);
+
+        String conditionLogicNew = conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1, conditionLogic[1].length() - 1);
+
+        conditionNew.put(conditionLogic[0], conditionLogicNew);
     }
 }

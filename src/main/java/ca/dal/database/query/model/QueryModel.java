@@ -1,5 +1,7 @@
 package ca.dal.database.query.model;
 
+import ca.dal.database.storage.model.column.ColumnMetadataModel;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +13,17 @@ public class QueryModel {
     private List<String> columns;
     private List<Object> values;
     private String databaseName;
-    private Map<String, String> columnDefinition;
+    private List<ColumnMetadataModel> columnDefinition;
 
     private QueryModel() {
+    }
+
+    public List<ColumnMetadataModel> getColumnDefinition() {
+        return columnDefinition;
+    }
+
+    public void setColumnDefinition(List<ColumnMetadataModel> columnDefinition) {
+        this.columnDefinition = columnDefinition;
     }
 
     public String getRawQuery() {
@@ -72,13 +82,6 @@ public class QueryModel {
         this.databaseName = databaseName;
     }
 
-    public Map<String, String> getColumnDefinition() {
-        return columnDefinition;
-    }
-
-    public void setColumnDefinition(Map<String, String> columnDefinition) {
-        this.columnDefinition = columnDefinition;
-    }
 
     public static QueryModel createDBQuery(String databaseName, String rawQuery) {
         QueryModel model = new QueryModel();
@@ -96,7 +99,7 @@ public class QueryModel {
         return model;
     }
 
-    public static QueryModel createTableQuery(String tableName, Map<String, String> columnDefinition, String rawQuery) {
+    public static QueryModel createTableQuery(String tableName, List<ColumnMetadataModel> columnDefinition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumnDefinition(columnDefinition);

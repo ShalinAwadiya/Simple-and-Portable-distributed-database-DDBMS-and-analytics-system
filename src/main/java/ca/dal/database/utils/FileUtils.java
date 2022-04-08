@@ -2,10 +2,13 @@ package ca.dal.database.utils;
 
 import ca.dal.database.transaction.TransactionManager;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,10 +25,10 @@ public class FileUtils {
     private static final Logger logger = Logger.getLogger(TransactionManager.class.getName());
 
 
-    public boolean isExists(String start, String... tails){
+    public boolean isExists(String start, String... tails) {
         Path path = Path.of(start, tails);
 
-        if(path == null){
+        if (path == null) {
             return false;
         }
 
@@ -38,15 +41,15 @@ public class FileUtils {
      * @return
      * @author Harsh Shah
      */
-    public static int createDirectory(String start, String... tails){
+    public static int createDirectory(String start, String... tails) {
 
         Path path = Path.of(start, tails);
 
-        if(path == null){
+        if (path == null) {
             return -1;
         }
 
-        if(Files.notExists(path)){
+        if (Files.notExists(path)) {
             try {
                 Files.createDirectories(path);
             } catch (IOException e) {
@@ -63,15 +66,15 @@ public class FileUtils {
      * @return
      * @author Harsh Shah
      */
-    public static int createFile(String start, String... tails){
+    public static int createFile(String start, String... tails) {
 
         Path path = Path.of(start, tails);
 
-        if(path == null){
+        if (path == null) {
             return -1;
         }
 
-        if(Files.notExists(path)){
+        if (Files.notExists(path)) {
             try {
                 Files.createFile(path);
             } catch (IOException e) {
@@ -87,7 +90,6 @@ public class FileUtils {
      * @param startLocation
      * @param location
      * @return
-     *
      * @author Harsh Shah
      */
     public static List<String> read(String startLocation, String... location) {
@@ -112,15 +114,15 @@ public class FileUtils {
      * @param location
      * @return
      */
-    public static int write(String line, String startLocation, String... location){
+    public static int write(String line, String startLocation, String... location) {
         return write(Arrays.asList(line), StandardOpenOption.TRUNCATE_EXISTING, startLocation, location);
     }
 
-    public static int write(List<String> lines, String startDirectory, String... location){
+    public static int write(List<String> lines, String startDirectory, String... location) {
         return write(lines, StandardOpenOption.TRUNCATE_EXISTING, startDirectory, location);
     }
 
-    public static int appendLn(List<String> lines, String startDirectory, String... location){
+    public static int appendLn(List<String> lines, String startDirectory, String... location) {
         lines.add(0, LINE_FEED);
         return write(lines, StandardOpenOption.APPEND, startDirectory, location);
     }
@@ -131,11 +133,11 @@ public class FileUtils {
      * @param location
      * @return
      */
-    public static int append(String line, String startLocation, String... location){
+    public static int append(String line, String startLocation, String... location) {
         return write(Arrays.asList(line), StandardOpenOption.APPEND, startLocation, location);
     }
 
-    public static int appendLn(String line, String startLocation, String... location){
+    public static int appendLn(String line, String startLocation, String... location) {
         return write(Arrays.asList(LINE_FEED, line), StandardOpenOption.APPEND, startLocation, location);
     }
 
@@ -152,13 +154,13 @@ public class FileUtils {
 
         Path path = Path.of(startDirectory, location);
 
-        if(path == null){
+        if (path == null) {
             return -1;
         }
 
         path = path.toAbsolutePath();
 
-        if(Files.notExists(path)){
+        if (Files.notExists(path)) {
             return -1;
         }
 
@@ -169,6 +171,99 @@ public class FileUtils {
         }
 
         return 0;
+    }
+
+    /**
+     * @param index
+     * @param line
+     * @param start
+     * @param tails
+     * @return
+     * @author Harsh Shah
+     */
+    public static int writeAt(int index, String line,
+                              String start, String... tails) {
+
+        String path = buildAndValidatePathString(start, tails);
+
+        if(null == path){
+            return -1;
+        }
+
+        try {
+            writeAt(path.toString(), index, line);
+        } catch (IOException e) {
+            return -1;
+        }
+
+        return 0;
+    }
+
+    public static void writeAt(String path, int index, String line) throws IOException {
+        RandomAccessFile raf = null;
+        try {
+            raf = new RandomAccessFile("path", "w");
+        } catch (FileNotFoundException e) {
+            logger.log(Level.INFO, e.getMessage());
+        }
+
+        List<Long> pointers = new ArrayList<>();
+
+
+        for (int i = 0; i < index && raf.readLine() != null; i++) {
+            pointers.add(raf.getFilePointer());
+        }
+
+        raf.seek(pointers.get(index));
+        raf.writeChars(line);
+        raf.close();
+    }
+
+
+    public static int writeWhere(String match, String replace, int startAt, int step, String start, String... tails) {
+        List<String> lines = read(start, tails);
+        
+        for(int i = startAt; i < lines.size(); i += step){
+            String line = lines.get(i);
+            if(line.equals(match)){
+                lines.set(i, replace);
+            }
+        }
+
+        write(lines, start, tails);
+        return 0;
+    }
+
+    private static String buildAndValidatePathString(String start, String... tails) {
+        Path path = Path.of(start, tails);
+
+        if (path == null) {
+            return null;
+        }
+
+        path = path.toAbsolutePath();
+
+        if (Files.notExists(path)) {
+            return null;
+        }
+
+        return path.toString();
+    }
+
+    private static Path buildAndValidatePath(String start, String... tails) {
+        Path path = Path.of(start, tails);
+
+        if (path == null) {
+            return null;
+        }
+
+        path = path.toAbsolutePath();
+
+        if (Files.notExists(path)) {
+            return null;
+        }
+
+        return path;
     }
 }
 

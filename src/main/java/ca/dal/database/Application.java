@@ -1,6 +1,8 @@
 package ca.dal.database;
 
+import ca.dal.database.connection.Connection;
 import ca.dal.database.query.executor.QueryExecutor;
+import ca.dal.database.storage.StorageManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,22 +20,16 @@ public class Application {
         setup();
     }
 
-    private static QueryExecutor queryExecutor = new QueryExecutor();
+    private static final QueryExecutor queryExecutor = new QueryExecutor();
+
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        QueryExecutor queryExecutor = new QueryExecutor(new Connection("harsh"));
 
-        do{
-            String query = scanner.nextLine();
 
-            if(query.equalsIgnoreCase("q")){
-                break;
-            }
+        StorageManager manager = new StorageManager();
+        manager.updateRow("user","people", "name", "Harsh", "Me-Harsh");
 
-            queryExecutor.execute(evaluateQuery(query));
-        } while(true);
-
-        scanner.close();
     }
 
     public static void setup() {
