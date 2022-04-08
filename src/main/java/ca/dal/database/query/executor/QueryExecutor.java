@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class QueryExecutor {
+public class  QueryExecutor {
 
     private static final Logger logger = Logger.getLogger(QueryParser.class.getName());
     private StorageManager storageManager = new StorageManager();

@@ -25,9 +25,9 @@ public class QueryParser {
             switch (token[0].toUpperCase()) {
                 case "CREATE":
                     if (token[1].equalsIgnoreCase("DATABASE")) {
-                        createDBQuery(token, query);
+                       return createDBQuery(token, query);
                     } else if (token[1].equalsIgnoreCase("TABLE")) {
-                        createTableQuery(token, query);
+                        return createTableQuery(token, query);
                     } else {
                         logger.log(Level.INFO, "Enter Valid Create Query");
                     }
@@ -36,8 +36,7 @@ public class QueryParser {
                     parseUseDBQuery(token, query);
                     break;
                 case "INSERT":
-                    insertQuery(token, query);
-                    break;
+                    return insertQuery(token, query);
                 case "SELECT":
                     selectQuery(query, columns, condition);
                     break;
@@ -64,16 +63,17 @@ public class QueryParser {
 
     }
 
-    public static void createDBQuery(String[] token, String query) {
+    public static QueryModel createDBQuery(String[] token, String query) {
         if (token.length == 3) {
             String databaseName = token[2].toUpperCase();
-            QueryModel.createDBQuery(databaseName, query);
+            return QueryModel.createDBQuery(databaseName, query);
         } else {
             logger.log(Level.INFO, "Enter Valid Create Database Query");
         }
+        return null;
     }
 
-    public static void createTableQuery(String[] token, String query) {
+    public static QueryModel createTableQuery(String[] token, String query) {
         // if(token[2].matches("^[a-zA-Z]")){
         // System.out.println("INSIDE REGEX");
         // }
@@ -85,10 +85,10 @@ public class QueryParser {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
             columnDefinition.put(queryFinalToken[0], queryFinalToken[1]);
         }
-        QueryModel.createTableQuery(tableName, columnDefinition, query);
+        return QueryModel.createTableQuery(tableName, columnDefinition, query);
     }
 
-    public static void insertQuery(String[] token, String query) {
+    public static QueryModel insertQuery(String[] token, String query) {
         String tableName = token[2].toUpperCase();
         String substring = query.substring(query.indexOf("(") + 1, query.indexOf(")"));
         String queryManipulation = substring.trim();
@@ -98,14 +98,16 @@ public class QueryParser {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
             columns.add(queryFinalToken[0]);
         }
-        String queryManipulationValues = substring.trim();
+        String queryManipulationValues = query.substring(
+                query.indexOf("(", query.indexOf(")")+1)+1,
+                query.length() - 1);
         String[] queryTokenValues = queryManipulationValues.split(",");
         List<Object> values = new ArrayList<>();
         for (int i = 0; i < queryTokenValues.length; i++) {
             String[] queryFinalTokenValue = queryTokenValues[i].trim().split(" ");
             values.add(queryFinalTokenValue[0]);
         }
-        QueryModel.insertQuery(tableName, columns, values, query);
+        return QueryModel.insertQuery(tableName, columns, values, query);
     }
 
     public static void deleteQuery(String[] token, String query) {
