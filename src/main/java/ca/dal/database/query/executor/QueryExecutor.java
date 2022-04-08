@@ -25,11 +25,11 @@ public class QueryExecutor {
                 storageManager.createDatabase(queryModel.getDatabaseName());
                 break;
             case USE_DATABASE:
-                //set in connection
+                // set in connection
                 break;
             case CREATE_TABLE:
                 List<ColumnMetadataModel> columnsMetadata = new ArrayList<>();
-                for(Map.Entry<String, String> entry: queryModel.getColumnDefinition().entrySet()){
+                for (Map.Entry<String, String> entry : queryModel.getColumnDefinition().entrySet()) {
                     ColumnMetadataModel columnMeta = new ColumnMetadataModel(entry.getKey(), entry.getValue());
                     columnsMetadata.add(columnMeta);
                 }
