@@ -1,6 +1,9 @@
 package ca.dal.database;
 
+import ca.dal.database.connection.Connection;
 import ca.dal.database.query.executor.QueryExecutor;
+import ca.dal.database.security.Authentication;
+import ca.dal.database.storage.StorageManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,22 +21,10 @@ public class Application {
         setup();
     }
 
-    private static final QueryExecutor queryExecutor = new QueryExecutor();
+    private static Authentication authentication = new Authentication();
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        do {
-            String query = scanner.nextLine();
-
-            if (query.equalsIgnoreCase("q")) {
-                break;
-            }
-
-            queryExecutor.execute(evaluateQuery(query));
-        } while (true);
-
-        scanner.close();
+        authentication.init();
     }
 
     public static void setup() {

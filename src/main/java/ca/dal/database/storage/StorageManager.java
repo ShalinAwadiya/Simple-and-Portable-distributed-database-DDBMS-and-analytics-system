@@ -1,5 +1,6 @@
 package ca.dal.database.storage;
 
+import ca.dal.database.storage.model.column.ColumnMetadataModel;
 import ca.dal.database.storage.model.database.DatabaseMetadataModel;
 import ca.dal.database.storage.model.row.RowModel;
 import ca.dal.database.storage.model.table.TableMetadataModel;
@@ -89,9 +90,7 @@ public class StorageManager {
 
         // Write Table Metadata
         int result = write(metadata.toStringList(), ROOT, databaseName, tableName, tableMetaBuilder.toString());
-
         updateDatabaseMetadata(databaseName, metadata);
-
         logger.log(Level.INFO, valueOf(result));
     }
 
@@ -101,6 +100,7 @@ public class StorageManager {
      */
     public void updateTableMetadata(String databaseName, TableMetadataModel metadataModel) {
         String tableName = metadataModel.getTableName();
+
         StringBuilder tableMetaBuilder = new StringBuilder(tableName);
         tableMetaBuilder.append(DATABASE_METADATA);
         write(metadataModel.toStringList(), ROOT, databaseName, tableName, tableMetaBuilder.toString());
@@ -119,13 +119,40 @@ public class StorageManager {
         TableMetadataModel metadata = getTableMetadata(databaseName, tableName);
 
         long nextIndex = metadata.getNoOfRows() + 1;
-
         RowModel newRow = new RowModel(row, nextIndex);
 
         int result = append(newRow.toString(), ROOT, databaseName, tableName, tableBuilder.toString());
-
         updateTableMetadata(databaseName, new TableMetadataModel(metadata, nextIndex));
 
+        logger.log(Level.INFO, valueOf(result));
+    }
+
+    /**
+     * @param databaseName
+     * @param tableName
+     * @param column
+     * @param value
+     * @param newValue
+     */
+    public void updateRow(String databaseName, String tableName, String column, String value, String newValue) {
+        TableMetadataModel tableMetadata = getTableMetadata(databaseName, tableName);
+
+        List<ColumnMetadataModel> columnsMetadata = tableMetadata.getColumnsMetadata();
+        int step = columnsMetadata.size()+1;
+        int columnPosition = -1;
+
+        for(int i = 0; i < columnsMetadata.size(); i++){
+            if(columnsMetadata.get(i).getName().equals(column)){
+                columnPosition = i+1;
+            }
+        }
+
+        StringBuilder tableBuilder = new StringBuilder(tableName);
+        tableBuilder.append(TABLE_FILE_EXTENSION);
+        int result = writeWhere(value, newValue, columnPosition, step,
+                ROOT, databaseName, tableName, tableBuilder.toString());
+
+        logger.log(Level.INFO, valueOf(result));
     }
 
     /**

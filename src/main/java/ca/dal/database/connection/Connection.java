@@ -3,7 +3,9 @@ package ca.dal.database.connection;
 public class Connection {
 
     private boolean autoCommit;
+
     private String databaseName;
+
     private String userId;
 
     public void setAutoCommit(boolean autoCommit) {
