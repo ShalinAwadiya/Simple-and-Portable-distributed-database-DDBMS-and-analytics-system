@@ -1,8 +1,8 @@
-package ca.dal.database.Authentication;
+package ca.dal.database.Security;
 
 import java.util.Scanner;
 
-public class Authenticate {
+public class Authentication {
     public void init() {
         System.out.println("1. Register");
         System.out.println("2. Login");
@@ -12,22 +12,20 @@ public class Authenticate {
         Scanner sc = new Scanner(System.in);
         String userInput = sc.nextLine();
 
-        switch (userInput) {
-            case "1":
-                userRegistration();
-                break;
-            case "2":
-                userLogin();
-                break;
-            case "3":
-                System.out.println("Good Bye!");
-                System.exit(0);
-                break;
-            default:
-                System.out.println("Incorrect option chosen, Please try Again");
-                init();
-                break;
+        if(userInput.equals("1")){
+            userRegistration();
         }
+        else if(userInput.equals("2")){
+            userLogin();
+        }
+        else if(userInput.equals("3")){
+            System.out.println("Good Bye!");
+        }
+        else{
+            System.out.println("Incorrect option chosen, Please try Again");
+            init();
+        }
+
     }
 
     private void userRegistration() {
@@ -48,21 +46,27 @@ public class Authenticate {
                 continue;
             }
             isUserIdCorrect = true;
-            u.setUserId(userId);
+            u.setUid(userId);
         }
 
         boolean isPasswordCorrect = false;
         while (!isPasswordCorrect) {
             System.out.println("");
             System.out.print("Enter Password: ");
-            String password = sc.nextLine();
+            String password;
+            if(System.console()==null){
+                password = sc.nextLine();
+            }
+            else{
+                password = String.valueOf(System.console().readPassword());
+            }
 
             if (password.length() < 1) {
                 System.out.println("password cannot be empty");
                 continue;
             }
             isPasswordCorrect = true;
-            u.setPassword(password);
+            u.setPwd(password);
         }
 
         boolean isSecurityCorrect = false;
@@ -87,7 +91,7 @@ public class Authenticate {
                 System.out.println("Answer cannot be empty");
             }
             isAnswerCorrect = true;
-            u.setAnswer(answer);
+            u.setAns(answer);
         }
 
         u.save();
@@ -141,9 +145,25 @@ public class Authenticate {
             }
             isAnswerCorrect = true;
         }
-        if (!user.getAnswer().equalsIgnoreCase(answer)) {
+        if (!user.getAns().equalsIgnoreCase(answer)) {
             System.out.println("Invalid Security");
             return;
         }
+        printMenu();
+    }
+
+    private void printMenu(){
+
+        System.out.println("Menu");
+        System.out.println("1. Write Queries");
+        System.out.println("2. Export");
+        System.out.println("3. Data Model");
+        System.out.println("4. Analytics");
+        System.out.print("Enter your choice of operation:");
+
+
+        Scanner sc = new Scanner(System.in);
+        String userChoice = sc.nextLine();
+
     }
 }
