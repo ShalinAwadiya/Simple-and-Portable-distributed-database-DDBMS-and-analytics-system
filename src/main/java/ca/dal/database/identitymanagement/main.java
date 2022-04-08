@@ -1,5 +1,5 @@
-package ca.dal.database.Security;
-import java.io.Console;
+package ca.dal.database.identitymanagement;
+
 public class main {
 
             public static void main(String[] args) {

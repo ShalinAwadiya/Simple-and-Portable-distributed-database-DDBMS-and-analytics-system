@@ -1,4 +1,4 @@
-package ca.dal.database.Security;
+package ca.dal.database.identitymanagement;
 
 import java.util.Scanner;
 
