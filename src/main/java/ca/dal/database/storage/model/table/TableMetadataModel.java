@@ -1,21 +1,19 @@
 package ca.dal.database.storage.model.table;
 
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
-import ca.dal.database.storage.model.database.DatabaseMetadataModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static ca.dal.database.constant.ApplicationConstants.LINE_FEED;
-import static java.lang.Integer.parseInt;
 import static java.lang.Long.parseLong;
 
 public class TableMetadataModel extends TableMetadataHeaderModel {
 
     private List<ColumnMetadataModel> columnsMetadata;
 
-    private Long noOfRows;
+    private final Long noOfRows;
 
     public TableMetadataModel(String tableName, List<ColumnMetadataModel> columnsMetadata) {
         super(tableName, columnsMetadata.size());
@@ -49,23 +47,23 @@ public class TableMetadataModel extends TableMetadataHeaderModel {
         return noOfRows;
     }
 
-    public String toMetaString(){
+    public String toMetaString() {
         return String.format("[HEADER,%s,%d,%d]", getTableName(), getNoOfColumns(), this.noOfRows);
     }
 
-    public List<String> toStringList(){
+    public List<String> toStringList() {
         List<String> list = new ArrayList<>();
 
         list.add(toMetaString());
 
-        for(ColumnMetadataModel columnMetadata: columnsMetadata){
+        for (ColumnMetadataModel columnMetadata : columnsMetadata) {
             list.add(columnMetadata.toString());
         }
 
         return list;
     }
 
-    public String toHeaderString(){
+    public String toHeaderString() {
         return super.toString();
     }
 
@@ -74,7 +72,7 @@ public class TableMetadataModel extends TableMetadataHeaderModel {
         return toStringList().stream().collect(Collectors.joining(LINE_FEED));
     }
 
-    public static TableMetadataModel parse(List<String> lines){
+    public static TableMetadataModel parse(List<String> lines) {
 
         String header = lines.get(0);
         String[] parts = header.substring(1, header.length() - 1).split(",");
@@ -83,7 +81,7 @@ public class TableMetadataModel extends TableMetadataHeaderModel {
 
         List<ColumnMetadataModel> columnMetadataModels = new ArrayList<>();
 
-        for(int index = 1; index < lines.size(); index++){
+        for (int index = 1; index < lines.size(); index++) {
             ColumnMetadataModel columnMetadataModel = ColumnMetadataModel.parse(lines.get(index));
             columnMetadataModels.add(columnMetadataModel);
         }

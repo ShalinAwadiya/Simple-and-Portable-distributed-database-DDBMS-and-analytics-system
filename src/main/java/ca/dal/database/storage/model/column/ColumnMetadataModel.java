@@ -12,7 +12,6 @@ public class ColumnMetadataModel {
 
     private ForeignKeyConstraintModel foreignConstraint;
 
-
     public ColumnMetadataModel(String name, String type) {
         this.name = name;
         this.type = type;

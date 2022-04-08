@@ -1,22 +1,17 @@
 package ca.dal.database.query.executor;
 
-import ca.dal.database.query.QueryParser;
 import ca.dal.database.query.model.QueryModel;
 import ca.dal.database.storage.StorageManager;
-import ca.dal.database.storage.model.column.ColumnMetadataModel;
 import ca.dal.database.storage.model.row.RowModel;
 import ca.dal.database.storage.model.table.TableMetadataModel;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class QueryExecutor {
 
-    private static final Logger logger = Logger.getLogger(QueryParser.class.getName());
-    private StorageManager storageManager = new StorageManager();
+    private static final Logger logger = Logger.getLogger(QueryExecutor.class.getName());
+    private final StorageManager storageManager = new StorageManager();
 
     public void execute(QueryModel queryModel) {
         switch (queryModel.getType()) {
@@ -27,13 +22,7 @@ public class QueryExecutor {
                 // set in connection
                 break;
             case CREATE_TABLE:
-                List<ColumnMetadataModel> columnsMetadata = new ArrayList<>();
-                for (Map.Entry<String, String> entry : queryModel.getColumnDefinition().entrySet()) {
-                    ColumnMetadataModel columnMeta = new ColumnMetadataModel(entry.getKey(), entry.getValue());
-                    columnsMetadata.add(columnMeta);
-                }
-                storageManager.createTable("user", new TableMetadataModel(queryModel.getTableName(), columnsMetadata));
-
+                storageManager.createTable("user", new TableMetadataModel(queryModel.getTableName(), queryModel.getColumnDefinition()));
                 break;
             case INSERT_ROW:
                 storageManager.insertRow("user", queryModel.getTableName(), new RowModel(queryModel.getValues()));
