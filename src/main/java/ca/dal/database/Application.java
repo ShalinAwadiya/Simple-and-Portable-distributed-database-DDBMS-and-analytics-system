@@ -18,20 +18,20 @@ public class Application {
         setup();
     }
 
-    private static QueryExecutor queryExecutor = new QueryExecutor();
+    private static final QueryExecutor queryExecutor = new QueryExecutor();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        do{
+        do {
             String query = scanner.nextLine();
 
-            if(query.equalsIgnoreCase("q")){
+            if (query.equalsIgnoreCase("q")) {
                 break;
             }
 
             queryExecutor.execute(evaluateQuery(query));
-        } while(true);
+        } while (true);
 
         scanner.close();
     }
