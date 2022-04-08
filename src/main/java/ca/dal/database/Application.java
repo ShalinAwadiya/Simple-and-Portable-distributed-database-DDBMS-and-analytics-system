@@ -1,11 +1,10 @@
 package ca.dal.database;
 
 import ca.dal.database.query.QueryParser;
-import ca.dal.database.query.model.QueryModel;
+// import ca.dal.database.query.model.QueryModel;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 import java.util.logging.LogManager;
 
 /**
@@ -17,10 +16,9 @@ public class Application {
         setup();
     }
 
-
     public static void main(String[] args) {
         String query = "delete from nishit where customerid=1;";
-        QueryModel model = QueryParser.evaluateQuery(query);
+        QueryParser.evaluateQuery(query);
     }
 
     public static void setup() {
