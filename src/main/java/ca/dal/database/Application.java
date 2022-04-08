@@ -1,14 +1,9 @@
 package ca.dal.database;
 
-import ca.dal.database.storage.StorageManager;
-import ca.dal.database.storage.model.column.ColumnMetadataModel;
-import ca.dal.database.storage.model.row.RowModel;
-import ca.dal.database.storage.model.table.TableMetadataModel;
+import ca.dal.database.query.QueryParser;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.UUID;
 import java.util.logging.LogManager;
 
 /**
@@ -20,8 +15,10 @@ public class Application {
         setup();
     }
 
-
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+        String query = "delete from nishit where customerid=1;";
+        QueryParser.evaluateQuery(query);
+    }
 
     public static void setup() {
         try {
