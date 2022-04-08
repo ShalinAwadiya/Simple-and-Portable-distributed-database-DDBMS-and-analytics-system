@@ -1,10 +1,11 @@
 package ca.dal.database.query;
 
-import ca.dal.database.query.model.QueryModel;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Objects;
+import ca.dal.database.query.model.QueryModel;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
