@@ -1,5 +1,7 @@
 package ca.dal.database.query.model;
 
+import ca.dal.database.storage.model.column.ColumnMetadataModel;
+
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +78,7 @@ public class QueryModel {
         return columnDefinition;
     }
 
-    public void setColumnDefinition(Map<String, String> columnDefinition) {
+    public void setColumnDefinition(List<ColumnMetadataModel> columnDefinition) {
         this.columnDefinition = columnDefinition;
     }
 

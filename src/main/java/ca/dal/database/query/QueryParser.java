@@ -1,6 +1,7 @@
 package ca.dal.database.query;
 
 import ca.dal.database.query.model.QueryModel;
+import ca.dal.database.storage.model.column.ColumnMetadataModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +26,7 @@ public class QueryParser {
             switch (token[0].toUpperCase()) {
                 case "CREATE":
                     if (token[1].equalsIgnoreCase("DATABASE")) {
-                       return createDBQuery(token, query);
+                        return createDBQuery(token, query);
                     } else if (token[1].equalsIgnoreCase("TABLE")) {
                         return createTableQuery(token, query);
                     } else {
@@ -80,27 +81,26 @@ public class QueryParser {
         String tableName = token[2].toUpperCase();
         String queryManipulation = query.substring(query.indexOf("(") + 1, query.length() - 1).trim();
         String[] queryToken = queryManipulation.split(",");
-        Map<String, String> columnDefinition = new HashMap<>();
+        List<ColumnMetadataModel> columnDefinition = new ArrayList<>();
         for (int i = 0; i < queryToken.length; i++) {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
-            columnDefinition.put(queryFinalToken[0], queryFinalToken[1]);
+
+            //add foreign key primary key logic
+            columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1], true));
         }
         return QueryModel.createTableQuery(tableName, columnDefinition, query);
     }
 
     public static QueryModel insertQuery(String[] token, String query) {
         String tableName = token[2].toUpperCase();
-        String substring = query.substring(query.indexOf("(") + 1, query.indexOf(")"));
-        String queryManipulation = substring.trim();
+        String queryManipulation = query.substring(query.indexOf("(") + 1, query.indexOf(")")).trim();
         String[] queryToken = queryManipulation.split(",");
         List<String> columns = new ArrayList<>();
         for (int i = 0; i < queryToken.length; i++) {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
             columns.add(queryFinalToken[0]);
         }
-        String queryManipulationValues = query.substring(
-                query.indexOf("(", query.indexOf(")")+1)+1,
-                query.length() - 1);
+        String queryManipulationValues = query.substring(query.indexOf("(", query.indexOf(")") + 1) + 1, query.length() - 1);
         String[] queryTokenValues = queryManipulationValues.split(",");
         List<Object> values = new ArrayList<>();
         for (int i = 0; i < queryTokenValues.length; i++) {

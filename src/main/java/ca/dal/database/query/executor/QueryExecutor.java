@@ -4,7 +4,6 @@ import ca.dal.database.query.QueryParser;
 import ca.dal.database.query.model.QueryModel;
 import ca.dal.database.storage.StorageManager;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
-import ca.dal.database.storage.model.column.ColumnModel;
 import ca.dal.database.storage.model.row.RowModel;
 import ca.dal.database.storage.model.table.TableMetadataModel;
 

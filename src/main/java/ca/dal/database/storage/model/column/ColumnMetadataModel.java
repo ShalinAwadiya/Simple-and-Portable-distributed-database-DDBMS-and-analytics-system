@@ -1,34 +1,35 @@
 package ca.dal.database.storage.model.column;
 
-import ca.dal.database.storage.model.table.TableMetadataHeaderModel;
-
-import static ca.dal.database.utils.StringUtils.isEmpty;
-
 public class ColumnMetadataModel {
 
     private String name;
 
     private String type;
 
-    private String constraints;
+    private boolean primaryKey;
+
+    private boolean foreignKey;
+
+    private ForeignKeyConstraintModel foreignConstraint;
+
 
     public ColumnMetadataModel(String name, String type) {
         this.name = name;
         this.type = type;
     }
 
-    public ColumnMetadataModel(String name, String type, String constraints) {
+    public ColumnMetadataModel(String name, String type, boolean primaryKey) {
         this.name = name;
         this.type = type;
-        this.constraints = constraints;
+        this.primaryKey = primaryKey;
     }
 
-    public static ColumnMetadataModel parse(String header) {
-        String[] parts = header.substring(1, header.length() - 1).split(",");
-        if(parts.length == 3){
-            return new ColumnMetadataModel(parts[0], parts[1], parts[2]);
-        }
-        return new ColumnMetadataModel(parts[0], parts[1]);
+    public ColumnMetadataModel(String name, String type, String foreignTableName, String foreignColumnName) {
+        this.name = name;
+        this.type = type;
+        this.primaryKey = false;
+        this.foreignKey = true;
+        this.foreignConstraint = ForeignKeyConstraintModel.create(foreignTableName, foreignColumnName);
     }
 
     public String getName() {
@@ -47,21 +48,39 @@ public class ColumnMetadataModel {
         this.type = type;
     }
 
-    public String getConstraints() {
-        return constraints;
+    public boolean isPrimaryKey() {
+        return primaryKey;
     }
 
-    public void setConstraints(String constraints) {
-        this.constraints = constraints;
+    public void setPrimaryKey(boolean primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+
+    public boolean isForeignKey() {
+        return foreignKey;
+    }
+
+    public void setForeignKey(boolean foreignKey) {
+        this.foreignKey = foreignKey;
+    }
+
+    public ForeignKeyConstraintModel getForeignConstraint() {
+        return foreignConstraint;
+    }
+
+    public void setForeignConstraint(ForeignKeyConstraintModel foreignConstraint) {
+        this.foreignConstraint = foreignConstraint;
+    }
+
+    public static ColumnMetadataModel parse(String header) {
+        String[] parts = header.substring(1, header.length() - 1).split(",");
+        return new ColumnMetadataModel(parts[0], parts[1]);
     }
 
     @Override
     public String toString() {
 
-        if(isEmpty(constraints)){
-            return "("  + name + "," + type + ")";
-        }
+        return "(" + name + "," + type + ")";
 
-        return "("  + name + "," + type + "," +constraints + ")";
     }
 }
