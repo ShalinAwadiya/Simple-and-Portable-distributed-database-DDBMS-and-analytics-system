@@ -1,8 +1,16 @@
 package ca.dal.database.identitymanagement;
 
+import java.util.HashMap;
 import java.util.Scanner;
+import ca.dal.database.logger.IdentityManagementLog;
 
 public class Authentication {
+
+    IdentityManagementLog identityManagementLog;
+
+    public Authentication(){
+        identityManagementLog =  new IdentityManagementLog();
+    }
     public void init() {
         System.out.println("1. Register");
         System.out.println("2. Login");
@@ -89,12 +97,17 @@ public class Authentication {
             String answer = sc.nextLine();
             if (answer.length() < 1) {
                 System.out.println("Answer cannot be empty");
+                continue;
             }
             isAnswerCorrect = true;
             u.setAns(answer);
         }
 
         u.save();
+        //registration successful
+        HashMap<String,String> data = new HashMap<String, String>();
+        data.put("username",u.getUid());
+        identityManagementLog.writeLog("Information","IdentityManagement","User registered",data);
     }
 
     private void userLogin() {
@@ -130,6 +143,11 @@ public class Authentication {
         user = user.validateUserIdAndPassword(userId, password);
         if (user == null) {
             System.out.println("Incorrect UserId or Password");
+            //unsuccessful login
+            HashMap<String,String> data = new HashMap<String, String>();
+            data.put("username",userId);
+            identityManagementLog.writeLog("Information","IdentityManagement","User Login Failed",data);
+
             init();
             return;
         }
@@ -147,9 +165,21 @@ public class Authentication {
         }
         if (!user.getAns().equalsIgnoreCase(answer)) {
             System.out.println("Invalid Security");
+            //unsuccessful login
+            HashMap<String,String> data = new HashMap<String, String>();
+            data.put("username",user.getUid());
+            identityManagementLog.writeLog("Information","IdentityManagement","User Login Failed",data);
+
             return;
         }
+        //successful login
+        HashMap<String,String> data = new HashMap<String, String>();
+        data.put("username",userId);
+        identityManagementLog.writeLog("Information","IdentityManagement","User Login Success",data);
+
+
         printMenu();
+
     }
 
     private void printMenu(){

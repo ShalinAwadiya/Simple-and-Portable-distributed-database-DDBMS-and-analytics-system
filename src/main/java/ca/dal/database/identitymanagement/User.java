@@ -13,8 +13,8 @@ public class User {
     private String ans;
     private String encryptedUid;
     private String encryptedPwd;
-    final static String user_profile_path = "src/main/java/ca/dal/database/Security/UserProfile.txt";
-    final static String separator = "%\\^&";
+    final static String user_profile_path = "src/main/java/ca/dal/database/identitymanagement/UserProfile.txt";
+    final static String separator = "<!>";
 
     public User() {
     }
@@ -161,8 +161,7 @@ public class User {
         boolean isFound = false;
         User user = null;
         for (int i = 0; i < users.length; i++) {
-            System.out.println(users[i].getEncryptedUid() +"----->"+ hashing.getHash(userId));
-            if (users[i].getEncryptedUid().equals(hashing.getHash(userId))) {
+            if (users[i].getEncryptedUid().equals(hashing.getHash(userId)) && users[i].getEncryptedPwd().equals(hashing.getHash(password))) {
                 isFound = true;
                 user = users[i];
                 break;
