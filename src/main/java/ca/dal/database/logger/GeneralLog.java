@@ -8,14 +8,17 @@ import java.util.UUID;
 
 
 public class GeneralLog implements Logging{
+
     private static int logId=0;
+    String delimeter="<!!>";
+
     public static void main(String []args)
     {
         GeneralLog generalLog=new GeneralLog();
 
         HashMap<String,String> data=new HashMap<>();
         data.put("one","two");
-        generalLog.writeLog("Information Log","There are 3 tables and 42 records",data);
+        generalLog.writeLog("Information Log","Query","There are 3 tables and 42 records",data);
         generalLog.readLog();
     }
     public void readLog()
@@ -29,7 +32,7 @@ public class GeneralLog implements Logging{
             while (line != null) {
                 System.out.println(line);
 
-                String[] logProperties = line.split("\t");
+                String[] logProperties = line.split(delimeter);
                 for (int i = 0; i < logProperties.length; i++)
                 {
                     System.out.println(logProperties[i]);
@@ -54,7 +57,7 @@ public class GeneralLog implements Logging{
     public void writeLog()
     {}
 
-    public void writeLog(String type, String message, HashMap<String,String> data)
+    public void writeLog(String type, String subject, String message, HashMap<String,String> data)
     {
         BufferedWriter bw=null;
         try {
@@ -73,24 +76,25 @@ public class GeneralLog implements Logging{
             bw = new BufferedWriter(fw);
 
             logId=logId+1;
-            bw.write(String.valueOf(logId)+"\t");
+            bw.write(String.valueOf(logId)+delimeter);
 
 
             String uuid=UUID.randomUUID().toString();
-            bw.write(uuid+"\t");
+            bw.write(uuid+delimeter);
 
 
             String date=String.valueOf(java.time.LocalDate.now());
-            bw.write(date+"\t");
+            bw.write(date+delimeter);
 
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
             String time=dtf.format(java.time.LocalTime.now());
-            bw.write(time+"\t");
+            bw.write(time+delimeter);
 
 
-            bw.write(type+"\t");
-            bw.write(message+"\t");
+            bw.write(type+delimeter);
+            bw.write(subject+delimeter);
+            bw.write(message+delimeter);
             bw.write(String.valueOf(data));
 
             System.out.println("File written Successfully");
@@ -109,3 +113,4 @@ public class GeneralLog implements Logging{
         }
     }
 }
+
