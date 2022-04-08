@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static ca.dal.database.utils.PrintUtils.success;
+
 public class  QueryExecutor {
 
     private static final Logger logger = Logger.getLogger(QueryExecutor.class.getName());
@@ -37,15 +39,17 @@ public class  QueryExecutor {
                 createDatabase(queryModel);
                 break;
             case USE_DATABASE:
-                // set in connection
+                setDatabaseName(queryModel.getDatabaseName());
+                success(String.format("%s database selected successfully", queryModel.getDatabaseName()));
                 break;
             case CREATE_TABLE:
-                storageManager.createTable("user", new TableMetadataModel(queryModel.getTableName(), queryModel.getColumnDefinition()));
+                createTable(queryModel);
                 break;
             case INSERT_ROW:
                 insertRow(queryModel);
                 break;
             case SELECT_ROW:
+                storageManager.fetchRows(getDatabaseName(), queryModel.getTableName(), queryModel.getColumns(), queryModel.getCondition());
                 break;
             case UPDATE_ROW:
                 break;

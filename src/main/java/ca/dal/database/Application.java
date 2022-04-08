@@ -1,6 +1,7 @@
 package ca.dal.database;
 
 import ca.dal.database.connection.Connection;
+import ca.dal.database.query.QueryParser;
 import ca.dal.database.query.executor.QueryExecutor;
 import ca.dal.database.security.Authentication;
 import ca.dal.database.storage.StorageManager;

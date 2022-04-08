@@ -159,11 +159,17 @@ public class QueryParser {
     }
 
     private static void queryManipulation(String query, Map<String, Object> conditionNew) {
+        if(!query.contains("where")){
+            return;
+        }
+
+
         String queryManipulation = query.substring(query.indexOf("where"), query.length() - 1).trim();
         String[] queryTokenNew = queryManipulation.split(" ");
         String[] conditionLogic = queryTokenNew[1].split("=");
 
-        String conditionLogicNew = conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1, conditionLogic[1].length() - 1);
+        String conditionLogicNew =
+                conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1, conditionLogic[1].length());
 
         conditionNew.put(conditionLogic[0], conditionLogicNew);
     }

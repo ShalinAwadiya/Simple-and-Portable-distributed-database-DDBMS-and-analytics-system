@@ -1,12 +1,12 @@
 package ca.dal.database.security;
 
+import ca.dal.database.connection.Connection;
 import ca.dal.database.menu.HomeMenu;
 import ca.dal.database.utils.PrintUtils;
 
 import java.util.Scanner;
 
-import static ca.dal.database.utils.PrintUtils.println;
-import static ca.dal.database.utils.PrintUtils.success;
+import static ca.dal.database.utils.PrintUtils.*;
 
 public class Authentication {
     public void init() {
@@ -29,7 +29,7 @@ public class Authentication {
             System.out.println("Good Bye!");
         }
         else{
-            System.out.println("Incorrect option chosen, Please try Again");
+            error("Incorrect option chosen, Please try Again");
             init();
         }
 
@@ -160,9 +160,8 @@ public class Authentication {
 
         success("Logged In Successfully!");
 
-        HomeMenu homeMenu = new HomeMenu();
+        Connection connection = new Connection(userId);
+        HomeMenu homeMenu = new HomeMenu(connection);
         homeMenu.show();
     }
-
-
 }

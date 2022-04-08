@@ -1,7 +1,5 @@
 package ca.dal.database.utils;
 
-import ca.dal.database.storage.StorageManager;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -70,6 +68,21 @@ public class StringUtils {
         }
 
         return true;
+    }
+
+    /**
+     * @param values
+     * @return
+     */
+    public static String builder(String... values){
+
+        StringBuilder builder = new StringBuilder();
+
+        for(String value: values){
+            builder.append(value);
+        }
+
+        return builder.toString();
     }
 
     /**
