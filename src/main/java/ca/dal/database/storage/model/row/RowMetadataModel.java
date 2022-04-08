@@ -1,4 +1,4 @@
-package ca.dal.database.storage.model;
+package ca.dal.database.storage.model.row;
 
 import ca.dal.database.utils.UUIDUtils;
 

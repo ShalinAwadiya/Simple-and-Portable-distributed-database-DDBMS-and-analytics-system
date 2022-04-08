@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static ca.dal.database.constant.ApplicationConstants.LINE_FEED;
+
 /**
  * @author Harsh Shah
  */
@@ -118,6 +120,11 @@ public class FileUtils {
         return write(lines, StandardOpenOption.TRUNCATE_EXISTING, startDirectory, location);
     }
 
+    public static int appendLn(List<String> lines, String startDirectory, String... location){
+        lines.add(0, LINE_FEED);
+        return write(lines, StandardOpenOption.APPEND, startDirectory, location);
+    }
+
     /**
      * @param line
      * @param startLocation
@@ -126,6 +133,10 @@ public class FileUtils {
      */
     public static int append(String line, String startLocation, String... location){
         return write(Arrays.asList(line), StandardOpenOption.APPEND, startLocation, location);
+    }
+
+    public static int appendLn(String line, String startLocation, String... location){
+        return write(Arrays.asList(LINE_FEED, line), StandardOpenOption.APPEND, startLocation, location);
     }
 
 

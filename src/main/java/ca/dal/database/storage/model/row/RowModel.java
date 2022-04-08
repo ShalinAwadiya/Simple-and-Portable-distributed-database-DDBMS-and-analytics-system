@@ -1,4 +1,4 @@
-package ca.dal.database.storage.model;
+package ca.dal.database.storage.model.row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +13,19 @@ public class RowModel {
 
     private List<Object> values;
 
+    public RowModel(List<Object> values) {
+        this.metadata = new RowMetadataModel(-1L);
+        this.values = values;
+    }
+
     public RowModel(long index, List<Object> values) {
         this.metadata = new RowMetadataModel(index);
         this.values = values;
+    }
+
+    public RowModel(RowModel row, long index) {
+        this.metadata = new RowMetadataModel(index, row.getMetadata().getIdentifier());
+        this.values = row.getValues();
     }
 
     public RowModel(long index, String identifier, List<Object> values) {
@@ -44,6 +54,6 @@ public class RowModel {
 
     @Override
     public String toString() {
-        return LINE_FEED + toList().stream().collect(Collectors.joining(LINE_FEED));
+        return toList().stream().collect(Collectors.joining(LINE_FEED));
     }
 }

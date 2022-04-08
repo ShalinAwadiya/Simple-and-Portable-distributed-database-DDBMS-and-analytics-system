@@ -1,4 +1,6 @@
-package ca.dal.database.storage.model;
+package ca.dal.database.storage.model.column;
+
+import ca.dal.database.storage.model.table.TableMetadataHeaderModel;
 
 import static ca.dal.database.utils.StringUtils.isEmpty;
 
@@ -19,6 +21,14 @@ public class ColumnMetadataModel {
         this.name = name;
         this.type = type;
         this.constraints = constraints;
+    }
+
+    public static ColumnMetadataModel parse(String header) {
+        String[] parts = header.substring(1, header.length() - 1).split(",");
+        if(parts.length == 3){
+            return new ColumnMetadataModel(parts[0], parts[1], parts[2]);
+        }
+        return new ColumnMetadataModel(parts[0], parts[1]);
     }
 
     public String getName() {
