@@ -2,9 +2,6 @@ package ca.dal.database.query;
 
 import ca.dal.database.query.model.QueryModel;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,13 +13,7 @@ public class QueryParser {
 
     private static final Logger logger = Logger.getLogger(QueryParser.class.getName());
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String query = br.readLine();
-        evaluateQuery(query);
-    }
-
-    public static void evaluateQuery(String query) {
+    public static QueryModel evaluateQuery(String query) {
         String[] token = query.split(" ");
         List<String> columns = new ArrayList<>();
         List<Object> values = new ArrayList<>();
@@ -35,8 +26,10 @@ public class QueryParser {
                 case "CREATE":
                     if (token[1].equalsIgnoreCase("DATABASE")) {
                         createDBQuery(token, query);
-                    } else {
+                    } else if (token[1].equalsIgnoreCase("TABLE")) {
                         createTableQuery(token, query);
+                    } else {
+                        logger.log(Level.INFO, "Enter Valid Create Query");
                     }
                     break;
                 case "USE":
@@ -58,19 +51,32 @@ public class QueryParser {
                     logger.log(Level.INFO, "INVALID QUERY");
             }
         }
+        return null;
     }
 
     public static void parseUseDBQuery(String[] token, String query) {
-        String databaseName = token[1].toUpperCase();
-        QueryModel.useDBQuery(databaseName, query);
+        if (token.length == 2) {
+            String databaseName = token[1].toUpperCase();
+            QueryModel.useDBQuery(databaseName, query);
+        } else {
+            logger.log(Level.INFO, "Enter Valid Use Database Query");
+        }
+
     }
 
     public static void createDBQuery(String[] token, String query) {
-        String databaseName = token[2].toUpperCase();
-        QueryModel.createDBQuery(databaseName, query);
+        if (token.length == 3) {
+            String databaseName = token[2].toUpperCase();
+            QueryModel.createDBQuery(databaseName, query);
+        } else {
+            logger.log(Level.INFO, "Enter Valid Create Database Query");
+        }
     }
 
     public static void createTableQuery(String[] token, String query) {
+//        if(token[2].matches("^[a-zA-Z]")){
+//            System.out.println("INSIDE REGEX");
+//        }
         String tableName = token[2].toUpperCase();
         String queryManipulation = query.substring(query.indexOf("(") + 1, query.length() - 1).trim();
         String[] queryToken = queryManipulation.split(",");
@@ -103,13 +109,17 @@ public class QueryParser {
     }
 
     public static void deleteQuery(String[] token, String query) {
-        String tableName = token[2].toUpperCase();
-        Map<String, Object> condition = new HashMap<>();
-        String queryManipulation = query.substring(query.indexOf("where"), query.length() - 1).trim();
-        String[] queryToken = queryManipulation.split(" ");
-        String[] conditionLogic = queryToken[1].split("=");
-        condition.put(conditionLogic[0], conditionLogic[1]);
-        QueryModel.deleteQuery(tableName, condition, query);
+        if (token.length == 5) {
+            String tableName = token[2].toUpperCase();
+            Map<String, Object> condition = new HashMap<>();
+            String queryManipulation = query.substring(query.indexOf("where"), query.length() - 1).trim();
+            String[] queryToken = queryManipulation.split(" ");
+            String[] conditionLogic = queryToken[1].split("=");
+            condition.put(conditionLogic[0], conditionLogic[1]);
+            QueryModel.deleteQuery(tableName, condition, query);
+        } else {
+            logger.log(Level.INFO, "Enter Valid Delete Query");
+        }
     }
 
     public static void updateQuery(String[] token, String query, List<String> columns, List<Object> values, Map<String, Object> condition) {
