@@ -1,7 +1,6 @@
 package ca.dal.database;
 
 import ca.dal.database.query.QueryParser;
-// import ca.dal.database.query.model.QueryModel;
 
 import java.io.IOException;
 import java.io.InputStream;

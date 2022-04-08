@@ -4,7 +4,7 @@ import ca.dal.database.query.model.QueryModel;
 
 public class QueryExecutor {
 
-    public static void execute(QueryModel queryModel){
+    public static void execute(QueryModel queryModel) {
 
     }
 
