@@ -1,7 +1,6 @@
 [HEADER,CUSTOMER,4,4]
-(dob,date)
-(name,string)
 (id,string)
+(name,string)
 (pid,string)
 (pk,id)
 (fk,pid)

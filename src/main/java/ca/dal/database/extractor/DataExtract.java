@@ -28,7 +28,7 @@ public class DataExtract {
                                     String primarykey = "";
                                     String foreignkey = "";
                                     String foreignKeyRef = "";
-                                    String foreignKeytable = "";
+                                    String foreignKeyTable = "";
                                     while ((lineRead = bufferedReader.readLine()) != null) {
                                         if (count == 0) {
                                             String[] split = lineRead.split(",");
@@ -46,7 +46,7 @@ public class DataExtract {
                                             foreignKeyRef = split[1].replace(")", "");
                                         } else if (lineRead.startsWith("(f_table")) {
                                             String[] split = lineRead.split(",");
-                                            foreignKeytable = split[1].replace(")", "");
+                                            foreignKeyTable = split[1].replace(")", "");
 
                                         } else {
                                             String[] keyValue = lineRead.split(",");
@@ -65,10 +65,10 @@ public class DataExtract {
                                         create = create + "primary key (" + primarykey + ")";
                                     }
 
-                                    if (foreignkey != "" && foreignKeyRef != "" && foreignKeytable != "") {
+                                    if (foreignkey != "" && foreignKeyRef != "" && foreignKeyTable != "") {
 
                                         create = create + ", foreign key (" + foreignkey
-                                                + ") references " + foreignKeytable + "(" + foreignKeyRef + ")";
+                                                + ") references " + foreignKeyTable + "(" + foreignKeyRef + ")";
                                     }
                                     create = create + ");";
                                     bufferedWriter.write(create);

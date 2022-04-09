@@ -24,9 +24,8 @@ PK | id
 +---------------------+
 CUSTOMER
 +---------------------+
-(dob,date)
-(name,string)
 (id,string)
+(name,string)
 (pid,string)
 PK | id
 FK | pid
