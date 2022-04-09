@@ -5,6 +5,9 @@ import ca.dal.database.storage.model.column.ColumnMetadataModel;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Nishit Mistry
+ */
 public class QueryModel {
     private String rawQuery;
     private QueryType type;
@@ -82,7 +85,6 @@ public class QueryModel {
         this.databaseName = databaseName;
     }
 
-
     public static QueryModel createDBQuery(String databaseName, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setDatabaseName(databaseName);
@@ -99,7 +101,8 @@ public class QueryModel {
         return model;
     }
 
-    public static QueryModel createTableQuery(String tableName, List<ColumnMetadataModel> columnDefinition, String rawQuery) {
+    public static QueryModel createTableQuery(String tableName, List<ColumnMetadataModel> columnDefinition,
+            String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumnDefinition(columnDefinition);
@@ -118,7 +121,8 @@ public class QueryModel {
         return model;
     }
 
-    public static QueryModel selectQuery(String tableName, List<String> columns, Map<String, Object> condition, String rawQuery) {
+    public static QueryModel selectQuery(String tableName, List<String> columns, Map<String, Object> condition,
+            String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumns(columns);
@@ -128,7 +132,8 @@ public class QueryModel {
         return model;
     }
 
-    public static QueryModel updateQuery(String tableName, List<String> columns, List<Object> values, Map<String, Object> condition, String rawQuery) {
+    public static QueryModel updateQuery(String tableName, List<String> columns, List<Object> values,
+            Map<String, Object> condition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumns(columns);

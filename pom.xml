@@ -11,7 +11,7 @@
     </properties>
 
     <build>
-        <finalName>distributed-database</finalName>
+        <finalName>Application</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
