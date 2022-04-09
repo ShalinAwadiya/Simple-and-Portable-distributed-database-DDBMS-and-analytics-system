@@ -70,6 +70,7 @@ public class HomeMenu {
      * @author Harsh Shah
      */
     private void exportDatabase() {
+        println("Enter Database Name: ");
         Scanner sc = new Scanner(System.in);
         String database = sc.nextLine();
 

@@ -3,6 +3,7 @@ package ca.dal.database.iam;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Scanner;
 
@@ -103,6 +104,11 @@ public class User {
 
         if(!f.exists()){
             new File(f.getParent()).mkdirs();
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         try {
@@ -120,6 +126,11 @@ public class User {
 
         if(!f.exists()){
             new File(f.getParent()).mkdirs();
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         int lineCounter = 0;

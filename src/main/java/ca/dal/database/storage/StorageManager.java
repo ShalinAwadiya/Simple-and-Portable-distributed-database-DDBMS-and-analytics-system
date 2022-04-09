@@ -10,6 +10,8 @@ import ca.dal.database.storage.model.table.TableMetadataHeaderModel;
 import ca.dal.database.storage.model.table.TableMetadataModel;
 import ca.dal.database.utils.FileUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static ca.dal.database.constant.ApplicationConstants.DOT;
@@ -47,11 +49,14 @@ public class StorageManager {
         // Create datastore
         FileUtils.createDirectory(ROOT);
 
-        // Create datastore metadata
-        FileUtils.createFile(ROOT, builder(ROOT, DATASTORE_METADATA));
+        if(Files.notExists(Path.of(ROOT, builder(ROOT, DATASTORE_METADATA)))) {
 
-        // Write Table Metadata
-        write(new DatastoreModel(0).toListString(), ROOT, builder(ROOT, DATABASE_METADATA));
+            // Create datastore metadata
+            FileUtils.createFile(ROOT, builder(ROOT, DATASTORE_METADATA));
+
+            // Write Table Metadata
+            write(new DatastoreModel(0).toListString(), ROOT, builder(ROOT, DATABASE_METADATA));
+        }
     }
 
     public void updateDatastoreMetadata(DatabaseMetadataModel metadataModel) {
