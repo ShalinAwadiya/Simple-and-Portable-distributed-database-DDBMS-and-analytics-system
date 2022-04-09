@@ -30,7 +30,7 @@ public class CountQueries {
             FileReader fr = new FileReader(file);
             br = new BufferedReader(fr);
             String line = br.readLine();
-            HashMap<String,List<String>> databaseLogs = new HashMap<>();
+            HashMap<String,HashMap<String,Integer>> databaseLogs = new HashMap<>();
 
             while (line != null) {
                 System.out.println(line);
@@ -41,9 +41,6 @@ public class CountQueries {
                     System.out.println("Database: "+databases.get(i));
                     if(logProperties[7].contains(databases.get(i)))
                     {
-                        int indexOfUsername=logProperties[7].indexOf("username");
-                        System.out.println("Index of Username:"+indexOfUsername);
-
                         String value=logProperties[7];
                         value = value.substring(1, value.length()-1);
                         String[] keyValuePairs = value.split(",");
@@ -56,22 +53,32 @@ public class CountQueries {
                             map.put(entry[0].trim(), entry[1].trim());
                         }
                         //System.out.println(map);
-                        System.out.println("Username:"+map.get("username"));
+                        String username=map.get("username");
+                        System.out.println("Username:"+username);
 
                         if(databaseLogs.containsKey(databases.get(i)))
                         {
-                            List<String> temp = databaseLogs.get(databases.get(i));
-                            temp.add(logProperties[7]);
+                            HashMap<String,Integer> temp = databaseLogs.get(databases.get(i));
+                            if(temp.containsKey(username))
+                            {
+                                int counter=temp.get(username);
+                                counter=counter+1;
+                                temp.put(username,counter);
+                            }
+                            else
+                            {
+                                temp.put(username,1);
+                            }
                             databaseLogs.put(databases.get(i),temp);
                         }
                         else
                         {
-                            List<String> temp= new ArrayList<>();
-                            temp.add(logProperties[7]);
+                            HashMap<String,Integer> temp = new HashMap<>();
+                            temp.put(username,1);
+
                             databaseLogs.put(databases.get(i),temp);
                         }
                     }
-                    System.out.println(databaseLogs);
                 }
 
                 //
@@ -83,6 +90,7 @@ public class CountQueries {
 
                 line = br.readLine();
             }
+            System.out.println(databaseLogs);
             System.out.println("File Read Successfully");
         } catch (IOException e) {
             System.out.println("Exception:"+e.getMessage());
