@@ -1,5 +1,8 @@
 package ca.dal.database.query.model;
 
+/**
+ * @author Nishit Mistry
+ */
 public enum QueryType {
     CREATE_DATABASE, USE_DATABASE,
     CREATE_TABLE,
