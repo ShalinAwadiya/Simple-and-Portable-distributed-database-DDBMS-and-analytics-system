@@ -7,7 +7,7 @@ import java.util.UUID;
 
 
 
-public class GeneralLog implements Logging{
+public class GeneralLog{
 
     private static int logId=0;
     String delimeter="<!!>";
@@ -53,9 +53,6 @@ public class GeneralLog implements Logging{
             }
         }
     }
-
-    public void writeLog()
-    {}
 
     public void writeLog(String type, String subject, String message, HashMap<String,String> data)
     {
