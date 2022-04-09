@@ -41,7 +41,7 @@ public class QueryExecutor {
             case USE_DATABASE:
 
                 if (!storageManager.isDatabaseExists(queryModel.getDatabaseName())) {
-                    error("%s database doesn't exits", queryModel.getDatabaseName());
+                    error("%s database doesn't exist", queryModel.getDatabaseName());
                     break;
                 }
 

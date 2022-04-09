@@ -1,5 +1,6 @@
 package ca.dal.database.query;
 
+import ca.dal.database.iam.User;
 import ca.dal.database.logger.QueryLog;
 import ca.dal.database.query.model.QueryModel;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
@@ -19,13 +20,11 @@ import static java.util.Arrays.asList;
 public class QueryParser {
 
     private static final Logger logger = Logger.getLogger(QueryParser.class.getName());
-    static QueryLog queryLog;
-
-    public QueryParser() {
-        queryLog = new QueryLog();
-    }
+    private static final QueryLog queryLog = new QueryLog();
+    private static final User u = new User();
 
     public static QueryModel evaluateQuery(String query) {
+
         String newQuery = query.substring(0, query.length() - 1);
         String[] token = newQuery.split(" ");
         List<String> columns = new ArrayList<>();
@@ -72,12 +71,14 @@ public class QueryParser {
 
     public static QueryModel useDBQuery(String[] token, String newQuery) {
         HashMap<String, String> data = new HashMap<String, String>();
-//        data.put("username",u.getUid());
-//        queryLog.writeLog();
-        
 
         if (token.length == 2) {
             String databaseName = token[1];
+            data.put("database", databaseName);
+            data.put("query", newQuery);
+            data.put("table", "");
+            data.put("username", u.getUid());
+            queryLog.writeLog("Information Log", "Query - Use", "Query executed by a user.", data);
             return QueryModel.useDBQuery(databaseName, newQuery);
         } else {
             error("Enter Valid Use Database Query");
