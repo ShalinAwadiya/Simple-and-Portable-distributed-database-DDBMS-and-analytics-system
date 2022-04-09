@@ -10,6 +10,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static ca.dal.database.utils.PrintUtils.error;
+import static ca.dal.database.utils.StringUtils.replace;
+import static ca.dal.database.utils.StringUtils.splitAndTrim;
+import static java.util.Arrays.asList;
+
 /**
  * @author Nishit Mistry
  */
@@ -59,7 +64,7 @@ public class QueryParser {
             String databaseName = token[1];
             return QueryModel.useDBQuery(databaseName, newQuery);
         } else {
-            logger.log(Level.INFO, "Enter Valid Use Database Query");
+            error("Enter Valid Use Database Query");
         }
         return null;
     }
@@ -109,16 +114,13 @@ public class QueryParser {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
             columns.add(queryFinalToken[0]);
         }
-        String queryManipulationValues = newQuery.substring(newQuery.indexOf("(", newQuery.indexOf(")") + 1) + 1).trim();
-        String[] queryTokenValues = queryManipulationValues.split(",");
-        List<Object> values = new ArrayList<>();
-        String queryTokenNew = queryTokenValues[1].substring(queryTokenValues[1].indexOf("\"") + 1,
-                queryTokenValues[1].length() - 2);
+        String queryManipulationValues = newQuery.substring(newQuery.indexOf("(",
+                newQuery.indexOf(")") + 1) + 1, newQuery.length() - 1).trim();
 
-        values.add(queryTokenValues[0]);
-        values.add(queryTokenNew);
+        String[] queryTokenValues = splitAndTrim(queryManipulationValues, ",");
+        queryTokenValues = replace(queryTokenValues, "(\"|\')", "");
 
-        return QueryModel.insertQuery(tableName, columns, values, newQuery);
+        return QueryModel.insertQuery(tableName, columns, asList(queryTokenValues), newQuery);
     }
 
     public static QueryModel deleteQuery(String[] token, String newQuery) {
@@ -135,19 +137,21 @@ public class QueryParser {
 
     public static QueryModel updateQuery(String[] token, String newQuery, List<String> columns, List<Object> values,
                                          Map<String, Object> conditionNew) {
+
         String tableName = token[1];
-        String queryManipulation = newQuery.substring(newQuery.indexOf("set"), newQuery.length() - 1).trim();
-        String[] queryToken = queryManipulation.split(" ");
-        String[] columnLogic = queryToken[1].split("=");
+
+        if (!token[2].equalsIgnoreCase("set")) {
+            error("Invalid update query");
+        }
+
+        String queryManipulation = newQuery.substring(newQuery.indexOf(token[2])).trim();
+        String[] queryToken = splitAndTrim(queryManipulation, " ");
+        String[] columnLogic = replace(splitAndTrim(queryToken[1], "="), "(\"|\')", "");
         columns.add(columnLogic[0]);
-        String queryTokenNew = columnLogic[1].substring(columnLogic[1].indexOf("\"") + 1, columnLogic[1].length() - 1);
+        values.add(columnLogic[1]);
 
-        values.add(queryTokenNew);
-        String[] conditionLogic = queryToken[3].split("=");
-
-        String conditionLogicNew = conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1,
-                conditionLogic[1].length());
-        conditionNew.put(conditionLogic[0], conditionLogicNew);
+        String[] conditionLogic = replace(splitAndTrim(queryToken[3], "="), "(\"|\')", "");
+        conditionNew.put(conditionLogic[0], conditionLogic[1]);
 
         return QueryModel.updateQuery(tableName, columns, values, conditionNew, newQuery);
     }
@@ -173,13 +177,11 @@ public class QueryParser {
             return;
         }
 
-        String queryManipulation = newQuery.substring(newQuery.indexOf("where"), newQuery.length() - 1).trim();
-        String[] queryTokenNew = queryManipulation.split(" ");
-        String[] conditionLogic = queryTokenNew[1].split("=");
+        String queryManipulation = newQuery.substring(newQuery.indexOf("where")).trim();
+        String[] queryTokenNew = splitAndTrim(queryManipulation, " ");
 
-        String conditionLogicNew = conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1,
-                conditionLogic[1].length());
+        String[] conditionLogic = replace(splitAndTrim(queryTokenNew[1], "="), "(\"|\')", "");
+        conditionNew.put(conditionLogic[0], conditionLogic[1]);
 
-        conditionNew.put(conditionLogic[0], conditionLogicNew);
     }
 }
