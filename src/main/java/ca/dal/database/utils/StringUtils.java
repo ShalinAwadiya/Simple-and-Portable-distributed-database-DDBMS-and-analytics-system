@@ -127,7 +127,6 @@ public class StringUtils {
         return hexString.toString();
     }
 
-
     /**
      * @param str
      * @param count

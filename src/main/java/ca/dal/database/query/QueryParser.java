@@ -1,12 +1,11 @@
 package ca.dal.database.query;
 
+import ca.dal.database.iam.User;
+import ca.dal.database.logger.QueryLog;
 import ca.dal.database.query.model.QueryModel;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,8 +20,11 @@ import static java.util.Arrays.asList;
 public class QueryParser {
 
     private static final Logger logger = Logger.getLogger(QueryParser.class.getName());
+    private static final QueryLog queryLog = new QueryLog();
+    private static final User u = new User();
 
     public static QueryModel evaluateQuery(String query) {
+
         String newQuery = query.substring(0, query.length() - 1);
         String[] token = newQuery.split(" ");
         List<String> columns = new ArrayList<>();
@@ -52,6 +54,14 @@ public class QueryParser {
                     return updateQuery(token, newQuery, columns, values, conditionNew);
                 case "DELETE":
                     return deleteQuery(token, newQuery);
+                case "START":
+                    return startTransactionQuery(newQuery);
+                case "END":
+                    return endTransactionQuery(newQuery);
+                case "COMMIT":
+                    return commitQuery(newQuery);
+                case "ROLLBACK":
+                    return rollbackQuery(newQuery);
                 default:
                     logger.log(Level.INFO, "INVALID QUERY");
             }
@@ -60,8 +70,15 @@ public class QueryParser {
     }
 
     public static QueryModel useDBQuery(String[] token, String newQuery) {
+        HashMap<String, String> data = new HashMap<String, String>();
+
         if (token.length == 2) {
             String databaseName = token[1];
+            data.put("database", databaseName);
+            data.put("query", newQuery);
+            data.put("table", "");
+            data.put("username", u.getUid());
+            queryLog.writeLog("Information Log", "Query - Use", "Query executed by a user.", data);
             return QueryModel.useDBQuery(databaseName, newQuery);
         } else {
             error("Enter Valid Use Database Query");
@@ -170,6 +187,22 @@ public class QueryParser {
         queryManipulation(newQuery, conditionNew);
 
         return QueryModel.selectQuery(tableName, columns, conditionNew, newQuery);
+    }
+
+    public static QueryModel startTransactionQuery(String newQuery) {
+        return QueryModel.startTransactionQuery(newQuery);
+    }
+
+    public static QueryModel endTransactionQuery(String newQuery) {
+        return QueryModel.endTransactionQuery(newQuery);
+    }
+
+    public static QueryModel commitQuery(String newQuery) {
+        return QueryModel.commitQuery(newQuery);
+    }
+
+    public static QueryModel rollbackQuery(String newQuery) {
+        return QueryModel.rollbackQuery(newQuery);
     }
 
     private static void queryManipulation(String newQuery, Map<String, Object> conditionNew) {
