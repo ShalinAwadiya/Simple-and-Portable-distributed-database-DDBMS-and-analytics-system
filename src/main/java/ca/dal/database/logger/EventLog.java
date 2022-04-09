@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class EventLog implements Logging{
+public class EventLog{
 
     private static int logId=0;
     public static void main (String []args)
@@ -49,8 +49,6 @@ public class EventLog implements Logging{
             }
         }
     }
-    public void writeLog()
-    {}
 
     public void writeLog(String type, String message, HashMap<String,String> data)
     {
