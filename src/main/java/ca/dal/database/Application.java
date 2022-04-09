@@ -1,8 +1,10 @@
 package ca.dal.database;
 
+import ca.dal.database.iam.Authentication;
+import ca.dal.database.storage.StorageManager;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.UUID;
 import java.util.logging.LogManager;
 
 /**
@@ -14,8 +16,12 @@ public class Application {
         setup();
     }
 
+    private static Authentication authentication = new Authentication();
 
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+        StorageManager.init();
+        authentication.init();
+    }
 
     public static void setup() {
         try {

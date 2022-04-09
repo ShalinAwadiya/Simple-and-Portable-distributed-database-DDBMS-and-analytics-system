@@ -1,10 +1,14 @@
-package ca.dal.database.identitymanagement;
+package ca.dal.database.iam;
 
 import java.util.HashMap;
 import java.util.Scanner;
+
+import ca.dal.database.connection.Connection;
 import ca.dal.database.logger.IdentityManagementLog;
+import ca.dal.database.menu.HomeMenu;
 
 import static ca.dal.database.utils.PrintUtils.error;
+import static ca.dal.database.utils.PrintUtils.success;
 
 public class Authentication {
 
@@ -61,7 +65,7 @@ public class Authentication {
 
         boolean isPasswordCorrect = false;
         while (!isPasswordCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Password: ");
             String password;
             if(System.console()==null){
@@ -81,7 +85,7 @@ public class Authentication {
 
         boolean isSecurityCorrect = false;
         while (!isSecurityCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Security Question: ");
             String securityQuestion = sc.nextLine();
             if (securityQuestion.length() < 1) {
@@ -94,7 +98,7 @@ public class Authentication {
 
         boolean isAnswerCorrect = false;
         while (!isAnswerCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Answer: ");
             String answer = sc.nextLine();
             if (answer.length() < 1) {
@@ -110,6 +114,10 @@ public class Authentication {
         HashMap<String,String> data = new HashMap<String, String>();
         data.put("username",u.getUid());
         identityManagementLog.writeLog("Information","IdentityManagement","User registered",data);
+
+        success("User Registered Successfully!");
+        init();
+
     }
 
     private void userLogin() {
@@ -131,7 +139,7 @@ public class Authentication {
 
         boolean isPasswordCorrect = false;
         while (!isPasswordCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Password: ");
             password = sc.nextLine();
             if (password.length() < 1) {
@@ -157,7 +165,7 @@ public class Authentication {
         boolean isAnswerCorrect = false;
         String answer = "";
         while (!isAnswerCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Answer for " + user.getSecurityQuestion() + ": ");
             answer = sc.nextLine();
             if (answer.length() < 1) {
@@ -180,23 +188,11 @@ public class Authentication {
         data.put("username",userId);
         identityManagementLog.writeLog("Information","IdentityManagement","User Login Success",data);
 
+        success("Logged In Successfully!");
 
-        printMenu();
-
-    }
-
-    private void printMenu(){
-
-        System.out.println("Menu");
-        System.out.println("1. Write Queries");
-        System.out.println("2. Export");
-        System.out.println("3. Data Model");
-        System.out.println("4. Analytics");
-        System.out.print("Enter your choice of operation:");
-
-
-        Scanner sc = new Scanner(System.in);
-        String userChoice = sc.nextLine();
+        Connection connection = new Connection(userId);
+        HomeMenu homeMenu = new HomeMenu(connection);
+        homeMenu.show();
 
     }
 }

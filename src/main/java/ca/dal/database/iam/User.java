@@ -1,20 +1,26 @@
-package ca.dal.database.identitymanagement;
+package ca.dal.database.iam;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.file.Path;
 import java.util.Scanner;
+
+import static ca.dal.database.utils.StringUtils.getHash;
 
 public class User {
     private String uid;
     private String pwd;
     private String securityQuestion;
-    
+
     private String ans;
     private String encryptedUid;
     private String encryptedPwd;
-    final static String user_profile_path = "src/main/java/ca/dal/database/identitymanagement/UserProfile.txt";
-    final static String separator = "<!>";
+    final static String user_profile_path = Path.of("datastore","system", "UserProfile.txt").toString();
+
+    final static String separator = "%^&";
+    final static String separator_regex = "%\\^&";
+
 
     public User() {
     }
@@ -85,10 +91,9 @@ public class User {
 
 
     public String serializeUser() {
-        Hashing encrypt = new Hashing();
         String data = "";
-        data += encrypt.getHash(getUid()) + separator;
-        data += encrypt.getHash(getPwd()) + separator;
+        data += getHash(getUid()) + separator;
+        data += getHash(getPwd()) + separator;
         data += getSecurityQuestion() + separator + getAns() + "\n";
         return data;
     }
@@ -134,7 +139,7 @@ public class User {
     }
 
     public User deserialize(String data) {
-        String[] dataArr = data.split(separator);
+        String[] dataArr = data.split(separator_regex);
         User user = new User();
         if (dataArr[0] != null && dataArr[1] != null && dataArr[2] != null && dataArr[3] != null) {
             user = new User("", "", dataArr[2], dataArr[3], dataArr[0], dataArr[1]);
@@ -143,11 +148,10 @@ public class User {
     }
 
     public boolean userIdCheck(String userId) {
-        Hashing hashing = new Hashing();
         User[] users = deserializeUsers();
         boolean isFound = false;
         for (int i = 0; i < users.length; i++) {
-            if (users[i].getEncryptedUid().equals(hashing.getHash(userId))) {
+            if (users[i].getEncryptedUid().equals(getHash(userId))) {
                 isFound = true;
                 break;
             }
@@ -156,12 +160,11 @@ public class User {
     }
 
     public User validateUserIdAndPassword(String userId, String password) {
-        Hashing hashing = new Hashing();
         User[] users = deserializeUsers();
         boolean isFound = false;
         User user = null;
         for (int i = 0; i < users.length; i++) {
-            if (users[i].getEncryptedUid().equals(hashing.getHash(userId)) && users[i].getEncryptedPwd().equals(hashing.getHash(password))) {
+            if (users[i].getEncryptedUid().equals(getHash(userId)) && users[i].getEncryptedPwd().equals(getHash(password))) {
                 isFound = true;
                 user = users[i];
                 break;
