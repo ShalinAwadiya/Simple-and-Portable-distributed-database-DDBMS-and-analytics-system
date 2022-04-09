@@ -5,15 +5,20 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class QueryLog implements Logging {
+
+
+public class QueryLog {
+
     private static int logId=0;
-    public static void main (String []args)
+    String delimeter="<!!>";
+
+    public static void main(String []args)
     {
-        QueryLog queryLog= new QueryLog();
+        QueryLog queryLog=new QueryLog();
 
         HashMap<String,String> data=new HashMap<>();
         data.put("one","two");
-        queryLog.writeLog("Debug Log","Transaction has started",data);
+        queryLog.writeLog("Information Log","Query","There are 3 tables and 42 records",data);
         queryLog.readLog();
     }
     public void readLog()
@@ -27,7 +32,7 @@ public class QueryLog implements Logging {
             while (line != null) {
                 System.out.println(line);
 
-                String[] logProperties = line.split("\t");
+                String[] logProperties = line.split(delimeter);
                 for (int i = 0; i < logProperties.length; i++)
                 {
                     System.out.println(logProperties[i]);
@@ -48,11 +53,8 @@ public class QueryLog implements Logging {
             }
         }
     }
-    public void writeLog()
-    {}
 
-
-    public void writeLog(String type, String message, HashMap<String,String> data)
+    public void writeLog(String type, String subject, String message, HashMap<String,String> data)
     {
         BufferedWriter bw=null;
         try {
@@ -61,37 +63,37 @@ public class QueryLog implements Logging {
                 directory.mkdirs();
             }
             File file = new File("DatabaseLogs/QueryLogs.txt");
-            if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
-            } else {
-                System.out.println("File already exists.");
+            if (!file.exists()) {
+                file.createNewFile();
             }
 
-            FileWriter fw = new FileWriter(file);
+            FileWriter fw = new FileWriter(file,true);
             bw = new BufferedWriter(fw);
 
             logId=logId+1;
-            bw.write(String.valueOf(logId)+"\t");
+            bw.write(String.valueOf(logId)+delimeter);
 
 
-            String uuid= UUID.randomUUID().toString();
-            bw.write(uuid+"\t");
+            String uuid=UUID.randomUUID().toString();
+            bw.write(uuid+delimeter);
 
 
             String date=String.valueOf(java.time.LocalDate.now());
-            bw.write(date+"\t");
+            bw.write(date+delimeter);
 
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
             String time=dtf.format(java.time.LocalTime.now());
-            bw.write(time+"\t");
+            bw.write(time+delimeter);
 
 
-            bw.write(type+"\t");
-            bw.write(message+"\t");
+            bw.write(type+delimeter);
+            bw.write(subject+delimeter);
+            bw.write(message+delimeter);
             bw.write(String.valueOf(data));
+            bw.write("\n");
 
-            System.out.println("File written Successfully");
+            System.out.println("Log written Successfully");
 
         }catch(IOException e)
         {
@@ -107,3 +109,4 @@ public class QueryLog implements Logging {
         }
     }
 }
+

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 
 
-public class IdentityManagementLog implements Logging{
+public class IdentityManagementLog{
 
     private static int logId=0;
     String delimeter="<!!>";
@@ -54,9 +54,6 @@ public class IdentityManagementLog implements Logging{
         }
     }
 
-    public void writeLog()
-    {}
-
     public void writeLog(String type, String subject, String message, HashMap<String,String> data)
     {
         BufferedWriter bw=null;
@@ -96,7 +93,7 @@ public class IdentityManagementLog implements Logging{
             bw.write(String.valueOf(data));
             bw.write("\n");
 
-            System.out.println("File written Successfully");
+            System.out.println("Log written Successfully");
 
         }catch(IOException e)
         {
