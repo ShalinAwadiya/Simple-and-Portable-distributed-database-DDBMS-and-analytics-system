@@ -41,6 +41,9 @@ public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
         setNoOfTables(this.tableMetadataHeaderModels.size());
     }
 
+    public String toHeaderString() {
+        return super.toString();
+    }
 
     public String toMetaString() {
         return String.format("[HEADER,%s,%d]",getDatabaseName(), getNoOfTables());
