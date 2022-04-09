@@ -1,8 +1,0 @@
-[HEADER,CUSTOMER,4,4]
-(id,string)
-(name,string)
-(pid,string)
-(pk,id)
-(fk,pid)
-(f_ref,id)
-(f_table,PEOPLE)
