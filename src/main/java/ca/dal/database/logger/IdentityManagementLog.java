@@ -96,7 +96,7 @@ public class IdentityManagementLog implements Logging{
             bw.write(String.valueOf(data));
             bw.write("\n");
 
-            System.out.println("File written Successfully");
+            System.out.println("Log written Successfully");
 
         }catch(IOException e)
         {
