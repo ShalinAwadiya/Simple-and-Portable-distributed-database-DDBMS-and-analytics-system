@@ -35,7 +35,7 @@ public class StorageManager {
     /**
      * @author Harsh Shah
      */
-    public static void init(){
+    public static void init() {
         // Create datastore
         FileUtils.createDirectory(ROOT);
 

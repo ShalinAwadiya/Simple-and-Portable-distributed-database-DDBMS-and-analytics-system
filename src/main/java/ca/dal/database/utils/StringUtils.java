@@ -13,16 +13,16 @@ public class StringUtils {
 
     private static final Logger logger = Logger.getLogger(StringUtils.class.getName());
 
-    private StringUtils(){}
+    private StringUtils() {
+    }
 
     /**
      * @param str
      * @return
-     *
      * @author Harsh Shah
      */
-    public static boolean isNotEmpty(String str){
-        if(str == null){
+    public static boolean isNotEmpty(String str) {
+        if (str == null) {
             return false;
         }
 
@@ -34,22 +34,20 @@ public class StringUtils {
     /**
      * @param str
      * @return
-     *
      * @author Harsh Shah
      */
-    public static boolean isEmpty(String str){
+    public static boolean isEmpty(String str) {
         return !isNotEmpty(str);
     }
 
     /**
      * @param strs
      * @return
-     *
      * @author Harsh Shah
      */
     public static boolean isAnyEmpty(String... strs) {
-        for(String str: strs){
-            if(isEmpty(str)){
+        for (String str : strs) {
+            if (isEmpty(str)) {
                 return true;
             }
         }
@@ -60,12 +58,11 @@ public class StringUtils {
     /**
      * @param strings
      * @return
-     *
      * @author Harsh Shah
      */
     public static boolean isAllEmpty(String... strings) {
-        for(String str: strings){
-            if(isNotEmpty(str)){
+        for (String str : strings) {
+            if (isNotEmpty(str)) {
                 return false;
             }
         }
@@ -77,11 +74,11 @@ public class StringUtils {
      * @param values
      * @return
      */
-    public static String builder(String... values){
+    public static String builder(String... values) {
 
         StringBuilder builder = new StringBuilder();
 
-        for(String value: values){
+        for (String value : values) {
             builder.append(value);
         }
 
@@ -91,10 +88,9 @@ public class StringUtils {
     /**
      * @param value
      * @return
-     *
      * @author Harsh Shah
      */
-    public static String valueOf(Object value){
+    public static String valueOf(Object value) {
         return String.valueOf(value);
     }
 
@@ -102,7 +98,7 @@ public class StringUtils {
      * @param string
      * @return
      */
-    public static String getHash(String string){
+    public static String getHash(String string) {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -120,7 +116,7 @@ public class StringUtils {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (int i = 0; i < hash.length; i++) {
             String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) {
+            if (hex.length() == 1) {
                 hexString.append('0');
             }
             hexString.append(hex);
@@ -134,7 +130,7 @@ public class StringUtils {
      * @param count
      * @return
      */
-    public static String repeat(String str, int count){
+    public static String repeat(String str, int count) {
         return str.repeat(count);
     }
 
@@ -144,11 +140,11 @@ public class StringUtils {
      * @param with
      * @return
      */
-    public static String repeadAndjoin(String str, int count, String with){
+    public static String repeadAndjoin(String str, int count, String with) {
 
         List<String> strs = new ArrayList<>();
 
-        for(int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             strs.add(str);
         }
 
@@ -160,15 +156,26 @@ public class StringUtils {
      * @param regex
      * @return
      */
-    public static String[] splitAndTrim(String str, String regex){
+    public static String[] splitAndTrim(String str, String regex) {
         String[] parts = str.split(regex);
 
-        for(int i = 0; i < parts.length; i++){
+        for (int i = 0; i < parts.length; i++) {
             parts[i] = parts[i].trim();
         }
 
         return parts;
     }
 
+    public static String[] replace(String[] strs, String regex, String replacement) {
 
+        for (int i = 0; i < strs.length; i++) {
+            strs[i] = strs[i].replaceAll(regex, replacement);
+        }
+
+        return strs;
+    }
+
+    public static String replace(String str, String regex, String replacement) {
+        return str.replaceAll(regex, replacement);
+    }
 }
