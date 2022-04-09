@@ -138,6 +138,12 @@ public class StringUtils {
         return str.repeat(count);
     }
 
+    /**
+     * @param str
+     * @param count
+     * @param with
+     * @return
+     */
     public static String repeadAndjoin(String str, int count, String with){
 
         List<String> strs = new ArrayList<>();
@@ -147,7 +153,21 @@ public class StringUtils {
         }
 
         return strs.stream().collect(Collectors.joining(with));
+    }
 
+    /**
+     * @param str
+     * @param regex
+     * @return
+     */
+    public static String[] splitAndTrim(String str, String regex){
+        String[] parts = str.split(regex);
+
+        for(int i = 0; i < parts.length; i++){
+            parts[i] = parts[i].trim();
+        }
+
+        return parts;
     }
 
 
