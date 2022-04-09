@@ -18,7 +18,8 @@ import static ca.dal.database.utils.StringUtils.isEmpty;
 public class QueryExecutor {
 
     private static final Logger logger = Logger.getLogger(QueryExecutor.class.getName());
-    private final StorageManager storageManager = new StorageManager();
+
+    private final StorageManager storageManager;
     private Connection connection = null;
 
     private String getDatabaseName() {
@@ -30,6 +31,7 @@ public class QueryExecutor {
     }
 
     public QueryExecutor(Connection connection) {
+        storageManager = new StorageManager(connection);
         this.connection = connection;
     }
 
@@ -99,7 +101,6 @@ public class QueryExecutor {
                     error("Please select database");
                     break;
                 }
-
                 connection.setAutoCommit(false);
                 break;
             case COMMIT:
@@ -119,7 +120,7 @@ public class QueryExecutor {
                 connection.setAutoCommit(false);
                 break;
             default:
-                error("Invalid Query Option");
+                error("Invalid Query Option, Please try again!");
                 break;
         }
     }
