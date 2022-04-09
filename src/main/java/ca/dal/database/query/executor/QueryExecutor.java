@@ -15,7 +15,10 @@ import java.util.logging.Logger;
 
 import static ca.dal.database.utils.PrintUtils.success;
 
-public class  QueryExecutor {
+/**
+ * @author Nishit Mistry
+ */
+public class QueryExecutor {
 
     private static final Logger logger = Logger.getLogger(QueryExecutor.class.getName());
     private final StorageManager storageManager = new StorageManager();
@@ -29,7 +32,7 @@ public class  QueryExecutor {
         this.connection.setDatabaseName(databaseName);
     }
 
-    public QueryExecutor(Connection connection){
+    public QueryExecutor(Connection connection) {
         this.connection = connection;
     }
 
@@ -85,7 +88,6 @@ public class  QueryExecutor {
         storageManager.fetchRows(databaseName, queryModel.getTableName(),
                 queryModel.getColumns(), queryModel.getCondition());
     }
-
 
     private void insertRow(QueryModel queryModel) {
         storageManager.insertRow(getDatabaseName(), queryModel.getTableName(), new RowModel(queryModel.getValues()));
