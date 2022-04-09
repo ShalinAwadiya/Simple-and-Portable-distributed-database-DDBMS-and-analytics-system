@@ -1,6 +1,6 @@
 package ca.dal.database;
 
-import ca.dal.database.security.Authentication;
+import ca.dal.database.iam.Authentication;
 import ca.dal.database.storage.StorageManager;
 
 import java.io.IOException;

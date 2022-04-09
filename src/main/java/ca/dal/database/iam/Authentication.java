@@ -1,14 +1,22 @@
-package ca.dal.database.security;
+package ca.dal.database.iam;
 
-import ca.dal.database.connection.Connection;
-import ca.dal.database.menu.HomeMenu;
-import ca.dal.database.utils.PrintUtils;
-
+import java.util.HashMap;
 import java.util.Scanner;
 
-import static ca.dal.database.utils.PrintUtils.*;
+import ca.dal.database.connection.Connection;
+import ca.dal.database.logger.IdentityManagementLog;
+import ca.dal.database.menu.HomeMenu;
+
+import static ca.dal.database.utils.PrintUtils.error;
+import static ca.dal.database.utils.PrintUtils.success;
 
 public class Authentication {
+
+    IdentityManagementLog identityManagementLog;
+
+    public Authentication(){
+        identityManagementLog =  new IdentityManagementLog();
+    }
     public void init() {
         System.out.println("1. Register");
         System.out.println("2. Login");
@@ -20,7 +28,6 @@ public class Authentication {
 
         if(userInput.equals("1")){
             userRegistration();
-            init();
         }
         else if(userInput.equals("2")){
             userLogin();
@@ -41,15 +48,15 @@ public class Authentication {
 
         boolean isUserIdCorrect = false;
         while (!isUserIdCorrect) {
-
+            System.out.println("");
             System.out.print("Enter UserId: ");
             String userId = sc.nextLine();
             if (userId.length() < 1) {
-                System.out.println("userId cannot be empty.");
+                error("userId cannot be empty.");
                 continue;
             }
             if (u.userIdCheck(userId)) {
-                System.out.println("userId already exists.");
+                error("userId already exists.");
                 continue;
             }
             isUserIdCorrect = true;
@@ -58,6 +65,7 @@ public class Authentication {
 
         boolean isPasswordCorrect = false;
         while (!isPasswordCorrect) {
+
             System.out.print("Enter Password: ");
             String password;
             if(System.console()==null){
@@ -68,7 +76,7 @@ public class Authentication {
             }
 
             if (password.length() < 1) {
-                System.out.println("password cannot be empty");
+                error("password cannot be empty");
                 continue;
             }
             isPasswordCorrect = true;
@@ -81,7 +89,7 @@ public class Authentication {
             System.out.print("Enter Security Question: ");
             String securityQuestion = sc.nextLine();
             if (securityQuestion.length() < 1) {
-                System.out.println("Security Question cannot be empty");
+                error("Security Question cannot be empty");
                 continue;
             }
             isSecurityCorrect = true;
@@ -94,15 +102,22 @@ public class Authentication {
             System.out.print("Enter Answer: ");
             String answer = sc.nextLine();
             if (answer.length() < 1) {
-                System.out.println("Answer cannot be empty");
+                error("Answer cannot be empty");
+                continue;
             }
             isAnswerCorrect = true;
             u.setAns(answer);
         }
 
         u.save();
+        //registration successful
+        HashMap<String,String> data = new HashMap<String, String>();
+        data.put("username",u.getUid());
+        identityManagementLog.writeLog("Information","IdentityManagement","User registered",data);
 
         success("User Registered Successfully!");
+        init();
+
     }
 
     private void userLogin() {
@@ -112,11 +127,11 @@ public class Authentication {
 
         boolean isUserIdCorrect = false;
         while (!isUserIdCorrect) {
-
+            System.out.println("");
             System.out.print("Enter UserId: ");
             userId = sc.nextLine();
             if (userId.length() < 1) {
-                System.out.println("userId cannot be empty.");
+                error("userId cannot be empty.");
                 continue;
             }
             isUserIdCorrect = true;
@@ -128,7 +143,7 @@ public class Authentication {
             System.out.print("Enter Password: ");
             password = sc.nextLine();
             if (password.length() < 1) {
-                System.out.println("password cannot be empty");
+                error("password cannot be empty");
                 continue;
             }
             isPasswordCorrect = true;
@@ -138,6 +153,11 @@ public class Authentication {
         user = user.validateUserIdAndPassword(userId, password);
         if (user == null) {
             System.out.println("Incorrect UserId or Password");
+            //unsuccessful login
+            HashMap<String,String> data = new HashMap<String, String>();
+            data.put("username",userId);
+            identityManagementLog.writeLog("Information","IdentityManagement","User Login Failed",data);
+
             init();
             return;
         }
@@ -155,13 +175,24 @@ public class Authentication {
         }
         if (!user.getAns().equalsIgnoreCase(answer)) {
             System.out.println("Invalid Security");
+            //unsuccessful login
+            HashMap<String,String> data = new HashMap<String, String>();
+            data.put("username",user.getUid());
+            identityManagementLog.writeLog("Information","IdentityManagement","User Login Failed",data);
+
+            init();
             return;
         }
+        //successful login
+        HashMap<String,String> data = new HashMap<String, String>();
+        data.put("username",userId);
+        identityManagementLog.writeLog("Information","IdentityManagement","User Login Success",data);
 
         success("Logged In Successfully!");
 
         Connection connection = new Connection(userId);
         HomeMenu homeMenu = new HomeMenu(connection);
         homeMenu.show();
+
     }
 }
