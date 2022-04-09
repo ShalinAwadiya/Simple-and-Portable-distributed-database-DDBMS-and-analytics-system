@@ -219,21 +219,6 @@ public class FileUtils {
         raf.close();
     }
 
-
-    public static int writeWhere(String match, String replace, int startAt, int step, String start, String... tails) {
-        List<String> lines = read(start, tails);
-        
-        for(int i = startAt; i < lines.size(); i += step){
-            String line = lines.get(i);
-            if(line.equals(match)){
-                lines.set(i, replace);
-            }
-        }
-
-        write(lines, start, tails);
-        return 0;
-    }
-
     private static String buildAndValidatePathString(String start, String... tails) {
         Path path = Path.of(start, tails);
 

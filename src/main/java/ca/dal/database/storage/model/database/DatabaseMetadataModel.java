@@ -6,7 +6,10 @@ import ca.dal.database.storage.model.table.TableMetadataModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel{
+/**
+ * @author Harsh Shah
+ */
+public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
 
     private List<TableMetadataHeaderModel> tableMetadataHeaderModels;
 
@@ -56,8 +59,6 @@ public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel{
             } else {
                 list.add(tableMetadataHeaderModel.toString());
             }
-
-
         }
 
         return list;

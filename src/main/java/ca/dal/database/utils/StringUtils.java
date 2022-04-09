@@ -1,12 +1,13 @@
 package ca.dal.database.utils;
 
-import ca.dal.database.storage.StorageManager;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class StringUtils {
 
@@ -73,6 +74,21 @@ public class StringUtils {
     }
 
     /**
+     * @param values
+     * @return
+     */
+    public static String builder(String... values){
+
+        StringBuilder builder = new StringBuilder();
+
+        for(String value: values){
+            builder.append(value);
+        }
+
+        return builder.toString();
+    }
+
+    /**
      * @param value
      * @return
      *
@@ -110,6 +126,28 @@ public class StringUtils {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+
+    /**
+     * @param str
+     * @param count
+     * @return
+     */
+    public static String repeat(String str, int count){
+        return str.repeat(count);
+    }
+
+    public static String repeadAndjoin(String str, int count, String with){
+
+        List<String> strs = new ArrayList<>();
+
+        for(int i = 0; i < count; i++){
+            strs.add(str);
+        }
+
+        return strs.stream().collect(Collectors.joining(with));
+
     }
 
 
