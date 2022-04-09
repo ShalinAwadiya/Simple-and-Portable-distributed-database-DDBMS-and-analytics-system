@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CountQueries {
 
@@ -81,16 +82,17 @@ public class CountQueries {
                     }
                 }
 
-                //
-                //for (int i = 0; i < logProperties.length; i++)
-                //{
-                    //System.out.println(logProperties[i]);
-                //}
-                 //System.out.println(logProperties[7]);
-
                 line = br.readLine();
             }
             System.out.println(databaseLogs);
+            for (Map.Entry<String, HashMap<String,Integer>> entry1 : databaseLogs.entrySet()) {
+                String key1 = entry1.getKey();
+                for (Map.Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
+                    String key2=entry2.getKey();
+                    int value2=entry2.getValue();
+                    System.out.println("User "+key2+" submitted "+value2+" query for "+key1);
+                }
+            }
             System.out.println("File Read Successfully");
         } catch (IOException e) {
             System.out.println("Exception:"+e.getMessage());
