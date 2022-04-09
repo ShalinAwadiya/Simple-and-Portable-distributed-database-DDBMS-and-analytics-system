@@ -1,6 +1,4 @@
-package ca.dal.database.security;
-
-import ca.dal.database.utils.FileUtils;
+package ca.dal.database.iam;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,7 +14,7 @@ public class User {
     private String uid;
     private String pwd;
     private String securityQuestion;
-    
+
     private String ans;
     private String encryptedUid;
     private String encryptedPwd;
