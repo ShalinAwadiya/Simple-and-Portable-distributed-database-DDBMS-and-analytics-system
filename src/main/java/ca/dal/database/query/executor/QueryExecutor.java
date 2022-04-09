@@ -49,24 +49,41 @@ public class  QueryExecutor {
                 insertRow(queryModel);
                 break;
             case SELECT_ROW:
-                storageManager.fetchRows(getDatabaseName(), queryModel.getTableName(), queryModel.getColumns(), queryModel.getCondition());
+                fetchRows(getDatabaseName(), queryModel);
                 break;
             case UPDATE_ROW:
+                updateRows(getDatabaseName(), queryModel);
                 break;
             case DELETE_ROW:
+                deleteRows(getDatabaseName(), queryModel);
                 break;
             case START_TRANSACTION:
-                break;
-            case END_TRANSACTION:
+                connection.setAutoCommit(false);
                 break;
             case COMMIT:
+                connection.setAutoCommit(true);
                 break;
             case ROLLBACK:
+                connection.setAutoCommit(false);
                 break;
             default:
                 logger.log(Level.INFO, "Invalid Query Option");
                 break;
         }
+    }
+
+    private void deleteRows(String databaseName, QueryModel queryModel) {
+        storageManager.deleteRow(databaseName, queryModel.getTableName(), queryModel.getCondition());
+    }
+
+    private void updateRows(String databaseName, QueryModel queryModel) {
+        storageManager.updateRow(databaseName, queryModel.getTableName(), queryModel.getColumns().get(0),
+                (String) queryModel.getValues().get(0), queryModel.getCondition());
+    }
+
+    private void fetchRows(String databaseName, QueryModel queryModel) {
+        storageManager.fetchRows(databaseName, queryModel.getTableName(),
+                queryModel.getColumns(), queryModel.getCondition());
     }
 
 

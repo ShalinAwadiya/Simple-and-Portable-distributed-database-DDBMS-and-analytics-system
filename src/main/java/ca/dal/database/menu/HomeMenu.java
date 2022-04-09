@@ -23,7 +23,7 @@ public class HomeMenu {
 
     public void show(){
 
-        println("Select option from the Menu");
+        printWithMargin("Select option from the Menu");
         System.out.println("1. Write Queries");
         System.out.println("2. Export");
         System.out.println("3. Data Model");
@@ -37,7 +37,7 @@ public class HomeMenu {
 
         switch (userChoice){
             case 1:
-                println("Welcome to query executor mode", "To exit this mode enter \"quit\"");
+                printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
                 int result = runQuery();
                 if(result == -1){
                     show();
@@ -50,7 +50,7 @@ public class HomeMenu {
             case 4:
                 break;
             case 5:
-                println("Good Bye!");
+                printWithMargin("Good Bye!");
                 return;
             default:
                 error("Incorrect option chosen, Please try Again");

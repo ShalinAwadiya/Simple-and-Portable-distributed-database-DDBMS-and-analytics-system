@@ -25,7 +25,16 @@ public class Application {
     private static Authentication authentication = new Authentication();
 
     public static void main(String[] args) {
-        authentication.init();
+
+        StorageManager.init();
+
+        //authentication.init();
+
+        Connection connection = new Connection("shah");
+        connection.setDatabaseName("dalhousie");
+
+        QueryExecutor executor = new QueryExecutor(connection);
+        executor.execute(QueryParser.evaluateQuery("delete from students where id=1002;"));
     }
 
     public static void setup() {

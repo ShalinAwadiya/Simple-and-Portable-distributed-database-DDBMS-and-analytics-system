@@ -1,5 +1,8 @@
 package ca.dal.database.storage.model.database;
 
+/**
+ * @author Harsh Shah
+ */
 public class DatabaseMetadataHeaderModel {
 
     private String databaseName;
