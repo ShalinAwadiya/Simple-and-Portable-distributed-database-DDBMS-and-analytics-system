@@ -1,5 +1,6 @@
 package ca.dal.database.storage;
 
+import ca.dal.database.connection.Connection;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 import ca.dal.database.storage.model.database.DatabaseMetadataHeaderModel;
 import ca.dal.database.storage.model.database.DatabaseMetadataModel;
@@ -23,6 +24,15 @@ import static ca.dal.database.utils.StringUtils.isEmpty;
  */
 public class StorageManager {
 
+    private Connection connection = null;
+
+    public StorageManager(Connection connection) {
+        this.connection = connection;
+    }
+
+    private boolean isTransaction(){
+        return !this.connection.isAutoCommit();
+    }
 
     private static final String ROOT = "datastore";
     private static final String DATASTORE_METADATA = DOT + "meta";

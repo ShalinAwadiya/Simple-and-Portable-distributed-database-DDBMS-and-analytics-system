@@ -16,7 +16,6 @@ public class TransactionManager {
 
 
     public TransactionModel start() {
-        logger.log(Level.INFO, "Start Transaction...");
         return new TransactionModel();
     }
 

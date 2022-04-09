@@ -100,6 +100,11 @@ public class User {
 
     public void save() {
         File f = new File(user_profile_path);
+
+        if(!f.exists()){
+            new File(f.getParent()).mkdirs();
+        }
+
         try {
             FileWriter fileWriter = new FileWriter(f.getAbsolutePath(), true);
             fileWriter.write(serializeUser());
@@ -112,6 +117,11 @@ public class User {
 
     public User[] deserializeUsers() {
         File f = new File(user_profile_path);
+
+        if(!f.exists()){
+            new File(f.getParent()).mkdirs();
+        }
+
         int lineCounter = 0;
         try {
             Scanner sc = new Scanner(new FileReader(f.getAbsolutePath()));
