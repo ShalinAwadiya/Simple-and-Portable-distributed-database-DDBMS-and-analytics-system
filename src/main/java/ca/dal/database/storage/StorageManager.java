@@ -27,21 +27,34 @@ public class StorageManager {
 
 
     private static final String ROOT = "datastore";
+    private static final String DATASTORE_METADATA = DOT + "meta";
     private static final String DATABASE_METADATA = DOT + "meta";
     private static final String TABLE_FILE_EXTENSION = DOT + "rows";
     private static final String TABLE_METADATA = DOT + "meta";
 
+    /**
+     * @author Harsh Shah
+     */
     public static void init(){
         // Create datastore
         FileUtils.createDirectory(ROOT);
 
         // Create datastore metadata
-        FileUtils.createFile(ROOT, builder(ROOT, DATABASE_METADATA));
-
-        DatastoreModel model = new DatastoreModel(0);
+        FileUtils.createFile(ROOT, builder(ROOT, DATASTORE_METADATA));
 
         // Write Table Metadata
-        write(model.toListString(), ROOT, builder(ROOT, DATABASE_METADATA));
+        write(new DatastoreModel(0).toListString(), ROOT, builder(ROOT, DATABASE_METADATA));
+    }
+
+    public void updateDatastoreMetadata(DatabaseMetadataModel metadataModel) {
+        DatastoreModel metadata = getDatastoreMetadata();
+        metadata.addDatabaseMetadataHeaderModels(metadataModel);
+        write(metadata.toListString(), ROOT, builder(ROOT, DATASTORE_METADATA));
+    }
+
+    private DatastoreModel getDatastoreMetadata() {
+        List<String> lines = read(ROOT, builder(ROOT, DATASTORE_METADATA));
+        return DatastoreModel.parse(lines);
     }
 
     /**
@@ -61,7 +74,7 @@ public class StorageManager {
 
         // Write Table Metadata
         write(model.toMetaString(), ROOT, databaseName, databaseMetaFile);
-
+        updateDatastoreMetadata(model);
         success(String.format("Database %s created successfully", databaseName));
     }
 
