@@ -1,5 +1,7 @@
 package ca.dal.database.query.model;
 
+import ca.dal.database.storage.model.column.ColumnMetadataModel;
+
 import java.util.List;
 import java.util.Map;
 
@@ -11,9 +13,17 @@ public class QueryModel {
     private List<String> columns;
     private List<Object> values;
     private String databaseName;
-    private Map<String, String> columnDefinition;
+    private List<ColumnMetadataModel> columnDefinition;
 
     private QueryModel() {
+    }
+
+    public List<ColumnMetadataModel> getColumnDefinition() {
+        return columnDefinition;
+    }
+
+    public void setColumnDefinition(List<ColumnMetadataModel> columnDefinition) {
+        this.columnDefinition = columnDefinition;
     }
 
     public String getRawQuery() {
@@ -72,19 +82,13 @@ public class QueryModel {
         this.databaseName = databaseName;
     }
 
-    public Map<String, String> getColumnDefinition() {
-        return columnDefinition;
-    }
 
-    public void setColumnDefinition(Map<String, String> columnDefinition) {
-        this.columnDefinition = columnDefinition;
-    }
-
-    public static void createDBQuery(String databaseName, String rawQuery) {
+    public static QueryModel createDBQuery(String databaseName, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setDatabaseName(databaseName);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.CREATE_DATABASE);
+        return model;
     }
 
     public static QueryModel useDBQuery(String databaseName, String rawQuery) {
@@ -95,33 +99,36 @@ public class QueryModel {
         return model;
     }
 
-    public static void createTableQuery(String tableName, Map<String, String> columnDefinition, String rawQuery) {
+    public static QueryModel createTableQuery(String tableName, List<ColumnMetadataModel> columnDefinition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumnDefinition(columnDefinition);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.CREATE_TABLE);
+        return model;
     }
 
-    public static void insertQuery(String tableName, List<String> columns, List<Object> values, String rawQuery) {
+    public static QueryModel insertQuery(String tableName, List<String> columns, List<Object> values, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumns(columns);
         model.setValues(values);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.INSERT_ROW);
+        return model;
     }
 
-    public static void selectQuery(String tableName, List<String> columns, Map<String, Object> condition, String rawQuery) {
+    public static QueryModel selectQuery(String tableName, List<String> columns, Map<String, Object> condition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumns(columns);
         model.setCondition(condition);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.SELECT_ROW);
+        return model;
     }
 
-    public static void updateQuery(String tableName, List<String> columns, List<Object> values, Map<String, Object> condition, String rawQuery) {
+    public static QueryModel updateQuery(String tableName, List<String> columns, List<Object> values, Map<String, Object> condition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumns(columns);
@@ -129,37 +136,43 @@ public class QueryModel {
         model.setCondition(condition);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.UPDATE_ROW);
+        return model;
     }
 
-    public static void deleteQuery(String tableName, Map<String, Object> condition, String rawQuery) {
+    public static QueryModel deleteQuery(String tableName, Map<String, Object> condition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setCondition(condition);
         model.setRawQuery(rawQuery);
         model.setType(QueryType.DELETE_ROW);
+        return model;
     }
 
-    public static void startTransactionQuery(String rawQuery) {
+    public static QueryModel startTransactionQuery(String rawQuery) {
         QueryModel model = new QueryModel();
         model.setRawQuery(rawQuery);
         model.setType(QueryType.START_TRANSACTION);
+        return model;
     }
 
-    public static void endTransactionQuery(String rawQuery) {
+    public static QueryModel endTransactionQuery(String rawQuery) {
         QueryModel model = new QueryModel();
         model.setRawQuery(rawQuery);
         model.setType(QueryType.END_TRANSACTION);
+        return model;
     }
 
-    public static void commitQuery(String rawQuery) {
+    public static QueryModel commitQuery(String rawQuery) {
         QueryModel model = new QueryModel();
         model.setRawQuery(rawQuery);
         model.setType(QueryType.COMMIT);
+        return model;
     }
 
-    public static void rollbackQuery(String rawQuery) {
+    public static QueryModel rollbackQuery(String rawQuery) {
         QueryModel model = new QueryModel();
         model.setRawQuery(rawQuery);
         model.setType(QueryType.ROLLBACK);
+        return model;
     }
 }

@@ -7,7 +7,7 @@ ORDER
 (cid, string)
 PK | oid
 FK | cid
-N->1
+**N->1 relationship with below**
 FK_Table | CUSTOMER
 FK_Table_ref | id
 +---------------------+
@@ -30,7 +30,7 @@ CUSTOMER
 (pid,string)
 PK | id
 FK | pid
-N->1
+**N->1 relationship with below**
 FK_Table | PEOPLE
 FK_Table_ref | id
 +---------------------+

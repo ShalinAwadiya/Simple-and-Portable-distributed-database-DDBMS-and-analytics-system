@@ -1,0 +1,14 @@
++---------------------+
+TEST
++---------------------+
+(oid, int)
+(name,string)
+(id,string)
+(cid, string)
+PK | oid
+FK | cid
+**N->1 relationship with below**
+FK_Table | CUSTOMER
+FK_Table_ref | id
++---------------------+
+
