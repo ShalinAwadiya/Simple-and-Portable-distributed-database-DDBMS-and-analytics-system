@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Scanner;
 import ca.dal.database.logger.IdentityManagementLog;
 
+import static ca.dal.database.utils.PrintUtils.error;
+
 public class Authentication {
 
     IdentityManagementLog identityManagementLog;
@@ -30,7 +32,7 @@ public class Authentication {
             System.out.println("Good Bye!");
         }
         else{
-            System.out.println("Incorrect option chosen, Please try Again");
+            error("Incorrect option chosen, Please try Again");
             init();
         }
 
@@ -46,11 +48,11 @@ public class Authentication {
             System.out.print("Enter UserId: ");
             String userId = sc.nextLine();
             if (userId.length() < 1) {
-                System.out.println("userId cannot be empty.");
+                error("userId cannot be empty.");
                 continue;
             }
             if (u.userIdCheck(userId)) {
-                System.out.println("userId already exists.");
+                error("userId already exists.");
                 continue;
             }
             isUserIdCorrect = true;
@@ -70,7 +72,7 @@ public class Authentication {
             }
 
             if (password.length() < 1) {
-                System.out.println("password cannot be empty");
+                error("password cannot be empty");
                 continue;
             }
             isPasswordCorrect = true;
@@ -83,7 +85,7 @@ public class Authentication {
             System.out.print("Enter Security Question: ");
             String securityQuestion = sc.nextLine();
             if (securityQuestion.length() < 1) {
-                System.out.println("Security Question cannot be empty");
+                error("Security Question cannot be empty");
                 continue;
             }
             isSecurityCorrect = true;
@@ -96,7 +98,7 @@ public class Authentication {
             System.out.print("Enter Answer: ");
             String answer = sc.nextLine();
             if (answer.length() < 1) {
-                System.out.println("Answer cannot be empty");
+                error("Answer cannot be empty");
                 continue;
             }
             isAnswerCorrect = true;
@@ -121,7 +123,7 @@ public class Authentication {
             System.out.print("Enter UserId: ");
             userId = sc.nextLine();
             if (userId.length() < 1) {
-                System.out.println("userId cannot be empty.");
+                error("userId cannot be empty.");
                 continue;
             }
             isUserIdCorrect = true;
@@ -133,7 +135,7 @@ public class Authentication {
             System.out.print("Enter Password: ");
             password = sc.nextLine();
             if (password.length() < 1) {
-                System.out.println("password cannot be empty");
+                error("password cannot be empty");
                 continue;
             }
             isPasswordCorrect = true;
@@ -170,6 +172,7 @@ public class Authentication {
             data.put("username",user.getUid());
             identityManagementLog.writeLog("Information","IdentityManagement","User Login Failed",data);
 
+            init();
             return;
         }
         //successful login
