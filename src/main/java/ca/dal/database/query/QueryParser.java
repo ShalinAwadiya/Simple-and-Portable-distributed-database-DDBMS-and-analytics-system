@@ -1,14 +1,18 @@
 package ca.dal.database.query;
 
-import ca.dal.database.iam.User;
+import ca.dal.database.connection.Connection;
 import ca.dal.database.logger.QueryLog;
 import ca.dal.database.query.model.QueryModel;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static ca.dal.database.utils.MapUtils.of;
 import static ca.dal.database.utils.PrintUtils.error;
 import static ca.dal.database.utils.StringUtils.replace;
 import static ca.dal.database.utils.StringUtils.splitAndTrim;
@@ -21,9 +25,8 @@ public class QueryParser {
 
     private static final Logger logger = Logger.getLogger(QueryParser.class.getName());
     private static final QueryLog queryLog = new QueryLog();
-    private static final User u = new User();
 
-    public static QueryModel evaluateQuery(String query) {
+    public static QueryModel evaluateQuery(Connection connection, String query) {
 
         String newQuery = query.substring(0, query.length() - 1);
         String[] token = newQuery.split(" ");
@@ -31,54 +34,59 @@ public class QueryParser {
         List<Object> values = new ArrayList<>();
         Map<String, Object> conditionNew = new LinkedHashMap<>();
 
+        QueryModel queryModel = null;
         if (token.length == 0) {
             logger.log(Level.INFO, "EMPTY QUERY");
         } else {
             switch (token[0].toUpperCase()) {
                 case "CREATE":
                     if (token[1].equalsIgnoreCase("DATABASE")) {
-                        return createDBQuery(token, newQuery);
+                        queryModel = createDBQuery(token, newQuery);
                     } else if (token[1].equalsIgnoreCase("TABLE")) {
-                        return createTableQuery(token, newQuery);
+                        queryModel = createTableQuery(token, newQuery);
                     } else {
                         logger.log(Level.INFO, "Enter Valid Create Query");
                     }
                     break;
                 case "USE":
-                    return useDBQuery(token, newQuery);
+                    queryModel = useDBQuery(token, newQuery);
+                    break;
                 case "INSERT":
-                    return insertQuery(token, newQuery);
+                    queryModel = insertQuery(token, newQuery);
+                    break;
                 case "SELECT":
-                    return selectQuery(newQuery, columns, conditionNew);
+                    queryModel = selectQuery(newQuery, columns, conditionNew);
+                    break;
                 case "UPDATE":
-                    return updateQuery(token, newQuery, columns, values, conditionNew);
+                    queryModel = updateQuery(token, newQuery, columns, values, conditionNew);
+                    break;
                 case "DELETE":
-                    return deleteQuery(token, newQuery);
+                    queryModel = deleteQuery(token, newQuery);
+                    break;
                 case "START":
-                    return startTransactionQuery(newQuery);
+                    queryModel = startTransactionQuery(newQuery);
+                    break;
                 case "END":
-                    return endTransactionQuery(newQuery);
+                    queryModel = endTransactionQuery(newQuery);
+                    break;
                 case "COMMIT":
-                    return commitQuery(newQuery);
+                    queryModel = commitQuery(newQuery);
+                    break;
                 case "ROLLBACK":
-                    return rollbackQuery(newQuery);
+                    queryModel = rollbackQuery(newQuery);
+                    break;
                 default:
-                    logger.log(Level.INFO, "INVALID QUERY");
+                    error("Invalid Query, Try again");
             }
         }
-        return null;
+
+        queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.", of("database", connection.getDatabaseName(), "query", query, "table", queryModel.getTableName(), "username", connection.getUserId()));
+        return queryModel;
     }
 
     public static QueryModel useDBQuery(String[] token, String newQuery) {
-        HashMap<String, String> data = new HashMap<String, String>();
-
         if (token.length == 2) {
             String databaseName = token[1];
-            data.put("database", databaseName);
-            data.put("query", newQuery);
-            data.put("table", "");
-            data.put("username", u.getUid());
-            queryLog.writeLog("Information Log", "Query - Use", "Query executed by a user.", data);
             return QueryModel.useDBQuery(databaseName, newQuery);
         } else {
             error("Enter Valid Use Database Query");
@@ -112,8 +120,7 @@ public class QueryParser {
                     String[] newQueryToken = queryFinalToken[5].split("\\(");
                     String subQueryToken = newQueryToken[1].substring(0, newQueryToken[1].indexOf(")"));
 
-                    columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1],
-                            newQueryToken[0], subQueryToken));
+                    columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1], newQueryToken[0], subQueryToken));
                 }
             } else {
                 columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1]));
@@ -131,11 +138,10 @@ public class QueryParser {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
             columns.add(queryFinalToken[0]);
         }
-        String queryManipulationValues = newQuery.substring(newQuery.indexOf("(",
-                newQuery.indexOf(")") + 1) + 1, newQuery.length() - 1).trim();
+        String queryManipulationValues = newQuery.substring(newQuery.indexOf("(", newQuery.indexOf(")") + 1) + 1, newQuery.length() - 1).trim();
 
         String[] queryTokenValues = splitAndTrim(queryManipulationValues, ",");
-        queryTokenValues = replace(queryTokenValues, "(\"|\')", "");
+        queryTokenValues = replace(queryTokenValues, "(\"|')", "");
 
         return QueryModel.insertQuery(tableName, columns, asList(queryTokenValues), newQuery);
     }
@@ -152,8 +158,7 @@ public class QueryParser {
         return null;
     }
 
-    public static QueryModel updateQuery(String[] token, String newQuery, List<String> columns, List<Object> values,
-                                         Map<String, Object> conditionNew) {
+    public static QueryModel updateQuery(String[] token, String newQuery, List<String> columns, List<Object> values, Map<String, Object> conditionNew) {
 
         String tableName = token[1];
 
@@ -163,11 +168,11 @@ public class QueryParser {
 
         String queryManipulation = newQuery.substring(newQuery.indexOf(token[2])).trim();
         String[] queryToken = splitAndTrim(queryManipulation, " ");
-        String[] columnLogic = replace(splitAndTrim(queryToken[1], "="), "(\"|\')", "");
+        String[] columnLogic = replace(splitAndTrim(queryToken[1], "="), "(\"|')", "");
         columns.add(columnLogic[0]);
         values.add(columnLogic[1]);
 
-        String[] conditionLogic = replace(splitAndTrim(queryToken[3], "="), "(\"|\')", "");
+        String[] conditionLogic = replace(splitAndTrim(queryToken[3], "="), "(\"|')", "");
         conditionNew.put(conditionLogic[0], conditionLogic[1]);
 
         return QueryModel.updateQuery(tableName, columns, values, conditionNew, newQuery);
@@ -213,7 +218,7 @@ public class QueryParser {
         String queryManipulation = newQuery.substring(newQuery.indexOf("where")).trim();
         String[] queryTokenNew = splitAndTrim(queryManipulation, " ");
 
-        String[] conditionLogic = replace(splitAndTrim(queryTokenNew[1], "="), "(\"|\')", "");
+        String[] conditionLogic = replace(splitAndTrim(queryTokenNew[1], "="), "(\"|')", "");
         conditionNew.put(conditionLogic[0], conditionLogic[1]);
 
     }
