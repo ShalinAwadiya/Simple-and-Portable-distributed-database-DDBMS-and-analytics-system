@@ -1,32 +1,29 @@
-package ca.dal.database.security;
-
-import ca.dal.database.utils.FileUtils;
+package ca.dal.database.iam;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Scanner;
 
 import static ca.dal.database.utils.StringUtils.getHash;
 
 public class User {
-
     private String uid;
     private String pwd;
     private String securityQuestion;
-    
+
     private String ans;
     private String encryptedUid;
     private String encryptedPwd;
-
     final static String user_profile_path = Path.of("datastore","system", "UserProfile.txt").toString();
 
     final static String separator = "%^&";
     final static String separator_regex = "%\\^&";
 
-    public User() {}
+
+    public User() {
+    }
 
     public User(String userId, String pwd, String securityQuestion, String ans) {
         this.uid = userId;
@@ -94,7 +91,6 @@ public class User {
 
 
     public String serializeUser() {
-
         String data = "";
         data += getHash(getUid()) + separator;
         data += getHash(getPwd()) + separator;
@@ -116,16 +112,6 @@ public class User {
 
     public User[] deserializeUsers() {
         File f = new File(user_profile_path);
-
-        if(!f.exists()){
-            try {
-                new File(f.getParent()).mkdirs();
-                f.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         int lineCounter = 0;
         try {
             Scanner sc = new Scanner(new FileReader(f.getAbsolutePath()));
@@ -175,9 +161,11 @@ public class User {
 
     public User validateUserIdAndPassword(String userId, String password) {
         User[] users = deserializeUsers();
+        boolean isFound = false;
         User user = null;
         for (int i = 0; i < users.length; i++) {
-            if (users[i].getEncryptedUid().equals(getHash(userId))) {
+            if (users[i].getEncryptedUid().equals(getHash(userId)) && users[i].getEncryptedPwd().equals(getHash(password))) {
+                isFound = true;
                 user = users[i];
                 break;
             }

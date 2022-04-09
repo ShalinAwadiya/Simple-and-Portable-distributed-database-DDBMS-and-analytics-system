@@ -1,5 +1,8 @@
 package ca.dal.database.storage.model.column;
 
+/**
+ * @author Harsh Shah
+ */
 public class ColumnMetadataModel {
 
     private String name;
@@ -73,13 +76,26 @@ public class ColumnMetadataModel {
 
     public static ColumnMetadataModel parse(String header) {
         String[] parts = header.substring(1, header.length() - 1).split(",");
-        return new ColumnMetadataModel(parts[0], parts[1]);
+
+        if(parts.length == 3 && parts[2].equalsIgnoreCase("PRIMARY_KEY")){
+            return new ColumnMetadataModel(parts[0], parts[1], true);
+        } else if(parts.length == 5 && parts[2].equalsIgnoreCase("FOREIGN_KEY")){
+            return new ColumnMetadataModel(parts[0], parts[1], parts[3], parts[4]);
+        } else {
+            return new ColumnMetadataModel(parts[0], parts[1]);
+        }
     }
 
     @Override
     public String toString() {
 
-        return "(" + name + "," + type + ")";
-
+        if(isPrimaryKey()){
+            return String.format("(%s,%s,PRIMARY_KEY)", name, type);
+        } else if(isForeignKey()){
+            return String.format("(%s,%s,FOREIGN_KEY,%s,%s)", name, type,
+                    getForeignConstraint().getTableName(),foreignConstraint.getColumnName());
+        } else {
+            return String.format("(%s,%s)", name, type);
+        }
     }
 }

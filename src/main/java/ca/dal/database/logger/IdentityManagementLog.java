@@ -7,25 +7,25 @@ import java.util.UUID;
 
 
 
-public class QueryLog {
+public class IdentityManagementLog{
 
     private static int logId=0;
     String delimeter="<!!>";
 
     public static void main(String []args)
     {
-        QueryLog queryLog=new QueryLog();
+        IdentityManagementLog identityManagementLog=new IdentityManagementLog();
 
         HashMap<String,String> data=new HashMap<>();
         data.put("one","two");
-        queryLog.writeLog("Information Log","Query","There are 3 tables and 42 records",data);
-        queryLog.readLog();
+        identityManagementLog.writeLog("Information Log","Query","There are 3 tables and 42 records",data);
+        identityManagementLog.readLog();
     }
     public void readLog()
     {
         BufferedReader br=null;
         try {
-            File file = new File("DatabaseLogs/QueryLogs.txt");
+            File file = new File("DatabaseLogs/IdentityManagementLogs.txt");
             FileReader fr = new FileReader(file);
             br = new BufferedReader(fr);
             String line = br.readLine();
@@ -62,7 +62,7 @@ public class QueryLog {
             if (!directory.exists()) {
                 directory.mkdirs();
             }
-            File file = new File("DatabaseLogs/QueryLogs.txt");
+            File file = new File("DatabaseLogs/IdentityManagementLogs.txt");
             if (!file.exists()) {
                 file.createNewFile();
             }

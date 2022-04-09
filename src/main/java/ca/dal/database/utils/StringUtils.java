@@ -1,27 +1,28 @@
 package ca.dal.database.utils;
 
-import ca.dal.database.storage.StorageManager;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class StringUtils {
 
     private static final Logger logger = Logger.getLogger(StringUtils.class.getName());
 
-    private StringUtils(){}
+    private StringUtils() {
+    }
 
     /**
      * @param str
      * @return
-     *
      * @author Harsh Shah
      */
-    public static boolean isNotEmpty(String str){
-        if(str == null){
+    public static boolean isNotEmpty(String str) {
+        if (str == null) {
             return false;
         }
 
@@ -33,22 +34,20 @@ public class StringUtils {
     /**
      * @param str
      * @return
-     *
      * @author Harsh Shah
      */
-    public static boolean isEmpty(String str){
+    public static boolean isEmpty(String str) {
         return !isNotEmpty(str);
     }
 
     /**
      * @param strs
      * @return
-     *
      * @author Harsh Shah
      */
     public static boolean isAnyEmpty(String... strs) {
-        for(String str: strs){
-            if(isEmpty(str)){
+        for (String str : strs) {
+            if (isEmpty(str)) {
                 return true;
             }
         }
@@ -59,12 +58,11 @@ public class StringUtils {
     /**
      * @param strings
      * @return
-     *
      * @author Harsh Shah
      */
     public static boolean isAllEmpty(String... strings) {
-        for(String str: strings){
-            if(isNotEmpty(str)){
+        for (String str : strings) {
+            if (isNotEmpty(str)) {
                 return false;
             }
         }
@@ -73,20 +71,36 @@ public class StringUtils {
     }
 
     /**
-     * @param value
+     * @param values
      * @return
-     *
      * @author Harsh Shah
      */
-    public static String valueOf(Object value){
+    public static String builder(String... values) {
+
+        StringBuilder builder = new StringBuilder();
+
+        for (String value : values) {
+            builder.append(value);
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * @param value
+     * @return
+     * @author Harsh Shah
+     */
+    public static String valueOf(Object value) {
         return String.valueOf(value);
     }
 
     /**
      * @param string
      * @return
+     * @author Harsh Shah
      */
-    public static String getHash(String string){
+    public static String getHash(String string) {
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -99,12 +113,13 @@ public class StringUtils {
     /**
      * @param hash
      * @return
+     * @author Harsh Shah
      */
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (int i = 0; i < hash.length; i++) {
             String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) {
+            if (hex.length() == 1) {
                 hexString.append('0');
             }
             hexString.append(hex);
@@ -112,5 +127,74 @@ public class StringUtils {
         return hexString.toString();
     }
 
+    /**
+     * @param str
+     * @param count
+     * @return
+     * @author Harsh Shah
+     */
+    public static String repeat(String str, int count) {
+        return str.repeat(count);
+    }
 
+    /**
+     * @param str
+     * @param count
+     * @param with
+     * @return
+     * @author Harsh Shah
+     */
+    public static String repeadAndjoin(String str, int count, String with) {
+
+        List<String> strs = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            strs.add(str);
+        }
+
+        return strs.stream().collect(Collectors.joining(with));
+    }
+
+    /**
+     * @param str
+     * @param regex
+     * @return
+     * @author Harsh Shah
+     */
+    public static String[] splitAndTrim(String str, String regex) {
+        String[] parts = str.split(regex);
+
+        for (int i = 0; i < parts.length; i++) {
+            parts[i] = parts[i].trim();
+        }
+
+        return parts;
+    }
+
+    /**
+     * @param strs
+     * @param regex
+     * @param replacement
+     * @return
+     * @author Harsh Shah
+     */
+    public static String[] replace(String[] strs, String regex, String replacement) {
+
+        for (int i = 0; i < strs.length; i++) {
+            strs[i] = strs[i].replaceAll(regex, replacement);
+        }
+
+        return strs;
+    }
+
+    /**
+     * @param str
+     * @param regex
+     * @param replacement
+     * @return
+     * @author Harsh Shah
+     */
+    public static String replace(String str, String regex, String replacement) {
+        return str.replaceAll(regex, replacement);
+    }
 }

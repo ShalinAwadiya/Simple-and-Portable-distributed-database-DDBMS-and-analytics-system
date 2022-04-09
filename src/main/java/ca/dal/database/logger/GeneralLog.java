@@ -7,14 +7,14 @@ import java.util.UUID;
 
 
 
-public class GeneralLog implements Logging{
+public class GeneralLog{
 
     private static int logId=0;
     String delimeter="<!!>";
 
     public static void main(String []args)
     {
-        GeneralLog generalLog=new GeneralLog();
+        IdentityManagementLog generalLog=new IdentityManagementLog();
 
         HashMap<String,String> data=new HashMap<>();
         data.put("one","two");
@@ -53,9 +53,6 @@ public class GeneralLog implements Logging{
             }
         }
     }
-
-    public void writeLog()
-    {}
 
     public void writeLog(String type, String subject, String message, HashMap<String,String> data)
     {

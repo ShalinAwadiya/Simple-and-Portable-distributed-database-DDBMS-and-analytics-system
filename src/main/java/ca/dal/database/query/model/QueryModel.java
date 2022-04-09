@@ -5,6 +5,9 @@ import ca.dal.database.storage.model.column.ColumnMetadataModel;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Nishit Mistry
+ */
 public class QueryModel {
     private String rawQuery;
     private QueryType type;
@@ -81,7 +84,6 @@ public class QueryModel {
     public void setDatabaseName(String databaseName) {
         this.databaseName = databaseName;
     }
-
 
     public static QueryModel createDBQuery(String databaseName, String rawQuery) {
         QueryModel model = new QueryModel();
