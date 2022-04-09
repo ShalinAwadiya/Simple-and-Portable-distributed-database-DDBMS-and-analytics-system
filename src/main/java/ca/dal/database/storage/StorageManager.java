@@ -1,22 +1,20 @@
 package ca.dal.database.storage;
 
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
+import ca.dal.database.storage.model.database.DatabaseMetadataHeaderModel;
 import ca.dal.database.storage.model.database.DatabaseMetadataModel;
 import ca.dal.database.storage.model.datastore.DatastoreModel;
 import ca.dal.database.storage.model.row.RowModel;
+import ca.dal.database.storage.model.table.TableMetadataHeaderModel;
 import ca.dal.database.storage.model.table.TableMetadataModel;
 import ca.dal.database.utils.FileUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ca.dal.database.constant.ApplicationConstants.DOT;
 import static ca.dal.database.utils.FileUtils.*;
 import static ca.dal.database.utils.ListUtils.project;
-import static ca.dal.database.utils.PrintUtils.printMatrix;
-import static ca.dal.database.utils.PrintUtils.success;
+import static ca.dal.database.utils.PrintUtils.*;
 import static ca.dal.database.utils.StringUtils.builder;
 import static ca.dal.database.utils.StringUtils.isEmpty;
 
@@ -52,6 +50,10 @@ public class StorageManager {
         write(metadata.toListString(), ROOT, builder(ROOT, DATASTORE_METADATA));
     }
 
+    /**
+     * @return
+     * @author Harsh Shah
+     */
     private DatastoreModel getDatastoreMetadata() {
         List<String> lines = read(ROOT, builder(ROOT, DATASTORE_METADATA));
         return DatastoreModel.parse(lines);
@@ -59,9 +61,34 @@ public class StorageManager {
 
     /**
      * @param databaseName
+     * @return
+     * @author Harsh Shah
+     */
+    public boolean isDatabaseExists(String databaseName){
+        DatastoreModel datastoreMetadata = getDatastoreMetadata();
+
+        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels()
+                .stream().filter(itr -> itr.getDatabaseName().equals(databaseName)).findFirst();
+
+        return exists.isPresent();
+
+    }
+
+    /**
+     * @param databaseName
      * @author Harsh Shah
      */
     public void createDatabase(String databaseName) {
+
+        DatastoreModel datastoreMetadata = getDatastoreMetadata();
+
+        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels().stream().filter(itr ->
+                itr.getDatabaseName().equals(databaseName)).findFirst();
+
+        if(exists.isPresent()){
+            error("%s database already exists", databaseName);
+            return;
+        }
 
         // Create Database
         FileUtils.createDirectory(ROOT, databaseName);
@@ -86,9 +113,7 @@ public class StorageManager {
     public void updateDatabaseMetadata(String databaseName, TableMetadataModel metadataModel) {
 
         DatabaseMetadataModel metadata = getDatabaseMetadata(databaseName);
-
         metadata.addTableHeaderMetadataModel(metadataModel);
-
         write(metadata.toListString(), ROOT, databaseName, builder(databaseName, DATABASE_METADATA));
 
     }
@@ -102,6 +127,15 @@ public class StorageManager {
     public void createTable(String databaseName, TableMetadataModel metadata) {
 
         String tableName = metadata.getTableName();
+
+        DatabaseMetadataModel databaseMetadata = getDatabaseMetadata(databaseName);
+        Optional<TableMetadataHeaderModel> exists = databaseMetadata.getTableHeaderMetadataModels().stream()
+                .filter(itr -> itr.getTableName().equals(tableName)).findFirst();
+
+        if(exists.isPresent()){
+            error("%s table already exists", tableName);
+            return;
+        }
 
         // Create Table Space
         FileUtils.createDirectory(ROOT, databaseName, tableName);

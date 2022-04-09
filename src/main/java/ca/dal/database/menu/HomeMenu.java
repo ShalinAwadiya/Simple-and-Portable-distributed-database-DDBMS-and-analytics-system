@@ -72,9 +72,13 @@ public class HomeMenu {
             return -1;
         }
 
-        QueryExecutor executor = new QueryExecutor(getConnection());
-        executor.execute(evaluateQuery(query));
-
+        try {
+            QueryExecutor executor = new QueryExecutor(getConnection());
+            executor.execute(evaluateQuery(query));
+        } catch (Exception e){
+            e.printStackTrace();
+            error("Something went wrong, Please try again!");
+        }
         runQuery();
 
         return 0;
