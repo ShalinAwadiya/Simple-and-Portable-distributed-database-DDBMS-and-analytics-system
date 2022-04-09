@@ -24,6 +24,9 @@ public class PrintUtils {
         System.out.println("");
     }
 
+    /**
+     * @param messages
+     */
     public static void printWithMargin(String... messages){
         System.out.println("");
         for(String message: messages) {
@@ -50,6 +53,18 @@ public class PrintUtils {
         System.out.println("");
     }
 
+    /**
+     * @param message
+     * @param values
+     */
+    public static void error(String message, Object... values){
+        error(String.format(message, values));
+    }
+
+    /**
+     * @param headers
+     * @param matrix
+     */
     public static void printMatrix(List<String> headers, List<List<Object>> matrix){
         println(String.format(repeadAndjoin("  %15s  ", headers.size(), "|"), headers.toArray()));
         println(repeat("-",(19 * headers.size()) + headers.size()-1));
