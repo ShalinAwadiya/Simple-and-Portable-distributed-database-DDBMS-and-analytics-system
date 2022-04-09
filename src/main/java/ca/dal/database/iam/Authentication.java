@@ -1,4 +1,4 @@
-package ca.dal.database.identitymanagement;
+package ca.dal.database.iam;
 
 import java.util.HashMap;
 import java.util.Scanner;

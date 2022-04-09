@@ -29,7 +29,7 @@ public class StorageManager {
     private static final String DATABASE_METADATA = DOT + "meta";
     private static final String TABLE_FILE_EXTENSION = DOT + "rows";
     private static final String TABLE_METADATA = DOT + "meta";
-    
+
     /**
      * @author Harsh Shah
      */
