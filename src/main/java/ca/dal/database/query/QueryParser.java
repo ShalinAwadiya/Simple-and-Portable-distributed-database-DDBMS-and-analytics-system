@@ -28,69 +28,75 @@ public class QueryParser {
 
     public static QueryModel evaluateQuery(Connection connection, String query) {
 
-        String newQuery = query.substring(0, query.length() - 1);
-        String[] token = newQuery.split(" ");
-        List<String> columns = new ArrayList<>();
-        List<Object> values = new ArrayList<>();
-        Map<String, Object> conditionNew = new LinkedHashMap<>();
+        if(query.charAt(query.length() - 1) == ';'){
+            String newQuery = query.substring(0, query.length() - 1);
 
-        QueryModel queryModel = null;
-        if (token.length == 0) {
-            logger.log(Level.INFO, "EMPTY QUERY");
-        } else {
-            switch (token[0].toUpperCase()) {
-                case "CREATE":
-                    if (token[1].equalsIgnoreCase("DATABASE")) {
-                        queryModel = createDBQuery(token, newQuery);
-                    } else if (token[1].equalsIgnoreCase("TABLE")) {
-                        queryModel = createTableQuery(token, newQuery);
-                    } else {
-                        logger.log(Level.INFO, "Enter Valid Create Query");
-                    }
-                    break;
-                case "USE":
-                    queryModel = useDBQuery(token, newQuery);
-                    break;
-                case "INSERT":
-                    queryModel = insertQuery(token, newQuery);
-                    break;
-                case "SELECT":
-                    queryModel = selectQuery(newQuery, columns, conditionNew);
-                    break;
-                case "UPDATE":
-                    queryModel = updateQuery(token, newQuery, columns, values, conditionNew);
-                    break;
-                case "DELETE":
-                    queryModel = deleteQuery(token, newQuery);
-                    break;
-                case "START":
-                    queryModel = startTransactionQuery(newQuery);
-                    break;
-                case "END":
-                    queryModel = endTransactionQuery(newQuery);
-                    break;
-                case "COMMIT":
-                    queryModel = commitQuery(newQuery);
-                    break;
-                case "ROLLBACK":
-                    queryModel = rollbackQuery(newQuery);
-                    break;
-                default:
-                    error("Invalid Query, Try again");
+            String[] token = newQuery.split(" ");
+            List<String> columns = new ArrayList<>();
+            List<Object> values = new ArrayList<>();
+            Map<String, Object> conditionNew = new LinkedHashMap<>();
+
+            QueryModel queryModel = null;
+            if (token.length == 0) {
+                logger.log(Level.INFO, "EMPTY QUERY");
+            } else {
+                switch (token[0].toUpperCase()) {
+                    case "CREATE":
+                        if (token[1].equalsIgnoreCase("DATABASE")) {
+                            queryModel = createDBQuery(token, newQuery);
+                        } else if (token[1].equalsIgnoreCase("TABLE")) {
+                            queryModel = createTableQuery(token, newQuery);
+                        } else {
+                            logger.log(Level.INFO, "Enter Valid Create Query");
+                        }
+                        break;
+                    case "USE":
+                        queryModel = useDBQuery(token, newQuery);
+                        break;
+                    case "INSERT":
+                        queryModel = insertQuery(token, newQuery);
+                        break;
+                    case "SELECT":
+                        queryModel = selectQuery(newQuery, columns, conditionNew);
+                        break;
+                    case "UPDATE":
+                        queryModel = updateQuery(token, newQuery, columns, values, conditionNew);
+                        break;
+                    case "DELETE":
+                        queryModel = deleteQuery(token, newQuery);
+                        break;
+                    case "START":
+                        queryModel = startTransactionQuery(newQuery);
+                        break;
+                    case "END":
+                        queryModel = endTransactionQuery(newQuery);
+                        break;
+                    case "COMMIT":
+                        queryModel = commitQuery(newQuery);
+                        break;
+                    case "ROLLBACK":
+                        queryModel = rollbackQuery(newQuery);
+                        break;
+                    default:
+                        error("Invalid Query, Try again");
+                }
             }
-        }
 
-        if (queryModel != null) {
-            queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.",
-                    of("database", connection.getDatabaseName(), "query", query, "table", queryModel.getTableName(),
-                            "username", connection.getUserId()));
+            if (queryModel != null) {
+                queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.",
+                        of("database", connection.getDatabaseName(), "query", query, "table", queryModel.getTableName(),
+                                "username", connection.getUserId()));
 
+            } else {
+                queryLog.writeLog("Error Log", "Query - null", "Invalid Query executed by a user.",
+                        of("database", connection.getDatabaseName(), "query", query, "table", "null",
+                                "username", connection.getUserId()));
+            }
+            return queryModel;
         } else {
-            queryLog.writeLog("Error Log", "Query - null", "Invalid Query executed by a user.",
-                    of("database", connection.getDatabaseName(), "query", query, "table", "null",
-                            "username", connection.getUserId()));
+         error("Semicolon (;) missing");
         }
-        return queryModel;
+        return null;
     }
 
     public static QueryModel useDBQuery(String[] token, String newQuery) {
