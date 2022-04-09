@@ -1,6 +1,8 @@
 package ca.dal.database.menu;
 
 import ca.dal.database.connection.Connection;
+import ca.dal.database.datamodel.DataModel;
+import ca.dal.database.extractor.DataExtract;
 import ca.dal.database.query.executor.QueryExecutor;
 
 import java.util.Scanner;
@@ -44,8 +46,12 @@ public class HomeMenu {
                 }
                 break;
             case 2:
+                exportDatabase();
+                show();
                 break;
             case 3:
+                exportDataModel();
+                show();
                 break;
             case 4:
                 break;
@@ -58,6 +64,33 @@ public class HomeMenu {
 
         }
 
+    }
+
+    /**
+     * @author Harsh Shah
+     */
+    private void exportDatabase() {
+        println("Enter Database Name: ");
+        Scanner sc = new Scanner(System.in);
+        String database = sc.nextLine();
+
+        DataModel model = new DataModel();
+        int result = model.createERD(database);
+
+        if(result == 0) {
+            success("Entity-Relationship Model of %s is created!", database);
+        }
+    }
+
+    /**
+     * @author Harsh Shah
+     */
+    private void exportDataModel() {
+        DataExtract extract = new DataExtract();
+        int result = extract.exportDB("datastore");
+        if(result == 0) {
+            success("Data Model exported successfully!");
+        }
     }
 
     /**
