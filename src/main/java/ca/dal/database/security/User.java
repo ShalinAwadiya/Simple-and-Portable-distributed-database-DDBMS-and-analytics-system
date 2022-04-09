@@ -1,51 +1,63 @@
-package ca.dal.database.authentication;
+package ca.dal.database.security;
+
+import ca.dal.database.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Scanner;
 
+import static ca.dal.database.utils.StringUtils.getHash;
+
 public class User {
-    private String userId;
-    private String password;
+
+    private String uid;
+    private String pwd;
     private String securityQuestion;
-    private String answer;
-    private String encryptedUserId;
-    private String encryptedPassword;
+    
+    private String ans;
+    private String encryptedUid;
+    private String encryptedPwd;
 
-    public User() {
-    }
+    final static String user_profile_path = Path.of("datastore","system", "UserProfile.txt").toString();
 
-    public User(String userId, String password, String securityQuestion, String answer) {
-        this.userId = userId;
-        this.password = password;
+    final static String separator = "%^&";
+    final static String separator_regex = "%\\^&";
+
+    public User() {}
+
+    public User(String userId, String pwd, String securityQuestion, String ans) {
+        this.uid = userId;
+        this.pwd = pwd;
         this.securityQuestion = securityQuestion;
-        this.answer = answer;
+        this.ans = ans;
     }
 
-    public User(String userId, String password, String securityQuestion, String answer, String encryptedUserId, String encryptedPassword) {
-        this.userId = userId;
-        this.password = password;
+    public User(String userId, String pwd, String securityQuestion, String ans, String encryptedUid, String encryptedPwd) {
+        this.uid = userId;
+        this.pwd = pwd;
         this.securityQuestion = securityQuestion;
-        this.answer = answer;
-        this.encryptedUserId = encryptedUserId;
-        this.encryptedPassword = encryptedPassword;
+        this.ans = ans;
+        this.encryptedUid = encryptedUid;
+        this.encryptedPwd = encryptedPwd;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUid() {
+        return uid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPwd() {
+        return pwd;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
     }
 
     public String getSecurityQuestion() {
@@ -56,42 +68,42 @@ public class User {
         this.securityQuestion = securityQuestion;
     }
 
-    public String getAnswer() {
-        return answer;
+    public String getAns() {
+        return ans;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAns(String ans) {
+        this.ans = ans;
     }
 
-    public String getEncryptedUserId() {
-        return encryptedUserId;
+    public String getEncryptedUid() {
+        return encryptedUid;
     }
 
-    public void setEncryptedUserId(String encryptedUserId) {
-        this.encryptedUserId = encryptedUserId;
+    public void setEncryptedUid(String encryptedUid) {
+        this.encryptedUid = encryptedUid;
     }
 
-    public String getEncryptedPassword() {
-        return encryptedPassword;
+    public String getEncryptedPwd() {
+        return encryptedPwd;
     }
 
-    public void setEncryptedPassword(String encryptedPassword) {
-        this.encryptedPassword = encryptedPassword;
+    public void setEncryptedPwd(String encryptedPwd) {
+        this.encryptedPwd = encryptedPwd;
     }
 
-//TODO delimeter
+
     public String serializeUser() {
-        Encryption encrypt = new Encryption();
+
         String data = "";
-        data += encrypt.MD5(getUserId()) + Constants.delimiter;
-        data += encrypt.MD5(getPassword()) + Constants.delimiter;
-        data += getSecurityQuestion() + Constants.delimiter + getAnswer() + "\n";
+        data += getHash(getUid()) + separator;
+        data += getHash(getPwd()) + separator;
+        data += getSecurityQuestion() + separator + getAns() + "\n";
         return data;
     }
 
     public void save() {
-        File f = new File(Constants.USER_PROFILE_TXT);
+        File f = new File(user_profile_path);
         try {
             FileWriter fileWriter = new FileWriter(f.getAbsolutePath(), true);
             fileWriter.write(serializeUser());
@@ -101,9 +113,19 @@ public class User {
             System.out.println(e.getMessage());
         }
     }
-//Todo
+
     public User[] deserializeUsers() {
-        File f = new File(Constants.USER_PROFILE_TXT);
+        File f = new File(user_profile_path);
+
+        if(!f.exists()){
+            try {
+                new File(f.getParent()).mkdirs();
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         int lineCounter = 0;
         try {
             Scanner sc = new Scanner(new FileReader(f.getAbsolutePath()));
@@ -129,9 +151,9 @@ public class User {
         }
         return users;
     }
-//ToDO
+
     public User deserialize(String data) {
-        String[] dataArr = data.split(Constants.delimiter);
+        String[] dataArr = data.split(separator_regex);
         User user = new User();
         if (dataArr[0] != null && dataArr[1] != null && dataArr[2] != null && dataArr[3] != null) {
             user = new User("", "", dataArr[2], dataArr[3], dataArr[0], dataArr[1]);
@@ -140,11 +162,10 @@ public class User {
     }
 
     public boolean userIdCheck(String userId) {
-        Encryption encryption = new Encryption();
         User[] users = deserializeUsers();
         boolean isFound = false;
         for (int i = 0; i < users.length; i++) {
-            if (users[i].getEncryptedUserId().equals(encryption.MD5(userId))) {
+            if (users[i].getEncryptedUid().equals(getHash(userId))) {
                 isFound = true;
                 break;
             }
@@ -153,13 +174,10 @@ public class User {
     }
 
     public User validateUserIdAndPassword(String userId, String password) {
-        Encryption encryption = new Encryption();
         User[] users = deserializeUsers();
-        boolean isFound = false;
         User user = null;
         for (int i = 0; i < users.length; i++) {
-            if (users[i].getEncryptedUserId().equals(encryption.MD5(userId)) && users[i].getEncryptedPassword().equals(encryption.MD5(password))) {
-                isFound = true;
+            if (users[i].getEncryptedUid().equals(getHash(userId))) {
                 user = users[i];
                 break;
             }

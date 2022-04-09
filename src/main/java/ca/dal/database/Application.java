@@ -1,13 +1,11 @@
 package ca.dal.database;
 
-import ca.dal.database.query.executor.QueryExecutor;
+import ca.dal.database.security.Authentication;
+import ca.dal.database.storage.StorageManager;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
 import java.util.logging.LogManager;
-
-import static ca.dal.database.query.QueryParser.evaluateQuery;
 
 /**
  * @author Harsh Shah
@@ -18,22 +16,11 @@ public class Application {
         setup();
     }
 
-    private static final QueryExecutor queryExecutor = new QueryExecutor();
+    private static Authentication authentication = new Authentication();
 
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        do {
-            String query = scanner.nextLine();
-
-            if (query.equalsIgnoreCase("q")) {
-                break;
-            }
-
-            queryExecutor.execute(evaluateQuery(query));
-        } while (true);
-
-        scanner.close();
+        StorageManager.init();
+        authentication.init();
     }
 
     public static void setup() {

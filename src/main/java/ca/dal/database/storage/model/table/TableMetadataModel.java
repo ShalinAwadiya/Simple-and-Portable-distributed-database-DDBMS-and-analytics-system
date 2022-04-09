@@ -9,6 +9,9 @@ import java.util.stream.Collectors;
 import static ca.dal.database.constant.ApplicationConstants.LINE_FEED;
 import static java.lang.Long.parseLong;
 
+/**
+ * @author Harsh Shah
+ */
 public class TableMetadataModel extends TableMetadataHeaderModel {
 
     private List<ColumnMetadataModel> columnsMetadata;

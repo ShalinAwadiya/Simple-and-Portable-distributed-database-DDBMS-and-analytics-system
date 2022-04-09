@@ -1,8 +1,14 @@
-package ca.dal.database.authentication;
+package ca.dal.database.security;
+
+import ca.dal.database.connection.Connection;
+import ca.dal.database.menu.HomeMenu;
+import ca.dal.database.utils.PrintUtils;
 
 import java.util.Scanner;
 
-public class Authenticate {
+import static ca.dal.database.utils.PrintUtils.*;
+
+public class Authentication {
     public void init() {
         System.out.println("1. Register");
         System.out.println("2. Login");
@@ -12,22 +18,21 @@ public class Authenticate {
         Scanner sc = new Scanner(System.in);
         String userInput = sc.nextLine();
 
-        switch (userInput) {
-            case "1":
-                userRegistration();
-                break;
-            case "2":
-                userLogin();
-                break;
-            case "3":
-                System.out.println("Good Bye!");
-                System.exit(0);
-                break;
-            default:
-                System.out.println("Incorrect option chosen, Please try Again");
-                init();
-                break;
+        if(userInput.equals("1")){
+            userRegistration();
+            init();
         }
+        else if(userInput.equals("2")){
+            userLogin();
+        }
+        else if(userInput.equals("3")){
+            System.out.println("Good Bye!");
+        }
+        else{
+            error("Incorrect option chosen, Please try Again");
+            init();
+        }
+
     }
 
     private void userRegistration() {
@@ -36,7 +41,7 @@ public class Authenticate {
 
         boolean isUserIdCorrect = false;
         while (!isUserIdCorrect) {
-            System.out.println("");
+
             System.out.print("Enter UserId: ");
             String userId = sc.nextLine();
             if (userId.length() < 1) {
@@ -48,26 +53,31 @@ public class Authenticate {
                 continue;
             }
             isUserIdCorrect = true;
-            u.setUserId(userId);
+            u.setUid(userId);
         }
 
         boolean isPasswordCorrect = false;
         while (!isPasswordCorrect) {
-            System.out.println("");
             System.out.print("Enter Password: ");
-            String password = sc.nextLine();
+            String password;
+            if(System.console()==null){
+                password = sc.nextLine();
+            }
+            else{
+                password = String.valueOf(System.console().readPassword());
+            }
 
             if (password.length() < 1) {
                 System.out.println("password cannot be empty");
                 continue;
             }
             isPasswordCorrect = true;
-            u.setPassword(password);
+            u.setPwd(password);
         }
 
         boolean isSecurityCorrect = false;
         while (!isSecurityCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Security Question: ");
             String securityQuestion = sc.nextLine();
             if (securityQuestion.length() < 1) {
@@ -80,17 +90,19 @@ public class Authenticate {
 
         boolean isAnswerCorrect = false;
         while (!isAnswerCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Answer: ");
             String answer = sc.nextLine();
             if (answer.length() < 1) {
                 System.out.println("Answer cannot be empty");
             }
             isAnswerCorrect = true;
-            u.setAnswer(answer);
+            u.setAns(answer);
         }
 
         u.save();
+
+        success("User Registered Successfully!");
     }
 
     private void userLogin() {
@@ -100,7 +112,7 @@ public class Authenticate {
 
         boolean isUserIdCorrect = false;
         while (!isUserIdCorrect) {
-            System.out.println("");
+
             System.out.print("Enter UserId: ");
             userId = sc.nextLine();
             if (userId.length() < 1) {
@@ -112,7 +124,7 @@ public class Authenticate {
 
         boolean isPasswordCorrect = false;
         while (!isPasswordCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Password: ");
             password = sc.nextLine();
             if (password.length() < 1) {
@@ -133,7 +145,7 @@ public class Authenticate {
         boolean isAnswerCorrect = false;
         String answer = "";
         while (!isAnswerCorrect) {
-            System.out.println("");
+
             System.out.print("Enter Answer for " + user.getSecurityQuestion() + ": ");
             answer = sc.nextLine();
             if (answer.length() < 1) {
@@ -141,9 +153,15 @@ public class Authenticate {
             }
             isAnswerCorrect = true;
         }
-        if (!user.getAnswer().equalsIgnoreCase(answer)) {
+        if (!user.getAns().equalsIgnoreCase(answer)) {
             System.out.println("Invalid Security");
             return;
         }
+
+        success("Logged In Successfully!");
+
+        Connection connection = new Connection(userId);
+        HomeMenu homeMenu = new HomeMenu(connection);
+        homeMenu.show();
     }
 }
