@@ -5,7 +5,10 @@ import ca.dal.database.logger.QueryLog;
 import ca.dal.database.query.model.QueryModel;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,14 +80,20 @@ public class QueryParser {
             }
         }
 
-        queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.",
-                of("database", connection.getDatabaseName(), "query", query, "table", queryModel.getTableName(),
-                        "username", connection.getUserId()));
+        if (queryModel != null) {
+            queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.",
+                    of("database", connection.getDatabaseName(), "query", query, "table", queryModel.getTableName(),
+                            "username", connection.getUserId()));
+
+        } else {
+            queryLog.writeLog("Error Log", "Query - null", "Invalid Query executed by a user.",
+                    of("database", connection.getDatabaseName(), "query", query, "table", "null",
+                            "username", connection.getUserId()));
+        }
         return queryModel;
     }
 
     public static QueryModel useDBQuery(String[] token, String newQuery) {
-
         if (token.length == 2) {
             String databaseName = token[1];
             return QueryModel.useDBQuery(databaseName, newQuery);
@@ -161,7 +170,7 @@ public class QueryParser {
     }
 
     public static QueryModel updateQuery(String[] token, String newQuery, List<String> columns, List<Object> values,
-            Map<String, Object> conditionNew) {
+                                         Map<String, Object> conditionNew) {
 
         String tableName = token[1];
 
