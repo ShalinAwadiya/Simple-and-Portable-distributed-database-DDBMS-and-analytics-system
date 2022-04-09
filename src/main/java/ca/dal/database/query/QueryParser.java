@@ -5,10 +5,7 @@ import ca.dal.database.logger.QueryLog;
 import ca.dal.database.query.model.QueryModel;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,11 +77,14 @@ public class QueryParser {
             }
         }
 
-        queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.", of("database", connection.getDatabaseName(), "query", query, "table", queryModel.getTableName(), "username", connection.getUserId()));
+        queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.",
+                of("database", connection.getDatabaseName(), "query", query, "table", queryModel.getTableName(),
+                        "username", connection.getUserId()));
         return queryModel;
     }
 
     public static QueryModel useDBQuery(String[] token, String newQuery) {
+
         if (token.length == 2) {
             String databaseName = token[1];
             return QueryModel.useDBQuery(databaseName, newQuery);
@@ -120,7 +120,8 @@ public class QueryParser {
                     String[] newQueryToken = queryFinalToken[5].split("\\(");
                     String subQueryToken = newQueryToken[1].substring(0, newQueryToken[1].indexOf(")"));
 
-                    columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1], newQueryToken[0], subQueryToken));
+                    columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1],
+                            newQueryToken[0], subQueryToken));
                 }
             } else {
                 columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1]));
@@ -138,7 +139,8 @@ public class QueryParser {
             String[] queryFinalToken = queryToken[i].trim().split(" ");
             columns.add(queryFinalToken[0]);
         }
-        String queryManipulationValues = newQuery.substring(newQuery.indexOf("(", newQuery.indexOf(")") + 1) + 1, newQuery.length() - 1).trim();
+        String queryManipulationValues = newQuery
+                .substring(newQuery.indexOf("(", newQuery.indexOf(")") + 1) + 1, newQuery.length() - 1).trim();
 
         String[] queryTokenValues = splitAndTrim(queryManipulationValues, ",");
         queryTokenValues = replace(queryTokenValues, "(\"|')", "");
@@ -158,7 +160,8 @@ public class QueryParser {
         return null;
     }
 
-    public static QueryModel updateQuery(String[] token, String newQuery, List<String> columns, List<Object> values, Map<String, Object> conditionNew) {
+    public static QueryModel updateQuery(String[] token, String newQuery, List<String> columns, List<Object> values,
+            Map<String, Object> conditionNew) {
 
         String tableName = token[1];
 

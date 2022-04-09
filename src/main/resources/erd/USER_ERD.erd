@@ -1,0 +1,36 @@
++---------------------+
+ORDER
++---------------------+
+(oid, int)
+(name,string)
+(id,string)
+(cid, string)
+PK | oid
+FK | cid
+**N->1 relationship with below**
+FK_Table | CUSTOMER
+FK_Table_ref | id
++---------------------+
+
++---------------------+
+PEOPLE
++---------------------+
+(dob,date)
+(name,string)
+(id,string)
+PK | id
++---------------------+
+
++---------------------+
+CUSTOMER
++---------------------+
+(id,string)
+(name,string)
+(pid,string)
+PK | id
+FK | pid
+**N->1 relationship with below**
+FK_Table | PEOPLE
+FK_Table_ref | id
++---------------------+
+
