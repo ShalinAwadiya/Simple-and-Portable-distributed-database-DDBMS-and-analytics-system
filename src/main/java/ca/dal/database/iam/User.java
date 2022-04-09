@@ -3,6 +3,7 @@ package ca.dal.database.iam;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Scanner;
 
@@ -100,6 +101,16 @@ public class User {
 
     public void save() {
         File f = new File(user_profile_path);
+
+        if(!f.exists()){
+            new File(f.getParent()).mkdirs();
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
             FileWriter fileWriter = new FileWriter(f.getAbsolutePath(), true);
             fileWriter.write(serializeUser());
@@ -112,6 +123,16 @@ public class User {
 
     public User[] deserializeUsers() {
         File f = new File(user_profile_path);
+
+        if(!f.exists()){
+            new File(f.getParent()).mkdirs();
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         int lineCounter = 0;
         try {
             Scanner sc = new Scanner(new FileReader(f.getAbsolutePath()));
