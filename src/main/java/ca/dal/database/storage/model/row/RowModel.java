@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import static ca.dal.database.constant.ApplicationConstants.LINE_FEED;
 import static ca.dal.database.utils.StringUtils.valueOf;
 
+/**
+ * @author Harsh Shah
+ */
 public class RowModel {
 
     private RowMetadataModel metadata;
@@ -28,8 +31,8 @@ public class RowModel {
         this.values = row.getValues();
     }
 
-    public RowModel(long index, String identifier, List<Object> values) {
-        this.metadata = new RowMetadataModel(index, identifier);
+    public RowModel(RowMetadataModel rowMetadataModel, List<Object> values) {
+        this.metadata = rowMetadataModel;
         this.values = values;
     }
 
@@ -39,6 +42,19 @@ public class RowModel {
 
     public List<Object> getValues() {
         return values;
+    }
+
+    public static RowModel parse(List<String> lines){
+        if(lines == null || lines.isEmpty()){
+            return null;
+        }
+
+        List<Object> values = new ArrayList<>();
+        for(int i = 1; i < lines.size(); i++){
+            values.add(lines.get(i));
+        }
+
+        return new RowModel(RowMetadataModel.parseHeader(lines.get(0)),  values);
     }
 
     public List<String> toList(){

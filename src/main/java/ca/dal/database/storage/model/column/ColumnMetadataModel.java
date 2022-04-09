@@ -1,5 +1,8 @@
 package ca.dal.database.storage.model.column;
 
+/**
+ * @author Harsh Shah
+ */
 public class ColumnMetadataModel {
 
     private String name;

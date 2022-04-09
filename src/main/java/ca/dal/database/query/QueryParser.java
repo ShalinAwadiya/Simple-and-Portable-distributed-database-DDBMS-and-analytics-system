@@ -88,6 +88,8 @@ public class QueryParser {
 
                     columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1], newQueryToken[0], subQueryToken));
                 }
+            } else {
+                columnDefinition.add(new ColumnMetadataModel(queryFinalToken[0], queryFinalToken[1]));
             }
         }
         return QueryModel.createTableQuery(tableName, columnDefinition, query);
@@ -136,7 +138,7 @@ public class QueryParser {
         values.add(queryTokenNew);
         String[] conditionLogic = queryToken[3].split("=");
 
-        String conditionLogicNew = conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1, conditionLogic[1].length() - 1);
+        String conditionLogicNew = conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1, conditionLogic[1].length());
         conditionNew.put(conditionLogic[0], conditionLogicNew);
 
         return QueryModel.updateQuery(tableName, columns, values, conditionNew, query);
@@ -159,11 +161,17 @@ public class QueryParser {
     }
 
     private static void queryManipulation(String query, Map<String, Object> conditionNew) {
+        if(!query.contains("where")){
+            return;
+        }
+
+
         String queryManipulation = query.substring(query.indexOf("where"), query.length() - 1).trim();
         String[] queryTokenNew = queryManipulation.split(" ");
         String[] conditionLogic = queryTokenNew[1].split("=");
 
-        String conditionLogicNew = conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1, conditionLogic[1].length() - 1);
+        String conditionLogicNew =
+                conditionLogic[1].substring(conditionLogic[1].indexOf("\"") + 1, conditionLogic[1].length());
 
         conditionNew.put(conditionLogic[0], conditionLogicNew);
     }
