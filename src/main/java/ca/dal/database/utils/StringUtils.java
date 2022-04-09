@@ -73,6 +73,7 @@ public class StringUtils {
     /**
      * @param values
      * @return
+     * @author Harsh Shah
      */
     public static String builder(String... values) {
 
@@ -171,6 +172,13 @@ public class StringUtils {
         return parts;
     }
 
+    /**
+     * @param strs
+     * @param regex
+     * @param replacement
+     * @return
+     * @author Harsh Shah
+     */
     public static String[] replace(String[] strs, String regex, String replacement) {
 
         for (int i = 0; i < strs.length; i++) {
@@ -178,5 +186,16 @@ public class StringUtils {
         }
 
         return strs;
+    }
+
+    /**
+     * @param str
+     * @param regex
+     * @param replacement
+     * @return
+     * @author Harsh Shah
+     */
+    public static String replace(String str, String regex, String replacement) {
+        return str.replaceAll(regex, replacement);
     }
 }
