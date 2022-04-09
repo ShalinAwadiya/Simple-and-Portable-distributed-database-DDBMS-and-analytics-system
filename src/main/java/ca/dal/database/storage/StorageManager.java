@@ -29,20 +29,7 @@ public class StorageManager {
     private static final String DATABASE_METADATA = DOT + "meta";
     private static final String TABLE_FILE_EXTENSION = DOT + "rows";
     private static final String TABLE_METADATA = DOT + "meta";
-
-    public static void init(){
-        // Create datastore
-        FileUtils.createDirectory(ROOT);
-
-        // Create datastore metadata
-        FileUtils.createFile(ROOT, builder(ROOT, DATABASE_METADATA));
-
-        DatastoreModel model = new DatastoreModel(0);
-
-        // Write Table Metadata
-        write(model.toListString(), ROOT, builder(ROOT, DATABASE_METADATA));
-    }
-
+    
     /**
      * @author Harsh Shah
      */
