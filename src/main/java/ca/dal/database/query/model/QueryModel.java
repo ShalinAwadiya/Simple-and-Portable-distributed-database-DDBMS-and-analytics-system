@@ -101,8 +101,7 @@ public class QueryModel {
         return model;
     }
 
-    public static QueryModel createTableQuery(String tableName, List<ColumnMetadataModel> columnDefinition,
-            String rawQuery) {
+    public static QueryModel createTableQuery(String tableName, List<ColumnMetadataModel> columnDefinition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumnDefinition(columnDefinition);
@@ -121,8 +120,7 @@ public class QueryModel {
         return model;
     }
 
-    public static QueryModel selectQuery(String tableName, List<String> columns, Map<String, Object> condition,
-            String rawQuery) {
+    public static QueryModel selectQuery(String tableName, List<String> columns, Map<String, Object> condition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumns(columns);
@@ -132,8 +130,7 @@ public class QueryModel {
         return model;
     }
 
-    public static QueryModel updateQuery(String tableName, List<String> columns, List<Object> values,
-            Map<String, Object> condition, String rawQuery) {
+    public static QueryModel updateQuery(String tableName, List<String> columns, List<Object> values, Map<String, Object> condition, String rawQuery) {
         QueryModel model = new QueryModel();
         model.setTableName(tableName);
         model.setColumns(columns);
