@@ -3,15 +3,9 @@ package ca.dal.database.query.executor;
 import ca.dal.database.connection.Connection;
 import ca.dal.database.query.model.QueryModel;
 import ca.dal.database.storage.StorageManager;
-import ca.dal.database.storage.model.column.ColumnMetadataModel;
-import ca.dal.database.storage.model.datastore.DatastoreModel;
 import ca.dal.database.storage.model.row.RowModel;
 import ca.dal.database.storage.model.table.TableMetadataModel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static ca.dal.database.utils.PrintUtils.error;
@@ -46,7 +40,7 @@ public class QueryExecutor {
                 break;
             case USE_DATABASE:
 
-                if(!storageManager.isDatabaseExists(queryModel.getDatabaseName())){
+                if (!storageManager.isDatabaseExists(queryModel.getDatabaseName())) {
                     error("%s database doesn't exits", queryModel.getDatabaseName());
                     break;
                 }
@@ -56,7 +50,7 @@ public class QueryExecutor {
 
             case CREATE_TABLE:
 
-                if(isEmpty(getDatabaseName())){
+                if (isEmpty(getDatabaseName())) {
                     error("Please select database");
                     break;
                 }
@@ -65,7 +59,7 @@ public class QueryExecutor {
                 break;
             case INSERT_ROW:
 
-                if(isEmpty(getDatabaseName())){
+                if (isEmpty(getDatabaseName())) {
                     error("Please select database");
                     break;
                 }
@@ -74,7 +68,7 @@ public class QueryExecutor {
                 break;
             case SELECT_ROW:
 
-                if(isEmpty(getDatabaseName())){
+                if (isEmpty(getDatabaseName())) {
                     error("Please select database");
                     break;
                 }
@@ -83,7 +77,7 @@ public class QueryExecutor {
                 break;
             case UPDATE_ROW:
 
-                if(isEmpty(getDatabaseName())){
+                if (isEmpty(getDatabaseName())) {
                     error("Please select database");
                     break;
                 }
@@ -92,7 +86,7 @@ public class QueryExecutor {
                 break;
             case DELETE_ROW:
 
-                if(isEmpty(getDatabaseName())){
+                if (isEmpty(getDatabaseName())) {
                     error("Please select database");
                     break;
                 }
@@ -101,7 +95,7 @@ public class QueryExecutor {
                 break;
             case START_TRANSACTION:
 
-                if(isEmpty(getDatabaseName())){
+                if (isEmpty(getDatabaseName())) {
                     error("Please select database");
                     break;
                 }
@@ -110,7 +104,7 @@ public class QueryExecutor {
                 break;
             case COMMIT:
 
-                if(!connection.isAutoCommit()){
+                if (!connection.isAutoCommit()) {
                     error("No transaction is running");
                 }
 
@@ -118,7 +112,7 @@ public class QueryExecutor {
                 break;
             case ROLLBACK:
 
-                if(!connection.isAutoCommit()){
+                if (!connection.isAutoCommit()) {
                     error("No transaction is running");
                 }
 
@@ -140,13 +134,11 @@ public class QueryExecutor {
     }
 
     private void updateRows(String databaseName, QueryModel queryModel) {
-        storageManager.updateRow(databaseName, queryModel.getTableName(), queryModel.getColumns().get(0),
-                (String) queryModel.getValues().get(0), queryModel.getCondition());
+        storageManager.updateRow(databaseName, queryModel.getTableName(), queryModel.getColumns().get(0), (String) queryModel.getValues().get(0), queryModel.getCondition());
     }
 
     private void fetchRows(String databaseName, QueryModel queryModel) {
-        storageManager.fetchRows(databaseName, queryModel.getTableName(),
-                queryModel.getColumns(), queryModel.getCondition());
+        storageManager.fetchRows(databaseName, queryModel.getTableName(), queryModel.getColumns(), queryModel.getCondition());
     }
 
     private void insertRow(QueryModel queryModel) {
@@ -154,8 +146,7 @@ public class QueryExecutor {
     }
 
     private void createTable(QueryModel queryModel) {
-        storageManager.createTable(getDatabaseName(),
-                new TableMetadataModel(queryModel.getTableName(), queryModel.getColumnDefinition()));
+        storageManager.createTable(getDatabaseName(), new TableMetadataModel(queryModel.getTableName(), queryModel.getColumnDefinition()));
     }
 
     private void createDatabase(QueryModel queryModel) {
