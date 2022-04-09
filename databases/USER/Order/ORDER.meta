@@ -1,0 +1,9 @@
+[HEADER,ORDER,5,5]
+(oid, int)
+(name,string)
+(id,string)
+(cid, string)
+(pk,oid)
+(fk,cid)
+(f_ref,id)
+(f_table,CUSTOMER)
