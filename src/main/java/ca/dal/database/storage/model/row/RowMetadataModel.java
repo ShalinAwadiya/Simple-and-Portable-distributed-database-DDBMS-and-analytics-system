@@ -31,6 +31,10 @@ public class RowMetadataModel {
         return identifier;
     }
 
+    public void setIndex(Long index) {
+        this.index = index;
+    }
+
     public static RowMetadataModel parseHeader(String line){
         String[] parts = line.substring(1, line.length() - 1).split(BLANK_SPACE);
 
