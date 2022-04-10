@@ -35,7 +35,7 @@ public class CountUpdates {
                 tables.add(directories[i]);
             }
         }
-
+        System.out.println("Tables:"+tables);
         try {
             File file = new File("DatabaseLogs/QueryLogs.txt");
             FileReader fr = new FileReader(file);
