@@ -13,15 +13,32 @@ public class CountQueries {
 
     String delimeter="<!!>";
     private List<String> databases = new ArrayList<>();
+    private static String path="datastore";
+
+    public CountQueries()
+    {
+        File file = new File(path);
+        String directories[]= file.list();
+        for(int i=0;i<directories.length;i++)
+        {
+            if(!(directories[i].equalsIgnoreCase("system") //
+                    || directories[i].equalsIgnoreCase("datastore.meta")))
+            {
+                databases.add(directories[i]);
+            }
+        }
+    }
+
+
     public static void main(String []args)
     {
 
         CountQueries countQueries= new CountQueries();
-        countQueries.databases.add("db1");
-        countQueries.databases.add("db2");
-        countQueries.databases.add("db3");
+        //countQueries.databases.add("db1");
+        //countQueries.databases.add("db2");
+        //countQueries.databases.add("db3");
         System.out.println(countQueries.databases);
-        countQueries.getQueryCount();
+        //countQueries.getQueryCount();
     }
     public void getQueryCount()
     {
