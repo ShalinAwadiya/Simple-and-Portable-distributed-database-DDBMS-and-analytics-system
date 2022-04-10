@@ -13,7 +13,7 @@ import static ca.dal.database.utils.PrintUtils.*;
  */
 public class AnalyticsMenu {
 
-    private Connection connection;
+    private final Connection connection;
 
     /**
      * @param connection
@@ -46,8 +46,10 @@ public class AnalyticsMenu {
             try {
                 userChoice = Integer.parseInt(userInput);
             } catch (Exception e) {
-                error("Exception Occurred" + e);
+                e.printStackTrace();
+                error("Incorrect option chosen, Please try Again");
             }
+
             switch (userChoice) {
                 case 1:
                     printWithMargin("Welcome to analytics mode", "To exit this mode enter \"quit\"");
@@ -65,7 +67,6 @@ public class AnalyticsMenu {
                     return;
                 default:
                     error("Incorrect option chosen, Please try Again");
-                    continue;
             }
         }
     }

@@ -140,6 +140,12 @@ public class QueryExecutor {
                 success("Transaction rollback successfully!");
                 break;
 
+            case COUNT_QUERIES:
+                break;
+
+            case COUNT_UPDATE:
+                break;
+
             default:
                 error("Invalid Query Option, Please try again!");
                 break;
