@@ -1,0 +1,30 @@
+customers
+customerID
+PK | customerID
+
+customers
+customerName
+
+customers
+dob
+
+customers
+personID
+FK | personID
+**N->1 relationship with below**
+
+orders
+orderID
+PK | orderID
+
+orders
+orderName
+
+orders
+dob
+
+orders
+cID
+FK | cID
+**N->1 relationship with below**
+

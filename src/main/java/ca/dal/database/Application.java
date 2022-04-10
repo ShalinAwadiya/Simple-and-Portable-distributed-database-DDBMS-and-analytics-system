@@ -1,5 +1,7 @@
 package ca.dal.database;
 
+import ca.dal.database.datamodel.DataModel;
+import ca.dal.database.extractor.DataExtract;
 import ca.dal.database.iam.Authentication;
 import ca.dal.database.storage.StorageManager;
 
@@ -18,9 +20,13 @@ public class Application {
 
     private static Authentication authentication = new Authentication();
 
-    public static void main(String[] args) {
-        StorageManager.init();
-        authentication.init();
+    public static void main(String[] args) throws IOException {
+        /*StorageManager.init();
+        authentication.init();*/
+       // DataExtract extract=new DataExtract();
+        //extract.exportDB("databases");
+        DataModel model=new DataModel();
+        model.createERD("nishit");
     }
 
     public static void setup() {
