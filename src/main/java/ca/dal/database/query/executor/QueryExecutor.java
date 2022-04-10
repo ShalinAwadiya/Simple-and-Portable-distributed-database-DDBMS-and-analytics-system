@@ -6,8 +6,6 @@ import ca.dal.database.storage.StorageManager;
 import ca.dal.database.storage.model.row.RowModel;
 import ca.dal.database.storage.model.table.TableMetadataModel;
 
-import java.util.logging.Logger;
-
 import static ca.dal.database.utils.PrintUtils.error;
 import static ca.dal.database.utils.PrintUtils.success;
 import static ca.dal.database.utils.StringUtils.isEmpty;
@@ -16,8 +14,6 @@ import static ca.dal.database.utils.StringUtils.isEmpty;
  * @author Nishit Mistry
  */
 public class QueryExecutor {
-
-    private static final Logger logger = Logger.getLogger(QueryExecutor.class.getName());
 
     private final StorageManager storageManager;
     private Connection connection = null;
@@ -59,6 +55,7 @@ public class QueryExecutor {
 
                 createTable(queryModel);
                 break;
+
             case INSERT_ROW:
 
                 if (isEmpty(getDatabaseName())) {
@@ -68,6 +65,7 @@ public class QueryExecutor {
 
                 insertRow(queryModel);
                 break;
+
             case SELECT_ROW:
 
                 if (isEmpty(getDatabaseName())) {
@@ -77,6 +75,7 @@ public class QueryExecutor {
 
                 fetchRows(getDatabaseName(), queryModel);
                 break;
+
             case UPDATE_ROW:
 
                 if (isEmpty(getDatabaseName())) {
@@ -86,6 +85,7 @@ public class QueryExecutor {
 
                 updateRows(getDatabaseName(), queryModel);
                 break;
+
             case DELETE_ROW:
 
                 if (isEmpty(getDatabaseName())) {
@@ -95,61 +95,117 @@ public class QueryExecutor {
 
                 deleteRows(getDatabaseName(), queryModel);
                 break;
+
             case START_TRANSACTION:
 
                 if (isEmpty(getDatabaseName())) {
                     error("Please select database");
                     break;
                 }
+
                 connection.setAutoCommit(false);
+                success("Transaction started successfully!");
                 break;
+
             case COMMIT:
 
-                if (!connection.isAutoCommit()) {
+                if ( connection.isAutoCommit()) {
+                    error("No transaction is running");
+                }
+
+                commit(getDatabaseName());
+                connection.setAutoCommit(true);
+                success("Transaction committed successfully!");
+                break;
+
+            case ROLLBACK:
+
+                if (connection.isAutoCommit()) {
                     error("No transaction is running");
                 }
 
                 connection.setAutoCommit(true);
+                rollback();
+                success("Transaction rollback successfully!");
                 break;
-            case ROLLBACK:
 
-                if (!connection.isAutoCommit()) {
-                    error("No transaction is running");
-                }
-
-                connection.setAutoCommit(false);
-                break;
             default:
                 error("Invalid Query Option, Please try again!");
                 break;
         }
     }
 
+    private void commit(String databaseName) {
+        storageManager.commit(databaseName);
+    }
+
+    /**
+     * @author Harsh Shah
+     */
+    private void rollback() {
+        storageManager.rollback();
+    }
+
+    /**
+     * @param queryModel
+     * @author Harsh Shah
+     */
     private void useDatabase(QueryModel queryModel) {
         setDatabaseName(queryModel.getDatabaseName());
         success(String.format("%s database selected successfully", queryModel.getDatabaseName()));
     }
 
+    /**
+     * @param databaseName
+     * @param queryModel
+     * @author Harsh Shah
+     */
     private void deleteRows(String databaseName, QueryModel queryModel) {
-        storageManager.deleteRow(databaseName, queryModel.getTableName(), queryModel.getCondition());
+        storageManager.deleteRow(queryModel.getRawQuery(), databaseName, queryModel.getTableName(), queryModel.getCondition());
     }
 
+    /**
+     * @param databaseName
+     * @param queryModel
+     * @author Harsh Shah
+     */
     private void updateRows(String databaseName, QueryModel queryModel) {
-        storageManager.updateRow(databaseName, queryModel.getTableName(), queryModel.getColumns().get(0), (String) queryModel.getValues().get(0), queryModel.getCondition());
+        storageManager.updateRow(queryModel.getRawQuery(), databaseName, queryModel.getTableName(),
+                queryModel.getColumns().get(0),
+                (String) queryModel.getValues().get(0),
+                queryModel.getCondition());
     }
 
+    /**
+     * @param databaseName
+     * @param queryModel
+     * @author Harsh Shah
+     */
     private void fetchRows(String databaseName, QueryModel queryModel) {
         storageManager.fetchRows(databaseName, queryModel.getTableName(), queryModel.getColumns(), queryModel.getCondition());
     }
 
+    /**
+     * @param queryModel
+     * @author Harsh Shah
+     */
     private void insertRow(QueryModel queryModel) {
-        storageManager.insertRow(getDatabaseName(), queryModel.getTableName(), new RowModel(queryModel.getValues()));
+        storageManager.insertRow(queryModel.getRawQuery(),getDatabaseName(), queryModel.getTableName(),
+                new RowModel(queryModel.getValues()));
     }
 
+    /**
+     * @param queryModel
+     * @author Harsh Shah
+     */
     private void createTable(QueryModel queryModel) {
         storageManager.createTable(getDatabaseName(), new TableMetadataModel(queryModel.getTableName(), queryModel.getColumnDefinition()));
     }
 
+    /**
+     * @param queryModel
+     * @author Harsh Shah
+     */
     private void createDatabase(QueryModel queryModel) {
         storageManager.createDatabase(queryModel.getDatabaseName());
     }

@@ -174,7 +174,7 @@ public class QueryParser {
     }
 
     public static QueryModel selectQuery(String newQuery, List<String> columns, Map<String, Object> conditionNew) {
-        String substring = newQuery.substring(newQuery.indexOf("from"), newQuery.length() - 1);
+        String substring = newQuery.substring(newQuery.indexOf("from"), newQuery.length());
         String[] queryToken = substring.split(" ");
         String tableName = queryToken[1];
         String columnsSelect = newQuery.substring(newQuery.indexOf("select") + 7, newQuery.indexOf("from") - 1);
