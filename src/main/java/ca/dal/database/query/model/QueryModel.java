@@ -22,6 +22,26 @@ public class QueryModel {
     }
 
     /**
+     * @param type
+     * @return model
+     */
+    public static QueryModel createCount(QueryType type) {
+        QueryModel model = new QueryModel();
+        model.setType(type);
+        return model;
+    }
+
+    /**
+     * @param type
+     * @return model
+     */
+    public static QueryModel countUpdates(QueryType type) {
+        QueryModel model = new QueryModel();
+        model.setType(type);
+        return model;
+    }
+
+    /**
      * @return columnDefinition
      */
     public List<ColumnMetadataModel> getColumnDefinition() {
@@ -285,4 +305,5 @@ public class QueryModel {
         model.setType(QueryType.ROLLBACK);
         return model;
     }
+
 }

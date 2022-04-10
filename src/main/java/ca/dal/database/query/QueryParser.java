@@ -5,6 +5,7 @@ import ca.dal.database.analytics.CountUpdates;
 import ca.dal.database.connection.Connection;
 import ca.dal.database.logger.QueryLog;
 import ca.dal.database.query.model.QueryModel;
+import ca.dal.database.query.model.QueryType;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 
 import java.util.ArrayList;
@@ -24,8 +25,6 @@ import static java.util.Arrays.asList;
 public class QueryParser {
 
     private static final QueryLog queryLog = new QueryLog();
-    //private static final CountQueries countQueries = new CountQueries();
-    private static final CountUpdates countUpdates = new CountUpdates();
 
     /**
      * @param connection
@@ -87,9 +86,12 @@ public class QueryParser {
                         if (token[1].equalsIgnoreCase("QUERIES")) {
                             CountQueries countQueries = new CountQueries();
                             countQueries.getQueryCount();
+                            queryModel = QueryModel.createCount(QueryType.COUNT_QUERIES);
                         } else if (token[1].equalsIgnoreCase("UPDATE")) {
                             String countDatabaseName = token[2];
+                            CountUpdates countUpdates = new CountUpdates();
                             countUpdates.countUpdates(countDatabaseName);
+                            queryModel = QueryModel.countUpdates(QueryType.COUNT_UPDATE);
                         } else {
                             error("Enter Valid Count Query");
                         }
