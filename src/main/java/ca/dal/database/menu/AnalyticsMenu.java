@@ -8,9 +8,12 @@ import java.util.Scanner;
 import static ca.dal.database.query.QueryParser.evaluateQuery;
 import static ca.dal.database.utils.PrintUtils.*;
 
+/**
+ * @author Nishit Mistry
+ */
 public class AnalyticsMenu {
 
-    private Connection connection;
+    private final Connection connection;
 
     public AnalyticsMenu(Connection connection) {
         this.connection = connection;
@@ -77,9 +80,6 @@ public class AnalyticsMenu {
         }
     }
 
-    /**
-     * @return
-     */
     private int runQuery() {
         Scanner sc = new Scanner(System.in);
         QueryExecutor executor = new QueryExecutor(getConnection());
