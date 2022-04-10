@@ -36,7 +36,6 @@ public class HomeMenu {
             System.out.println("5. Exit");
             System.out.print("Enter your choice of operation: ");
 
-
             Scanner sc = new Scanner(System.in);
             String userInput = sc.nextLine();
 
