@@ -72,7 +72,7 @@ public class CountUpdates {
                 Object value = entry.getValue();
                 System.out.println("Total: "+value+" Update operation are performed on "+key);
             }
-            System.out.println("File Read Successfully");
+            System.out.println("Update analysis performed successfully");
         } catch (
                 IOException e) {
             System.out.println("Exception:" + e.getMessage());
