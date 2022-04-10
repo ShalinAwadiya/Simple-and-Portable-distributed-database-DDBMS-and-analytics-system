@@ -2,6 +2,8 @@ package ca.dal.database;
 
 import ca.dal.database.config.ApplicationConfiguration;
 import ca.dal.database.config.model.InstanceModel;
+import ca.dal.database.datamodel.DataModel;
+import ca.dal.database.extractor.DataExtract;
 import ca.dal.database.iam.Authentication;
 import ca.dal.database.storage.StorageManager;
 

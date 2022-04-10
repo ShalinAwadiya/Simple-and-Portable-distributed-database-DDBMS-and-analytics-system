@@ -38,8 +38,8 @@ public class StorageManager {
         transactionManager = new TransactionManager(connection);
         this.connection = connection;
     }
-    public  StorageManager(){}
-    private boolean isTransaction(){
+
+    private boolean isTransaction() {
         return !this.connection.isAutoCommit();
     }
 
@@ -511,15 +511,15 @@ public class StorageManager {
 
         List<String> tables = transactionManager.getTablesInvolved();
 
-        for(String tableName: tables){
+        for (String tableName : tables) {
             List<RowModel> rows = fetchAllRows(databaseName, tableName);
 
             TableMetadataModel metadata = getTableMetadata(databaseName, tableName);
 
             Long rowNumbers = metadata.getNoOfRows();
 
-            for(RowModel row: rows) {
-                if(row.getMetadata().getIndex() == -1) {
+            for (RowModel row : rows) {
+                if (row.getMetadata().getIndex() == -1) {
                     rowNumbers++;
                     row.getMetadata().setIndex(rowNumbers);
                 }

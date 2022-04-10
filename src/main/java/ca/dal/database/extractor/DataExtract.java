@@ -1,5 +1,6 @@
 package ca.dal.database.extractor;
 
+import ca.dal.database.connection.Connection;
 import ca.dal.database.storage.StorageManager;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 import ca.dal.database.storage.model.column.ForeignKeyConstraintModel;
@@ -22,7 +23,7 @@ public class DataExtract {
 
     public int exportDB(String database) {
         try {
-            StorageManager storageManager = new StorageManager();
+            StorageManager storageManager = new StorageManager(new Connection("SYSTEM"));
             DatabaseMetadataModel databaseMetadataModel = storageManager.getDatabaseMetadata(database);
             List<TableMetadataHeaderModel> tableNames = databaseMetadataModel.getTableHeaderMetadataModels();
 

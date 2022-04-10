@@ -1,5 +1,6 @@
 package ca.dal.database.datamodel;
 
+import ca.dal.database.connection.Connection;
 import ca.dal.database.storage.StorageManager;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 import ca.dal.database.storage.model.column.ForeignKeyConstraintModel;
@@ -27,7 +28,7 @@ public class DataModel {
         try{
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resources/erd/" + database + "_ERD.erd"));
 bufferedWriter.write("\t\t\t\t\t\t\t************Reverse Engineering Model************\n");
-        StorageManager storageManager = new StorageManager();
+        StorageManager storageManager = new StorageManager(new Connection("SYSTEM"));
         DatabaseMetadataModel databaseMetadataModel = storageManager.getDatabaseMetadata(database);
         List<TableMetadataHeaderModel> tableNames = databaseMetadataModel.getTableHeaderMetadataModels();
 
