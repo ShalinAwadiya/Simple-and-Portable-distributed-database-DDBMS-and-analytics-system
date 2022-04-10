@@ -107,7 +107,7 @@ public class HomeMenu {
 
         try {
             QueryExecutor executor = new QueryExecutor(getConnection());
-            executor.execute(evaluateQuery(query));
+            executor.execute(evaluateQuery(getConnection(), query));
         } catch (Exception e){
             e.printStackTrace();
             error("Something went wrong, Please try again!");
