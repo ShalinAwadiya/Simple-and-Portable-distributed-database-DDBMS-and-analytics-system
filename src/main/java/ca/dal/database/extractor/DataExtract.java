@@ -1,10 +1,16 @@
 package ca.dal.database.extractor;
 
-import ca.dal.database.utils.FileUtils;
+import ca.dal.database.storage.StorageManager;
+import ca.dal.database.storage.model.column.ColumnMetadataModel;
+import ca.dal.database.storage.model.column.ForeignKeyConstraintModel;
+import ca.dal.database.storage.model.database.DatabaseMetadataModel;
+import ca.dal.database.storage.model.row.RowModel;
+import ca.dal.database.storage.model.table.TableMetadataHeaderModel;
+import ca.dal.database.storage.model.table.TableMetadataModel;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
 import static ca.dal.database.utils.PrintUtils.error;
@@ -14,117 +20,66 @@ import static ca.dal.database.utils.PrintUtils.error;
  */
 public class DataExtract {
 
-    public int exportDB(String path) {
-        int count = 0;
-
-        Path exportPath = Path.of("sql_dump", "export.sql").toAbsolutePath();
-
-        if(!Files.exists(exportPath)){
-            FileUtils.createDirectory("sql_dump");
-        }
-
+    public int exportDB(String database) {
         try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Path.of("sql_dump", "export.sql").toAbsolutePath().toString()));
-            File file = new File(path);
-            if (file.exists()) {
-                List<File> list1 = List.of(file.listFiles());
-                for (File fileIterate1 : list1) {
-                    if (fileIterate1.isDirectory()) {
-                        List<File> list2 = List.of(fileIterate1.listFiles());
-                        for (File fileIterate2 : list2) {
-                            if (fileIterate2.isDirectory()) {
-                                List<File> list3 = List.of(fileIterate2.listFiles());
-                                for (File fileIterate3 : list3) {
-                                    BufferedReader bufferedReader = new BufferedReader(new FileReader(fileIterate3));
-                                    if (fileIterate3.getName().contains("meta")) {
-                                        String lineRead;
-                                        String tableName = "";
-                                        String columnName = "";
-                                        String primarykey = "";
-                                        String foreignkey = "";
-                                        String foreignKeyRef = "";
-                                        String foreignKeyTable = "";
-                                        while ((lineRead = bufferedReader.readLine()) != null) {
-                                            if (count == 0) {
-                                                String[] split = lineRead.split(",");
-                                                tableName = split[1];
-                                                System.out.println("tablename: " + tableName);
-                                                count++;
-                                            } else if (lineRead.startsWith("(pk")) {
-                                                String[] split = lineRead.split(",");
-                                                primarykey = split[1].replace(")", "");
-                                            } else if (lineRead.startsWith("(fk")) {
-                                                String[] split = lineRead.split(",");
-                                                foreignkey = split[1].replace(")", "");
-                                            } else if (lineRead.startsWith("(f_ref")) {
-                                                String[] split = lineRead.split(",");
-                                                foreignKeyRef = split[1].replace(")", "");
-                                            } else if (lineRead.startsWith("(f_table")) {
-                                                String[] split = lineRead.split(",");
-                                                foreignKeyTable = split[1].replace(")", "");
 
-                                            } else {
-                                                String[] keyValue = lineRead.split(",");
-                                                columnName = columnName + keyValue[0].replace("(", "") + " " +
-                                                        keyValue[1].replace(")", "") + ",";
+            StorageManager storageManager = new StorageManager();
+            DatabaseMetadataModel databaseMetadataModel = storageManager.getDatabaseMetadata(database);
+            List<TableMetadataHeaderModel> tableNames = databaseMetadataModel.getTableHeaderMetadataModels();
 
-                                            }
-                                        }
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resources/sql_dump/export.sql"));
+            for (TableMetadataHeaderModel tableNameModel : tableNames) {
 
-                                        String drop = "drop table if exists " + tableName;
-                                        bufferedWriter.write(drop);
-                                        bufferedWriter.newLine();
-                                        String create = "Create table " + tableName + "(" + columnName;
-
-                                        if (primarykey != "") {
-                                            create = create + "primary key (" + primarykey + ")";
-                                        }
-
-                                        if (foreignkey != "" && foreignKeyRef != "" && foreignKeyTable != "") {
-
-                                            create = create + ", foreign key (" + foreignkey
-                                                    + ") references " + foreignKeyTable + "(" + foreignKeyRef + ")";
-                                        }
-                                        create = create + ");";
-                                        bufferedWriter.write(create);
-                                        bufferedWriter.newLine();
-                                        System.out.println(create);
-                                        count = 0;
-                                    }
-                                    if (fileIterate3.getName().contains("rows")) {
-                                        String line = "";
-                                        String insert = "INSERT INTO " + fileIterate3.getName().replace(".rows", "") + " VALUES (";
-                                        String readData = "";
-                                        while ((line = bufferedReader.readLine()) != null) {
-                                            if (!line.startsWith("[#")) {
-                                                readData = readData + line + ",";
-                                                count++;
-                                            } else {
-                                                int excludeLast = readData.length() - 1;
-                                                if (count != 0) {
-                                                    readData = readData.substring(0, excludeLast) + "),(";
-                                                }
-                                            }
-                                        }
-                                        readData = readData.substring(0, readData.length() - 1) + ");";
-                                        insert = insert + readData;
-                                        bufferedWriter.write(insert);
-                                        bufferedWriter.newLine();
-                                        System.out.println("insert " + insert);
-                                        count = 0;
-                                    }
-                                }
-                            }
-                        }
+                String tableName = tableNameModel.getTableName();
+                String drop = "drop table if exists " + tableName + ";";
+                bufferedWriter.write(drop);
+                bufferedWriter.write("\n");
+                String create = "create table " + tableName + "(";
+                TableMetadataModel tableMetadataModel = storageManager.getTableMetadata(database, tableName);
+                List<ColumnMetadataModel> tableColumnMetaData = tableMetadataModel.getColumnsMetadata();
+                String primaryKeyLocal = "";
+                String foreignKeyLocal = "";
+                for (ColumnMetadataModel metadataModel : tableColumnMetaData) {
+                    String primaryKey = "";
+                    String foreignKey = "";
+                    String columnName = metadataModel.getName();
+                    String columnType = metadataModel.getType();
+                    ForeignKeyConstraintModel foreignKeyModel;
+                    if (columnName != null && columnType != null) {
+                        create += columnName + "(" + columnType + "),";
                     }
+                    if (metadataModel.isPrimaryKey()) {
+                        primaryKey = columnName;
+                        primaryKeyLocal = "primary key(" + primaryKey + "),";
+                    }
+                    if (metadataModel.isForeignKey()) {
+                        foreignKey = columnName;
+                        foreignKeyModel = metadataModel.getForeignConstraint();
+                        foreignKeyLocal = "foreign key(" + foreignKey + ") references " + foreignKeyModel.getTableName() + "(" + foreignKeyModel.getColumnName() + ")";
+                    }
+
                 }
+                bufferedWriter.write(create + primaryKeyLocal + foreignKeyLocal + ";");
+                bufferedWriter.write("\n");
+                List<RowModel> rowModelList = storageManager.fetchAllRows(database, tableName);
+                String insert = "insert into table " + tableName + " values ";
+
+                for (RowModel rowModel : rowModelList) {
+                    insert += "(" + rowModel.getValues() + "),";
+                }
+
+                String insertWithCharRemove = insert.replace("[", "").replace("]", "");
+                bufferedWriter.write(insertWithCharRemove.substring(0, insertWithCharRemove.length() - 1) + ";");
+                bufferedWriter.write("\n\n");
             }
             bufferedWriter.close();
             return 0;
-        } catch (IOException e){
+        } catch (
+                IOException e) {
             e.printStackTrace();
             error("Something went wrong, Please try again");
             return -1;
         }
+
     }
 }

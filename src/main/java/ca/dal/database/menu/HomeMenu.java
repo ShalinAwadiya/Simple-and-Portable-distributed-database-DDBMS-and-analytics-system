@@ -24,7 +24,7 @@ public class HomeMenu {
     }
 
 
-    public void show() throws IOException {
+    public void show() throws Exception {
 
         printWithMargin("Select option from the Menu");
         System.out.println("1. Write Queries");
@@ -85,7 +85,7 @@ public class HomeMenu {
         /**
          * @author Harsh Shah
          */
-        private void exportDataModel () {
+        private void exportDataModel () throws Exception {
             DataExtract extract = new DataExtract();
             int result = extract.exportDB("datastore");
             if (result == 0) {

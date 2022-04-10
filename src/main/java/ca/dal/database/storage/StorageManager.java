@@ -392,7 +392,7 @@ public class StorageManager {
      * @return
      * @author Harsh Shah
      */
-    private List<RowModel> fetchAllRows(String databaseName, String tableName) {
+    public List<RowModel> fetchAllRows(String databaseName, String tableName) {
 
         TableMetadataModel tableMetadata = getTableMetadata(databaseName, tableName);
 

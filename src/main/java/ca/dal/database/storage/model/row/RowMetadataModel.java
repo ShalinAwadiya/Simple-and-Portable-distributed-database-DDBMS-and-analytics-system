@@ -31,13 +31,12 @@ public class RowMetadataModel {
         return identifier;
     }
 
-    public static RowMetadataModel parseHeader(String line){
+    public static RowMetadataModel parseHeader(String line) {
         String[] parts = line.substring(1, line.length() - 1).split(BLANK_SPACE);
 
-        if(parts.length != 2){
+        if (parts.length != 2) {
             return null;
         }
-
         return new RowMetadataModel(Long.parseLong(parts[0].substring(1)), parts[1]);
     }
 
