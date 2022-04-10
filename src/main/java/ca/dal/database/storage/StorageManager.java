@@ -32,8 +32,10 @@ public class StorageManager {
 
 
     private Connection connection = null;
+    private TransactionManager transactionManager = null;
 
     public StorageManager(Connection connection) {
+        transactionManager = new TransactionManager(connection);
         this.connection = connection;
     }
 
@@ -46,13 +48,7 @@ public class StorageManager {
     private static final String DATABASE_METADATA = DOT + "meta";
     private static final String TABLE_FILE_EXTENSION = DOT + "rows";
     private static final String TABLE_METADATA = DOT + "meta";
-    private Connection connection = null;
-    private TransactionManager transactionManager = null;
 
-    public StorageManager(Connection connection) {
-        transactionManager = new TransactionManager(connection);
-        this.connection = connection;
-    }
 
     /**
      * @author Harsh Shah
@@ -69,10 +65,6 @@ public class StorageManager {
             // Write Table Metadata
             write(new DatastoreModel(0).toListString(), ROOT, builder(ROOT, DATABASE_METADATA));
         }
-    }
-
-    private boolean isTransaction() {
-        return !this.connection.isAutoCommit();
     }
 
     public void updateDatastoreMetadata(DatabaseMetadataModel metadataModel) {
