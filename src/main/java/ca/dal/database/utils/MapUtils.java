@@ -28,7 +28,6 @@ public class MapUtils {
         return map;
     }
 
-
     public static <K, V> Map<K, V> of(K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
         Map<K, V> map = new HashMap<>();
         map.put(k1, v1);
@@ -37,5 +36,4 @@ public class MapUtils {
         map.put(k4, v4);
         return map;
     }
-
 }
