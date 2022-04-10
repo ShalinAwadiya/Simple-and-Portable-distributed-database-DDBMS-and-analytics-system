@@ -1,11 +1,10 @@
 package ca.dal.database.transaction.model;
 
+import ca.dal.database.storage.model.row.RowModel;
 import ca.dal.database.utils.UUIDUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Harsh Shah
@@ -16,7 +15,7 @@ public class TransactionModel {
 
     private List<String> queries;
 
-    private Map<String, TableDatastoreModel> datastore;
+    private Map<String, Map<String, TableDatastoreModel>> datastore;
 
     public TransactionModel() {
         this.id = UUIDUtils.generate();
@@ -33,41 +32,91 @@ public class TransactionModel {
     }
 
 
-    public TableDatastoreModel fetchDatastore(String tableName) {
-        return datastore.get(tableName);
+    /**
+     * @param databaseName
+     * @param tableName
+     * @return
+     * @author Harsh Shah
+     */
+    public TableDatastoreModel fetchDatastore(String databaseName, String tableName) {
+        return getFromBuffer(databaseName, tableName);
     }
 
     /**
      * @param tableName
-     * @param values
+     * @param rowModel
      * @author Harsh Shah
      */
-    public void addInDatastore(String tableName, List<Object> values) {
-        TableDatastoreModel model = datastore.getOrDefault(tableName, new TableDatastoreModel(tableName));
-        model.addRow(values);
-        datastore.put(tableName, model);
+    public void addInDatastore(String databaseName, String tableName, RowModel rowModel) {
+        TableDatastoreModel model = getFromBuffer(databaseName, tableName);
+        model.addRow(rowModel);
+        putFromBuffer(databaseName, tableName, model);
+    }
+
+
+
+    /**
+     * @param tableName
+     * @param rowModels
+     * @author Harsh Shah
+     */
+    public void updateInDatastore(String databaseName, String tableName, List<RowModel> rowModels) {
+        TableDatastoreModel model = getFromBuffer(databaseName, tableName);
+
+        for(RowModel rowModel: rowModels){
+            model.updateRow(rowModel);
+        }
+
+        putFromBuffer(databaseName, tableName, model);
     }
 
     /**
      * @param tableName
-     * @param rowIdentifier
-     * @param values
+     * @param rowIdentifiers
      * @author Harsh Shah
      */
-    public void updateInDatastore(String tableName, String rowIdentifier, List<Object> values) {
-        TableDatastoreModel model = datastore.getOrDefault(tableName, new TableDatastoreModel(tableName));
-        model.updateRow(rowIdentifier, values);
-        datastore.put(tableName, model);
+    public void deleteInDatastore(String databaseName, String tableName, List<String> rowIdentifiers) {
+        TableDatastoreModel model = getFromBuffer(databaseName, tableName);
+
+        for(String rowIdentifier: rowIdentifiers) {
+            model.deleteRow(rowIdentifier);
+        }
+        putFromBuffer(databaseName, tableName, model);
+    }
+
+
+    /**
+     * @param databaseName
+     * @param tableName
+     * @return
+     * @author Harsh Shah
+     */
+    private TableDatastoreModel getFromBuffer(String databaseName, String tableName){
+        if(!datastore.containsKey(databaseName)){
+            datastore.put(databaseName, new HashMap<>());
+        }
+
+        if(!datastore.get(databaseName).containsKey(tableName)){
+            datastore.get(databaseName).put(tableName, new TableDatastoreModel(tableName));
+        }
+
+        return datastore.get(databaseName).get(tableName);
     }
 
     /**
+     * @param databaseName
      * @param tableName
-     * @param rowIdentifier
+     * @param model
      * @author Harsh Shah
      */
-    public void deleteInDatastore(String tableName, String rowIdentifier) {
-        TableDatastoreModel model = datastore.getOrDefault(tableName, new TableDatastoreModel(tableName));
-        model.deleteRow(rowIdentifier);
-        datastore.put(tableName, model);
+    private void putFromBuffer(String databaseName, String tableName, TableDatastoreModel model) {
+        datastore.get(databaseName).put(tableName, model);
+    }
+
+    public List<String> getTablesInvolved() {
+        return datastore.entrySet()
+                .iterator().next()
+                .getValue().entrySet()
+                .stream().map(itr -> itr.getKey()).collect(Collectors.toList());
     }
 }

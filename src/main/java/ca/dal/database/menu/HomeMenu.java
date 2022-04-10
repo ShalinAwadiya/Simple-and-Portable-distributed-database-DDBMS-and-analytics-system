@@ -23,47 +23,75 @@ public class HomeMenu {
     }
 
 
-    public void show(){
+    public void show() {
 
-        printWithMargin("Select option from the Menu");
-        System.out.println("1. Write Queries");
-        System.out.println("2. Export");
-        System.out.println("3. Data Model");
-        System.out.println("4. Analytics");
-        System.out.println("5. Exit");
-        System.out.print("Enter your choice of operation: ");
+        while (true) {
+
+            printWithMargin("Select option from the Menu");
+            System.out.println("1. Write Queries");
+            System.out.println("2. Export");
+            System.out.println("3. Data Model");
+            System.out.println("4. Analytics");
+            System.out.println("5. Exit");
+            System.out.print("Enter your choice of operation: ");
 
 
-        Scanner sc = new Scanner(System.in);
-        int userChoice = sc.nextInt();
+            Scanner sc = new Scanner(System.in);
+            String userInput = sc.nextLine();
 
-        switch (userChoice){
-            case 1:
-                printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
-                int result = runQuery();
-                if(result == -1){
-                    show();
+            int userChoice = -1;
+            try {
+                userChoice = Integer.parseInt(userInput);
+            } catch (Exception e) {
+                switch (userChoice) {
+                    case 1:
+                        printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
+                        int result = runQuery();
+                        if (result == -1) {
+                            show();
+                        }
+                        break;
+                    case 2:
+                        exportDatabase();
+                        show();
+                        break;
+                    case 3:
+                        exportDataModel();
+                        show();
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        printWithMargin("Good Bye!");
+                        return;
+                    default:
+                        error("Incorrect option chosen, Please try Again");
+                        continue;
                 }
-                break;
-            case 2:
-                exportDatabase();
-                show();
-                break;
-            case 3:
-                exportDataModel();
-                show();
-                break;
-            case 4:
-                break;
-            case 5:
-                printWithMargin("Good Bye!");
-                return;
-            default:
-                error("Incorrect option chosen, Please try Again");
-                show();
+
+                switch (userChoice) {
+                    case 1:
+                        printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
+                        runQuery();
+                        break;
+                    case 2:
+                        exportDatabase();
+                        break;
+                    case 3:
+                        exportDataModel();
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        printWithMargin("Good Bye!");
+                        return;
+                    default:
+                        error("Incorrect option chosen, Please try Again");
+
+                }
+            }
 
         }
-
     }
 
     /**
@@ -97,23 +125,22 @@ public class HomeMenu {
      * @return
      */
     private int runQuery() {
-        print("> ");
         Scanner sc = new Scanner(System.in);
-        String query = sc.nextLine();
+        QueryExecutor executor = new QueryExecutor(getConnection());
+        while (true) {
+            print("> ");
+            String query = sc.nextLine();
 
-        if("quit".equals(query)){
-            return -1;
+            if ("quit".equals(query)) {
+                return -1;
+            }
+
+            try {
+                executor.execute(evaluateQuery(getConnection(), query));
+            } catch (Exception e) {
+                e.printStackTrace();
+                error("Something went wrong, Please try again!");
+            }
         }
-
-        try {
-            QueryExecutor executor = new QueryExecutor(getConnection());
-            executor.execute(evaluateQuery(getConnection(), query));
-        } catch (Exception e){
-            e.printStackTrace();
-            error("Something went wrong, Please try again!");
-        }
-        runQuery();
-
-        return 0;
     }
 }
