@@ -44,7 +44,7 @@ public class PrintUtils {
         System.out.println("");
     }
 
-    public static void success(String message, Object... values) {
+    public static void success(String message, Object... values){
         success(String.format(message, values));
     }
 

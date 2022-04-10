@@ -22,6 +22,10 @@ public class TransactionManager {
         this.connection = connection;
         this.transaction = new TransactionModel();
     }
+    
+    public TransactionModel start() {
+        return new TransactionModel();
+    }
 
     /**
      * @param databaseName

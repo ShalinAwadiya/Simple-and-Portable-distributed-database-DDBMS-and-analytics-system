@@ -102,7 +102,6 @@ public class QueryExecutor {
                     error("Please select database");
                     break;
                 }
-
                 connection.setAutoCommit(false);
                 success("Transaction started successfully!");
                 break;

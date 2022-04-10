@@ -30,6 +30,17 @@ import static ca.dal.database.utils.StringUtils.isEmpty;
  */
 public class StorageManager {
 
+
+    private Connection connection = null;
+
+    public StorageManager(Connection connection) {
+        this.connection = connection;
+    }
+
+    private boolean isTransaction(){
+        return !this.connection.isAutoCommit();
+    }
+
     public static final String ROOT = "datastore";
     private static final String DATASTORE_METADATA = DOT + "meta";
     private static final String DATABASE_METADATA = DOT + "meta";
