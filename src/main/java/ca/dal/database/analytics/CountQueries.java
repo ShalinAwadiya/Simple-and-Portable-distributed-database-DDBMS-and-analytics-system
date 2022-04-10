@@ -27,6 +27,7 @@ public class CountQueries {
                 databases.add(directories[i]);
             }
         }
+        System.out.println("Databases:"+databases);
     }
 
 
