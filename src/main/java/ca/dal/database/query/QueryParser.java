@@ -1,5 +1,7 @@
 package ca.dal.database.query;
 
+import ca.dal.database.analytics.CountQueries;
+import ca.dal.database.analytics.CountUpdates;
 import ca.dal.database.connection.Connection;
 import ca.dal.database.logger.QueryLog;
 import ca.dal.database.query.model.QueryModel;
@@ -25,10 +27,12 @@ public class QueryParser {
 
     private static final Logger logger = Logger.getLogger(QueryParser.class.getName());
     private static final QueryLog queryLog = new QueryLog();
+    private static final CountQueries countQueries = new CountQueries();
+    private static final CountUpdates countUpdates = new CountUpdates();
 
     public static QueryModel evaluateQuery(Connection connection, String query) {
 
-        if(query.charAt(query.length() - 1) == ';'){
+        if (query.charAt(query.length() - 1) == ';') {
             String newQuery = query.substring(0, query.length() - 1);
 
             String[] token = newQuery.split(" ");
@@ -47,7 +51,7 @@ public class QueryParser {
                         } else if (token[1].equalsIgnoreCase("TABLE")) {
                             queryModel = createTableQuery(token, newQuery);
                         } else {
-                            logger.log(Level.INFO, "Enter Valid Create Query");
+                            error("Enter Valid Create Query");
                         }
                         break;
                     case "USE":
@@ -65,7 +69,7 @@ public class QueryParser {
                     case "DELETE":
                         queryModel = deleteQuery(token, newQuery);
                         break;
-                    case "START":
+                    case "START TRANSACTION":
                         queryModel = startTransactionQuery(newQuery);
                         break;
                     case "END":
@@ -76,6 +80,16 @@ public class QueryParser {
                         break;
                     case "ROLLBACK":
                         queryModel = rollbackQuery(newQuery);
+                        break;
+                    case "COUNT":
+                        if (token[1].equalsIgnoreCase("QUERIES")) {
+                            countQueries.getQueryCount();
+                        } else if (token[1].equalsIgnoreCase("UPDATE")) {
+                            String countDatabaseName = token[2];
+                            countUpdates.countUpdates(countDatabaseName);
+                        } else {
+                            error("Enter Valid Count Query");
+                        }
                         break;
                     default:
                         error("Invalid Query, Try again");
@@ -94,7 +108,7 @@ public class QueryParser {
             }
             return queryModel;
         } else {
-         error("Semicolon (;) missing");
+            error("Semicolon (;) missing");
         }
         return null;
     }
