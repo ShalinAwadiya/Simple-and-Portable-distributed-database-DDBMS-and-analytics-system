@@ -18,11 +18,24 @@ public class CountUpdates {
         countUpdates.tables.add("table2");
         countUpdates.tables.add("table3");
         //System.out.println(countUpdates.tables);
-        countUpdates.countUpdates();
+        countUpdates.countUpdates("database1");
     }
 
-    public void countUpdates() {
+    public void countUpdates(String databaseName) {
         BufferedReader br = null;
+
+        String path="datastore/"+databaseName;
+        File tableFiles = new File(path);
+        String directories[]= tableFiles.list();
+        for(int i=0;i<directories.length;i++)
+        {
+            if(!(directories[i].equalsIgnoreCase(databaseName+".meta")))
+            {
+                //System.out.println(directories[i]);
+                tables.add(directories[i]);
+            }
+        }
+
         try {
             File file = new File("DatabaseLogs/QueryLogs.txt");
             FileReader fr = new FileReader(file);
