@@ -1,5 +1,6 @@
 package ca.dal.database.datamodel;
 
+import ca.dal.database.storage.StorageManager;
 import ca.dal.database.utils.FileUtils;
 
 import java.io.*;
@@ -32,7 +33,7 @@ public class DataModel {
             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(Path.of("datamodel",
                     database, builder(database, ".erd")).toAbsolutePath().toString()));
 
-            File file = new File("databases");
+            File file = new File(StorageManager.ROOT);
 
             if (file.exists()) {
                 System.out.println("dire" + file);

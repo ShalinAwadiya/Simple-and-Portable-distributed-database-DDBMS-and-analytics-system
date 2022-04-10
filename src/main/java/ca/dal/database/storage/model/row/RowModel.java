@@ -44,6 +44,10 @@ public class RowModel {
         return values;
     }
 
+    public void setValues(List<Object> values) {
+        this.values = values;
+    }
+
     public static RowModel parse(List<String> lines){
         if(lines == null || lines.isEmpty()){
             return null;

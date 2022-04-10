@@ -1,64 +1,94 @@
 package ca.dal.database.transaction;
 
+import ca.dal.database.connection.Connection;
+import ca.dal.database.query.model.QueryType;
+import ca.dal.database.storage.model.row.RowModel;
+import ca.dal.database.transaction.model.TableDatastoreModel;
 import ca.dal.database.transaction.model.TransactionModel;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static java.util.Collections.emptyList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Harsh Shah
  */
 public class TransactionManager {
 
-    private static final Logger logger = Logger.getLogger(TransactionManager.class.getName());
+    private Connection connection = null;
 
+    private TransactionModel transaction = null;
 
+    public TransactionManager(Connection connection) {
+        this.connection = connection;
+        this.transaction = new TransactionModel();
+    }
+    
     public TransactionModel start() {
         return new TransactionModel();
     }
 
-    public void perform(TransactionModel transaction, String query) {
+    /**
+     * @param databaseName
+     * @param tableName
+     * @param row
+     * @param rawQuery
+     * @author Harsh Shah
+     */
+    public void perform(String databaseName, String tableName, RowModel row, String rawQuery) {
+        transaction.addQuery(rawQuery);
+        transaction.addInDatastore(databaseName, tableName, row);
+    }
 
-        transaction.addQuery(query);
+    /**
+     * @param type
+     * @param databaseName
+     * @param tableName
+     * @param rows
+     * @param rawQuery
+     * @author Harsh Shah
+     */
+    public void perform(QueryType type, String databaseName, String tableName, List<RowModel> rows, String rawQuery) {
+        transaction.addQuery(rawQuery);
 
-        // get table name from the query
-        String tableName = query;
-
-        switch (query) {
-            case "select":
-
-                // fetch from the database + local datastore
-                // merge the data with local buffer
-                // get newly added data
-                // check if there is any update on data
-                // check if there is any deletion on data
-
-                break;
-            case "insert":
-
-                // insert values in local datastore
-                transaction.addInDatastore(tableName, emptyList());
-                break;
-            case "update":
-
-                // fetch the value from the database + local datastore
-
-                // update the data in local datastore
-                transaction.updateInDatastore(tableName, "rowIdentifier", emptyList());
-                break;
-            case "delete":
-
-                // fetch the value from the database + local datastore
-
-                // delete the data in local datastore
-                transaction.deleteInDatastore(tableName, "rowIdentifier");
-                break;
-
-            default:
+        if (QueryType.DELETE_ROW.equals(type)) {
+            transaction.deleteInDatastore(databaseName, tableName,
+                    rows.stream().map(row -> row.getMetadata().getIdentifier()).collect(Collectors.toList()));
+        } else {
+            transaction.updateInDatastore(databaseName, tableName, rows);
         }
     }
 
 
+    /**
+     * @param databaseName
+     * @param tableName
+     * @return
+     * @author Harsh Shah
+     */
+    public TableDatastoreModel fetchDatastore(String databaseName, String tableName) {
+        return transaction.fetchDatastore(databaseName, tableName);
+    }
+
+    /**
+     * @param databaseName
+     * @param tableName
+     * @param rawQuery
+     * @return
+     * @author Harsh Shah
+     */
+    public TableDatastoreModel fetchDatastore(String databaseName, String tableName, String rawQuery) {
+        transaction.addQuery(rawQuery);
+        return transaction.fetchDatastore(databaseName, tableName);
+    }
+
+    /**
+     * @author Harsh Shah
+     */
+    public void rollback() {
+        this.transaction = new TransactionModel();
+    }
+
+    public List<String> getTablesInvolved() {
+        return this.transaction.getTablesInvolved();
+    }
 }
