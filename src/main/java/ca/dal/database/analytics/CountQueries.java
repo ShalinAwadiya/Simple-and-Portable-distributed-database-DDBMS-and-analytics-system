@@ -111,7 +111,7 @@ public class CountQueries {
                     System.out.println("User "+key2+" submitted "+value2+" query for "+key1);
                 }
             }
-            System.out.println("File Read Successfully");
+            System.out.println("Query analysis performed successfully");
         } catch (IOException e) {
             System.out.println("Exception:"+e.getMessage());
         }finally
