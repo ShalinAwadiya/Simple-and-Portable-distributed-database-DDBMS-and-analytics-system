@@ -9,7 +9,7 @@ customerName
 dob
 pID
 FK | pID
-**N->1 relationship with below**
+** N->N relationship with below **
 Foreign key table: persons
 Foreign key reference: personID
 
@@ -22,6 +22,6 @@ orderName
 dob
 cID
 FK | cID
-**N->1 relationship with below**
+** N->1 relationship with below **
 Foreign key table: customers
 Foreign key reference: customerID
