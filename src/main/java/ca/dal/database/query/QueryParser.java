@@ -24,7 +24,7 @@ import static java.util.Arrays.asList;
 public class QueryParser {
 
     private static final QueryLog queryLog = new QueryLog();
-    private static final CountQueries countQueries = new CountQueries();
+    //private static final CountQueries countQueries = new CountQueries();
     private static final CountUpdates countUpdates = new CountUpdates();
 
     /**
@@ -85,6 +85,7 @@ public class QueryParser {
                         break;
                     case "COUNT":
                         if (token[1].equalsIgnoreCase("QUERIES")) {
+                            CountQueries countQueries = new CountQueries();
                             countQueries.getQueryCount();
                         } else if (token[1].equalsIgnoreCase("UPDATE")) {
                             String countDatabaseName = token[2];
@@ -99,10 +100,10 @@ public class QueryParser {
             }
 
             if (queryModel != null) {
-                queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.", of("database", connection.getDatabaseName(), "query", query, "table", queryModel.getTableName(), "username", connection.getUserId()));
+                queryLog.writeLog("Information Log", "Query - " + queryModel.getType().toString(), "Query executed by a user.", of("database", connection.getDatabaseName(), "query", null, "table", queryModel.getTableName(), "username", connection.getUserId()));
 
             } else {
-                queryLog.writeLog("Error Log", "Query - null", "Invalid Query executed by a user.", of("database", connection.getDatabaseName(), "query", query, "table", "null", "username", connection.getUserId()));
+                queryLog.writeLog("Error Log", "Query - null", "Invalid Query executed by a user.", of("database", connection.getDatabaseName(), "query", null, "table", "null", "username", connection.getUserId()));
             }
             return queryModel;
         } else {
