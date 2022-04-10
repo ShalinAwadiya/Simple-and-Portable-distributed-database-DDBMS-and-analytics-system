@@ -12,8 +12,8 @@ import static ca.dal.database.utils.PrintUtils.*;
 
 public class HomeMenu {
 
-    private Connection connection;
-    private AnalyticsMenu analyticsMenu;
+    private final Connection connection;
+    private final AnalyticsMenu analyticsMenu;
 
     /**
      * @param connection
