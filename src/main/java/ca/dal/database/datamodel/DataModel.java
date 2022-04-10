@@ -23,7 +23,7 @@ public class DataModel {
      * @author Meghdoot Ojha
      */
 
-    public int createERD(String database) throws IOException {
+    public int createERD(String database){
         try{
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resources/erd/" + database + "_ERD.erd"));
 bufferedWriter.write("\t\t\t\t\t\t\t************Reverse Engineering Model************\n");

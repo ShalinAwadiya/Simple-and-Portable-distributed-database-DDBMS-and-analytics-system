@@ -3,6 +3,7 @@ package ca.dal.database.logger;
 import java.io.*;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -54,7 +55,7 @@ public class QueryLog {
         }
     }
 
-    public void writeLog(String type, String subject, String message, HashMap<String,String> data)
+    public void writeLog(String type, String subject, String message, Map<String,String> data)
     {
         BufferedWriter bw=null;
         try {

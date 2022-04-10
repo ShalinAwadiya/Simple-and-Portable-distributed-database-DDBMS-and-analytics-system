@@ -18,7 +18,7 @@ public class Authentication {
         identityManagementLog = new IdentityManagementLog();
     }
 
-    public void init() throws Exception {
+    public void init() {
         System.out.println("1. Register");
         System.out.println("2. Login");
         System.out.println("3. Exit");
@@ -40,7 +40,7 @@ public class Authentication {
 
     }
 
-    private void userRegistration() throws Exception {
+    private void userRegistration(){
         Scanner sc = new Scanner(System.in);
         User u = new User();
 
@@ -117,7 +117,7 @@ public class Authentication {
 
     }
 
-    private void userLogin() throws Exception {
+    private void userLogin() {
         Scanner sc = new Scanner(System.in);
         String userId = "";
         String password = "";

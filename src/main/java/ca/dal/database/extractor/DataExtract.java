@@ -22,7 +22,6 @@ public class DataExtract {
 
     public int exportDB(String database) {
         try {
-
             StorageManager storageManager = new StorageManager();
             DatabaseMetadataModel databaseMetadataModel = storageManager.getDatabaseMetadata(database);
             List<TableMetadataHeaderModel> tableNames = databaseMetadataModel.getTableHeaderMetadataModels();
