@@ -43,54 +43,54 @@ public class HomeMenu {
             try {
                 userChoice = Integer.parseInt(userInput);
             } catch (Exception e) {
-                switch (userChoice) {
-                    case 1:
-                        printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
-                        int result = runQuery();
-                        if (result == -1) {
-                            show();
-                        }
-                        break;
-                    case 2:
-                        exportDatabase();
+                error("Exception Occurred" + e);
+            }
+            switch (userChoice) {
+                case 1:
+                    printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
+                    int result = runQuery();
+                    if (result == -1) {
                         show();
-                        break;
-                    case 3:
-                        exportDataModel();
-                        show();
-                        break;
-                    case 4:
-                        break;
-                    case 5:
-                        printWithMargin("Good Bye!");
-                        return;
-                    default:
-                        error("Incorrect option chosen, Please try Again");
-                        continue;
-                }
-
-                switch (userChoice) {
-                    case 1:
-                        printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
-                        runQuery();
-                        break;
-                    case 2:
-                        exportDatabase();
-                        break;
-                    case 3:
-                        exportDataModel();
-                        break;
-                    case 4:
-                        break;
-                    case 5:
-                        printWithMargin("Good Bye!");
-                        return;
-                    default:
-                        error("Incorrect option chosen, Please try Again");
-
-                }
+                    }
+                    break;
+                case 2:
+                    exportDatabase();
+                    show();
+                    break;
+                case 3:
+                    exportDataModel();
+                    show();
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    printWithMargin("Good Bye!");
+                    return;
+                default:
+                    error("Incorrect option chosen, Please try Again");
+                    continue;
             }
 
+            switch (userChoice) {
+                case 1:
+                    printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
+                    runQuery();
+                    break;
+                case 2:
+                    exportDatabase();
+                    break;
+                case 3:
+                    exportDataModel();
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    printWithMargin("Good Bye!");
+                    return;
+                default:
+                    error("Incorrect option chosen, Please try Again");
+
+            }
         }
     }
 
@@ -105,7 +105,7 @@ public class HomeMenu {
         DataModel model = new DataModel();
         int result = model.createERD(database);
 
-        if(result == 0) {
+        if (result == 0) {
             success("Entity-Relationship Model of %s is created!", database);
         }
     }
@@ -116,7 +116,7 @@ public class HomeMenu {
     private void exportDataModel() {
         DataExtract extract = new DataExtract();
         int result = extract.exportDB("datastore");
-        if(result == 0) {
+        if (result == 0) {
             success("Data Model exported successfully!");
         }
     }
