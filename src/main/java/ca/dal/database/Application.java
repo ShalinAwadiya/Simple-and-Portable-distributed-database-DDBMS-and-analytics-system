@@ -21,12 +21,8 @@ public class Application {
     private static Authentication authentication = new Authentication();
 
     public static void main(String[] args) throws IOException {
-        /*StorageManager.init();
-        authentication.init();*/
-       // DataExtract extract=new DataExtract();
-        //extract.exportDB("databases");
-        DataModel model=new DataModel();
-        model.createERD("nishit");
+        StorageManager.init();
+        authentication.init();
     }
 
     public static void setup() {

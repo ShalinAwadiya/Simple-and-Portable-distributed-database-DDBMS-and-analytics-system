@@ -1,30 +1,35 @@
+							************Reverse Engineering Model************
+
++---------------------+
 customers
++---------------------+
 customerID
 PK | customerID
-
-customers
 customerName
-
-customers
 dob
-
-customers
-personID
-FK | personID
+pID
+FK | pID
 **N->1 relationship with below**
+Foreign key table: persons
+Foreign key reference: personID
 
++---------------------+
 orders
++---------------------+
 orderID
 PK | orderID
-
-orders
 orderName
-
-orders
 dob
-
-orders
 cID
 FK | cID
 **N->1 relationship with below**
+Foreign key table: customers
+Foreign key reference: customerID
 
++---------------------+
+invoice
++---------------------+
+invoiceID
+PK | invoiceID
+invoiceTitle
+date

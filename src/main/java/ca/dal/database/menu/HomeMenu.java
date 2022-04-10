@@ -1,8 +1,11 @@
 package ca.dal.database.menu;
 
 import ca.dal.database.connection.Connection;
+import ca.dal.database.datamodel.DataModel;
+import ca.dal.database.extractor.DataExtract;
 import ca.dal.database.query.executor.QueryExecutor;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 import static ca.dal.database.query.QueryParser.evaluateQuery;
@@ -21,7 +24,7 @@ public class HomeMenu {
     }
 
 
-    public void show(){
+    public void show() throws IOException {
 
         printWithMargin("Select option from the Menu");
         System.out.println("1. Write Queries");
@@ -35,17 +38,21 @@ public class HomeMenu {
         Scanner sc = new Scanner(System.in);
         int userChoice = sc.nextInt();
 
-        switch (userChoice){
+        switch (userChoice) {
             case 1:
                 printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
                 int result = runQuery();
-                if(result == -1){
+                if (result == -1) {
                     show();
                 }
                 break;
             case 2:
+                exportDatabase();
+                show();
                 break;
             case 3:
+                exportDataModel();
+                show();
                 break;
             case 4:
                 break;
@@ -61,26 +68,52 @@ public class HomeMenu {
     }
 
     /**
-     * @return
+     * @author Harsh Shah
      */
-    private int runQuery() {
-        print("> ");
+    private void exportDatabase() throws IOException {
+        println("Enter Database Name: ");
         Scanner sc = new Scanner(System.in);
-        String query = sc.nextLine();
+        String database = sc.nextLine();
 
-        if("quit".equals(query)){
-            return -1;
+        DataModel model = new DataModel();
+        int result = model.createERD(database);
+        if (result == 0) {
+            success("Entity-Relationship Model of %s is created!", database);
+        }
+          }
+
+        /**
+         * @author Harsh Shah
+         */
+        private void exportDataModel () {
+            DataExtract extract = new DataExtract();
+            int result = extract.exportDB("datastore");
+            if (result == 0) {
+                success("Data Model exported successfully!");
+            }
         }
 
-        try {
-            QueryExecutor executor = new QueryExecutor(getConnection());
-            executor.execute(evaluateQuery(query));
-        } catch (Exception e){
-            e.printStackTrace();
-            error("Something went wrong, Please try again!");
-        }
-        runQuery();
+        /**
+         * @return
+         */
+        private int runQuery () {
+            print("> ");
+            Scanner sc = new Scanner(System.in);
+            String query = sc.nextLine();
 
-        return 0;
+            if ("quit".equals(query)) {
+                return -1;
+            }
+
+            try {
+                QueryExecutor executor = new QueryExecutor(getConnection());
+                executor.execute(evaluateQuery(query));
+            } catch (Exception e) {
+                e.printStackTrace();
+                error("Something went wrong, Please try again!");
+            }
+            runQuery();
+
+            return 0;
+        }
     }
-}

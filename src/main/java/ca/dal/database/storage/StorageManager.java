@@ -1,5 +1,6 @@
 package ca.dal.database.storage;
 
+import ca.dal.database.connection.Connection;
 import ca.dal.database.storage.model.column.ColumnMetadataModel;
 import ca.dal.database.storage.model.database.DatabaseMetadataHeaderModel;
 import ca.dal.database.storage.model.database.DatabaseMetadataModel;
@@ -9,6 +10,8 @@ import ca.dal.database.storage.model.table.TableMetadataHeaderModel;
 import ca.dal.database.storage.model.table.TableMetadataModel;
 import ca.dal.database.utils.FileUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static ca.dal.database.constant.ApplicationConstants.DOT;
@@ -23,6 +26,15 @@ import static ca.dal.database.utils.StringUtils.isEmpty;
  */
 public class StorageManager {
 
+    private Connection connection = null;
+
+    public StorageManager(Connection connection) {
+        this.connection = connection;
+    }
+    public  StorageManager(){}
+    private boolean isTransaction(){
+        return !this.connection.isAutoCommit();
+    }
 
     private static final String ROOT = "datastore";
     private static final String DATASTORE_METADATA = DOT + "meta";
@@ -37,11 +49,14 @@ public class StorageManager {
         // Create datastore
         FileUtils.createDirectory(ROOT);
 
-        // Create datastore metadata
-        FileUtils.createFile(ROOT, builder(ROOT, DATASTORE_METADATA));
+        if(Files.notExists(Path.of(ROOT, builder(ROOT, DATASTORE_METADATA)))) {
 
-        // Write Table Metadata
-        write(new DatastoreModel(0).toListString(), ROOT, builder(ROOT, DATABASE_METADATA));
+            // Create datastore metadata
+            FileUtils.createFile(ROOT, builder(ROOT, DATASTORE_METADATA));
+
+            // Write Table Metadata
+            write(new DatastoreModel(0).toListString(), ROOT, builder(ROOT, DATABASE_METADATA));
+        }
     }
 
     public void updateDatastoreMetadata(DatabaseMetadataModel metadataModel) {

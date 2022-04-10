@@ -7,20 +7,38 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CountQueries {
 
     String delimeter="<!!>";
     private List<String> databases = new ArrayList<>();
+    private static String path="datastore";
+
+    public CountQueries()
+    {
+        File file = new File(path);
+        String directories[]= file.list();
+        for(int i=0;i<directories.length;i++)
+        {
+            if(!(directories[i].equalsIgnoreCase("system") //
+                    || directories[i].equalsIgnoreCase("datastore.meta")))
+            {
+                databases.add(directories[i]);
+            }
+        }
+    }
+
+
     public static void main(String []args)
     {
 
         CountQueries countQueries= new CountQueries();
-        countQueries.databases.add("db1");
-        countQueries.databases.add("db2");
-        countQueries.databases.add("db3");
+        //countQueries.databases.add("db1");
+        //countQueries.databases.add("db2");
+        //countQueries.databases.add("db3");
         System.out.println(countQueries.databases);
-        countQueries.getQueryCount();
+        //countQueries.getQueryCount();
     }
     public void getQueryCount()
     {
@@ -81,16 +99,17 @@ public class CountQueries {
                     }
                 }
 
-                //
-                //for (int i = 0; i < logProperties.length; i++)
-                //{
-                    //System.out.println(logProperties[i]);
-                //}
-                 //System.out.println(logProperties[7]);
-
                 line = br.readLine();
             }
             System.out.println(databaseLogs);
+            for (Map.Entry<String, HashMap<String,Integer>> entry1 : databaseLogs.entrySet()) {
+                String key1 = entry1.getKey();
+                for (Map.Entry<String, Integer> entry2 : entry1.getValue().entrySet()) {
+                    String key2=entry2.getKey();
+                    int value2=entry2.getValue();
+                    System.out.println("User "+key2+" submitted "+value2+" query for "+key1);
+                }
+            }
             System.out.println("File Read Successfully");
         } catch (IOException e) {
             System.out.println("Exception:"+e.getMessage());

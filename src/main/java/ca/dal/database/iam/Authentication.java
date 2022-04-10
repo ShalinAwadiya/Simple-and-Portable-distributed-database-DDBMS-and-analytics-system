@@ -1,5 +1,6 @@
 package ca.dal.database.iam;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -17,7 +18,7 @@ public class Authentication {
     public Authentication(){
         identityManagementLog =  new IdentityManagementLog();
     }
-    public void init() {
+    public void init() throws IOException {
         System.out.println("1. Register");
         System.out.println("2. Login");
         System.out.println("3. Exit");
@@ -42,7 +43,7 @@ public class Authentication {
 
     }
 
-    private void userRegistration() {
+    private void userRegistration() throws IOException {
         Scanner sc = new Scanner(System.in);
         User u = new User();
 
@@ -120,7 +121,7 @@ public class Authentication {
 
     }
 
-    private void userLogin() {
+    private void userLogin() throws IOException {
         Scanner sc = new Scanner(System.in);
         String userId = "";
         String password = "";
