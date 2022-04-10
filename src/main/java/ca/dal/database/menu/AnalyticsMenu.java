@@ -8,14 +8,23 @@ import java.util.Scanner;
 import static ca.dal.database.query.QueryParser.evaluateQuery;
 import static ca.dal.database.utils.PrintUtils.*;
 
+/**
+ * @author Nishit Mistry
+ */
 public class AnalyticsMenu {
 
     private Connection connection;
 
+    /**
+     * @param connection
+     */
     public AnalyticsMenu(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     * @return connection
+     */
     public Connection getConnection() {
         return connection;
     }
@@ -58,27 +67,11 @@ public class AnalyticsMenu {
                     error("Incorrect option chosen, Please try Again");
                     continue;
             }
-
-            switch (userChoice) {
-                case 1:
-                    printWithMargin("Welcome to analytics mode", "To exit this mode enter \"quit\"");
-                    runQuery();
-                    break;
-                case 2:
-                    runQuery();
-                    break;
-                case 3:
-                    printWithMargin("Good Bye!");
-                    return;
-                default:
-                    error("Incorrect option chosen, Please try Again");
-
-            }
         }
     }
 
     /**
-     * @return
+     * @return -1
      */
     private int runQuery() {
         Scanner sc = new Scanner(System.in);
