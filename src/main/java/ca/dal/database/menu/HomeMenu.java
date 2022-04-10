@@ -13,16 +13,22 @@ import static ca.dal.database.utils.PrintUtils.*;
 public class HomeMenu {
 
     private Connection connection;
+    private AnalyticsMenu analyticsMenu;
 
+    /**
+     * @param connection
+     */
     public HomeMenu(Connection connection) {
+        analyticsMenu = new AnalyticsMenu(connection);
         this.connection = connection;
     }
 
+    /**
+     * @return connection
+     */
     public Connection getConnection() {
         return connection;
     }
-
-    AnalyticsMenu analyticsMenu = new AnalyticsMenu(connection);
 
     public void show() {
 
@@ -43,33 +49,8 @@ public class HomeMenu {
             try {
                 userChoice = Integer.parseInt(userInput);
             } catch (Exception e) {
-                error("Exception Occurred" + e);
-            }
-            switch (userChoice) {
-                case 1:
-                    printWithMargin("Welcome to query executor mode", "To exit this mode enter \"quit\"");
-                    int result = runQuery();
-                    if (result == -1) {
-                        show();
-                    }
-                    break;
-                case 2:
-                    exportDatabase();
-                    show();
-                    break;
-                case 3:
-                    exportDataModel();
-                    show();
-                    break;
-                case 4:
-                    analyticsMenu.show();
-                    break;
-                case 5:
-                    printWithMargin("Good Bye!");
-                    return;
-                default:
-                    error("Incorrect option chosen, Please try Again");
-                    continue;
+                e.printStackTrace();
+                error("Incorrect option chosen, Please try Again");
             }
 
             switch (userChoice) {
@@ -84,13 +65,13 @@ public class HomeMenu {
                     exportDataModel();
                     break;
                 case 4:
+                    analyticsMenu.show();
                     break;
                 case 5:
                     printWithMargin("Good Bye!");
                     return;
                 default:
                     error("Incorrect option chosen, Please try Again");
-
             }
         }
     }
@@ -123,7 +104,7 @@ public class HomeMenu {
     }
 
     /**
-     * @return
+     * @return -1
      */
     private int runQuery() {
         Scanner sc = new Scanner(System.in);

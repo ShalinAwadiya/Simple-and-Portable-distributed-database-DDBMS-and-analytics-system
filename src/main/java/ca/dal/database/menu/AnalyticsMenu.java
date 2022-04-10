@@ -13,12 +13,18 @@ import static ca.dal.database.utils.PrintUtils.*;
  */
 public class AnalyticsMenu {
 
-    private final Connection connection;
+    private Connection connection;
 
+    /**
+     * @param connection
+     */
     public AnalyticsMenu(Connection connection) {
         this.connection = connection;
     }
 
+    /**
+     * @return connection
+     */
     public Connection getConnection() {
         return connection;
     }
@@ -61,25 +67,12 @@ public class AnalyticsMenu {
                     error("Incorrect option chosen, Please try Again");
                     continue;
             }
-
-            switch (userChoice) {
-                case 1:
-                    printWithMargin("Welcome to analytics mode", "To exit this mode enter \"quit\"");
-                    runQuery();
-                    break;
-                case 2:
-                    runQuery();
-                    break;
-                case 3:
-                    printWithMargin("Good Bye!");
-                    return;
-                default:
-                    error("Incorrect option chosen, Please try Again");
-
-            }
         }
     }
 
+    /**
+     * @return -1
+     */
     private int runQuery() {
         Scanner sc = new Scanner(System.in);
         QueryExecutor executor = new QueryExecutor(getConnection());
