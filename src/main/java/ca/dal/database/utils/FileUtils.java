@@ -2,9 +2,7 @@ package ca.dal.database.utils;
 
 import ca.dal.database.transaction.TransactionManager;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -16,6 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static ca.dal.database.constant.ApplicationConstants.LINE_FEED;
+import static ca.dal.database.utils.PrintUtils.print;
 
 /**
  * @author Harsh Shah
@@ -23,17 +22,6 @@ import static ca.dal.database.constant.ApplicationConstants.LINE_FEED;
 public class FileUtils {
 
     private static final Logger logger = Logger.getLogger(TransactionManager.class.getName());
-
-
-    public boolean isExists(String start, String... tails) {
-        Path path = Path.of(start, tails);
-
-        if (path == null) {
-            return false;
-        }
-
-        return Files.exists(path);
-    }
 
     /**
      * @param start
@@ -78,13 +66,11 @@ public class FileUtils {
             try {
                 Files.createFile(path);
             } catch (IOException e) {
-                logger.log(Level.INFO, e.getMessage());
                 return -1;
             }
         }
         return 0;
     }
-
 
     /**
      * @param startLocation
@@ -96,6 +82,7 @@ public class FileUtils {
         try {
 
             Path path = Path.of(startLocation, location);
+            path = path.toAbsolutePath();
 
             if (!Files.exists(path)) {
                 return null;
@@ -106,7 +93,6 @@ public class FileUtils {
             return Collections.emptyList();
         }
     }
-
 
     /**
      * @param line
@@ -141,7 +127,6 @@ public class FileUtils {
         return write(Arrays.asList(LINE_FEED, line), StandardOpenOption.APPEND, startLocation, location);
     }
 
-
     /**
      * @param lines
      * @param option
@@ -160,11 +145,12 @@ public class FileUtils {
 
         path = path.toAbsolutePath();
 
-        if (Files.notExists(path)) {
-            return -1;
-        }
-
         try {
+            if (Files.notExists(path)) {
+                Files.createDirectories(path.getParent());
+                Files.createFile(path);
+            }
+
             Files.write(path, lines, option, StandardOpenOption.CREATE);
         } catch (IOException e) {
             return -1;
@@ -186,7 +172,7 @@ public class FileUtils {
 
         String path = buildAndValidatePathString(start, tails);
 
-        if(null == path){
+        if (null == path) {
             return -1;
         }
 
@@ -249,6 +235,50 @@ public class FileUtils {
         }
 
         return path;
+    }
+
+    public static List<String> read(InputStream inputStream) {
+
+        List<String> lines = new ArrayList<>();
+
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return lines;
+    }
+
+    public static void createTempFile(String directory, String fileName, List<String> lines) {
+        createDirectory(directory, "temp");
+        createFile(directory, "temp", fileName);
+        write(lines, directory, "temp", fileName);
+    }
+
+    public static void removeTempFile(String directory, String tempTableId) {
+        try {
+            Files.deleteIfExists(Path.of(directory, "temp", tempTableId));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isExists(String start, String... tails) {
+        Path path = Path.of(start, tails);
+
+        if (path == null) {
+            return false;
+        }
+
+        return Files.exists(path);
     }
 }
 

@@ -3,6 +3,7 @@ package ca.dal.database.iam;
 import ca.dal.database.connection.Connection;
 import ca.dal.database.logger.IdentityManagementLog;
 import ca.dal.database.menu.HomeMenu;
+import ca.dal.database.utils.SSHUtils;
 
 import java.util.HashMap;
 import java.util.Scanner;
