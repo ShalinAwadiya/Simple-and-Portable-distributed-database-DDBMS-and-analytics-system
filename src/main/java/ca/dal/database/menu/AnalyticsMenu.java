@@ -8,9 +8,6 @@ import java.util.Scanner;
 import static ca.dal.database.query.QueryParser.evaluateQuery;
 import static ca.dal.database.utils.PrintUtils.*;
 
-/**
- * @author Nishit Mistry
- */
 public class AnalyticsMenu {
 
     private final Connection connection;
@@ -53,14 +50,10 @@ public class AnalyticsMenu {
             switch (userChoice) {
                 case 1:
                     printWithMargin("Welcome to analytics mode", "To exit this mode enter \"quit\"");
-                    int result = runQuery();
-                    if (result == -1) {
-                        show();
-                    }
+                    runQuery();
                     break;
                 case 2:
                     runQuery();
-                    show();
                     break;
                 case 3:
                     printWithMargin("Good Bye!");

@@ -1,8 +1,5 @@
 package ca.dal.database.storage.model.database;
 
-/**
- * @author Harsh Shah
- */
 public class DatabaseMetadataHeaderModel {
 
     private String databaseName;
@@ -36,7 +33,7 @@ public class DatabaseMetadataHeaderModel {
     }
 
 
-    public static DatabaseMetadataHeaderModel parse(String header){
+    public static DatabaseMetadataHeaderModel parse(String header) {
         String[] parts = header.substring(1, header.length() - 1).split(",");
         return new DatabaseMetadataHeaderModel(parts[0], Integer.parseInt(parts[1]));
     }

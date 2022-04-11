@@ -16,10 +16,12 @@ import java.util.List;
 
 import static ca.dal.database.utils.PrintUtils.error;
 
-/**
- * @author Meghdoot Ojha
- */
 public class DataExtract {
+
+//    public static void main(String[] args){
+//        DataExtract de = new DataExtract();
+//        de.exportDB("D2_DB");
+//    }
 
     public int exportDB(String database) {
         try {
@@ -74,8 +76,7 @@ public class DataExtract {
             }
             bufferedWriter.close();
             return 0;
-        } catch (
-                IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             error("Something went wrong, Please try again");
             return -1;

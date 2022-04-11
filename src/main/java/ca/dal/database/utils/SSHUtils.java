@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import static ca.dal.database.utils.PathUtils.builder;
-import static ca.dal.database.utils.PrintUtils.print;
 
 public class SSHUtils {
 
@@ -39,15 +38,15 @@ public class SSHUtils {
 
             String operatingPath = builder(instance.getSharedResourceLocation(), fileName);
 
-            switch (operation){
+            switch (operation) {
                 case PUSH:
-                    channelSftp.put(operatingPath, operatingPath);
+                    channelSftp.put(operatingPath, "/home/harshshah1295/d2_db/"+fileName);
                     break;
                 case PULL:
-                    channelSftp.get(operatingPath, operatingPath);
+                    channelSftp.get(operatingPath, "/home/harshshah1295/d2_db/"+fileName);
                     break;
                 case PEEK:
-                    InputStream inputStream = channelSftp.get(operatingPath);
+                    InputStream inputStream = channelSftp.get("/home/harshshah1295/d2_db/"+fileName);
                     return FileUtils.read(inputStream);
                 default:
             }
@@ -63,8 +62,7 @@ public class SSHUtils {
         return null;
     }
 
-
-    public static List<String> operation(String operation, String srcFilePath, String descFilePath){
+    public static List<String> operation(String operation, String srcFilePath, String descFilePath) {
         Session session = null;
 
         InstanceModel instance = ApplicationConfiguration.getInstance();
@@ -87,13 +85,13 @@ public class SSHUtils {
 
             switch (operation){
                 case PUSH:
-                    channelSftp.put(operatingPath, operatingPath);
+                    channelSftp.put(operatingPath, "/home/harshshah1295/d2_db/"+descFilePath);
                     break;
                 case PULL:
-                    channelSftp.get(operatingPath, operatingPath);
+                    channelSftp.get(operatingPath, "/home/harshshah1295/d2_db/"+descFilePath);
                     break;
                 case PEEK:
-                    InputStream inputStream = channelSftp.get(operatingPath);
+                    InputStream inputStream = channelSftp.get("/home/harshshah1295/d2_db/"+descFilePath);
                     return FileUtils.read(inputStream);
                 default:
             }

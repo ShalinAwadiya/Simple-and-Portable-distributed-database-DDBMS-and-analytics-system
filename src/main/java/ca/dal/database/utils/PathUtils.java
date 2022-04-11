@@ -4,9 +4,10 @@ import java.nio.file.Path;
 
 public class PathUtils {
 
-    private PathUtils(){}
+    private PathUtils() {
+    }
 
-    public static String absolute(String start, String... more){
+    public static String absolute(String start, String... more) {
         return Path.of(start, more).toAbsolutePath().toString();
     }
 
