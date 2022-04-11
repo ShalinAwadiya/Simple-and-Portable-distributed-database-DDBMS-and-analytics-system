@@ -14,8 +14,7 @@ public class InstanceModel {
 
     private String sharedResourceLocation;
 
-    public InstanceModel(String identifier, String privateKey, String user,
-                         String host, int port, String sharedResourceLocation) {
+    public InstanceModel(String identifier, String privateKey, String user, String host, int port, String sharedResourceLocation) {
         this.identifier = identifier;
         this.privateKey = privateKey;
         this.user = user;

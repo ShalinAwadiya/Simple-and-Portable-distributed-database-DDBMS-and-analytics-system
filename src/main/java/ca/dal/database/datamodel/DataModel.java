@@ -17,19 +17,16 @@ import java.util.List;
 
 import static ca.dal.database.utils.PrintUtils.error;
 
-/**
- * @author Meghdoot Ojha
- */
 public class DataModel {
 
     /**
      * @param database
-     * @author Meghdoot Ojha
      */
 
     public int createERD(String database) {
         try {
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resources/erd/" + database + "_ERD.erd"));
+            BufferedWriter bufferedWriter = new BufferedWriter(
+                    new FileWriter("src/main/resources/erd/" + database + "_ERD.erd"));
             bufferedWriter.write("\t\t\t\t\t\t\t************Reverse Engineering Model************\n");
             StorageManager storageManager = new StorageManager(new Connection("SYSTEM"));
             DatabaseMetadataModel databaseMetadataModel = storageManager.getDatabaseMetadata(database);
@@ -64,7 +61,9 @@ public class DataModel {
                     }
                     if (foreignKey != "") {
                         bufferedWriter.write("FK | " + foreignKey + "\n");
-                        bufferedWriter.write("** N->" + checkCardinality(storageManager.fetchAllRows(database, tableName), count) + " relationship with below **\n");
+                        bufferedWriter.write(
+                                "** N->" + checkCardinality(storageManager.fetchAllRows(database, tableName), count)
+                                        + " relationship with below **\n");
                         foreignKeyModel = metadataModel.getForeignConstraint();
                         bufferedWriter.write("Foreign key table: " + foreignKeyModel.getTableName() + "\n");
                         bufferedWriter.write("Foreign key reference: " + foreignKeyModel.getColumnName() + "\n");

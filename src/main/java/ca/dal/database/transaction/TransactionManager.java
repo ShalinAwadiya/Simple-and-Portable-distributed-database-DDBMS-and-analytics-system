@@ -9,9 +9,6 @@ import ca.dal.database.transaction.model.TransactionModel;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * @author Harsh Shah
- */
 public class TransactionManager {
 
     private Connection connection = null;
@@ -22,7 +19,7 @@ public class TransactionManager {
         this.connection = connection;
         this.transaction = new TransactionModel();
     }
-    
+
     public TransactionModel start() {
         return new TransactionModel();
     }
@@ -32,7 +29,6 @@ public class TransactionManager {
      * @param tableName
      * @param row
      * @param rawQuery
-     * @author Harsh Shah
      */
     public void perform(String databaseName, String tableName, RowModel row, String rawQuery) {
         transaction.addQuery(rawQuery);
@@ -45,25 +41,21 @@ public class TransactionManager {
      * @param tableName
      * @param rows
      * @param rawQuery
-     * @author Harsh Shah
      */
     public void perform(QueryType type, String databaseName, String tableName, List<RowModel> rows, String rawQuery) {
         transaction.addQuery(rawQuery);
 
         if (QueryType.DELETE_ROW.equals(type)) {
-            transaction.deleteInDatastore(databaseName, tableName,
-                    rows.stream().map(row -> row.getMetadata().getIdentifier()).collect(Collectors.toList()));
+            transaction.deleteInDatastore(databaseName, tableName, rows.stream().map(row -> row.getMetadata().getIdentifier()).collect(Collectors.toList()));
         } else {
             transaction.updateInDatastore(databaseName, tableName, rows);
         }
     }
 
-
     /**
      * @param databaseName
      * @param tableName
      * @return
-     * @author Harsh Shah
      */
     public TableDatastoreModel fetchDatastore(String databaseName, String tableName) {
         return transaction.fetchDatastore(databaseName, tableName);
@@ -74,16 +66,12 @@ public class TransactionManager {
      * @param tableName
      * @param rawQuery
      * @return
-     * @author Harsh Shah
      */
     public TableDatastoreModel fetchDatastore(String databaseName, String tableName, String rawQuery) {
         transaction.addQuery(rawQuery);
         return transaction.fetchDatastore(databaseName, tableName);
     }
 
-    /**
-     * @author Harsh Shah
-     */
     public void rollback() {
         this.transaction = new TransactionModel();
     }

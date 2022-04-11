@@ -18,7 +18,7 @@ public class SSHUtils {
     public static final String PULL = "PULL";
     public static final String PEEK = "PEEK";
 
-    public static List<String> operation(String operation, String fileName){
+    public static List<String> operation(String operation, String fileName) {
         Session session = null;
 
         InstanceModel instance = ApplicationConfiguration.getInstance();
@@ -39,7 +39,7 @@ public class SSHUtils {
 
             String operatingPath = builder(instance.getSharedResourceLocation(), fileName);
 
-            switch (operation){
+            switch (operation) {
                 case PUSH:
                     channelSftp.put(operatingPath, operatingPath);
                     break;
@@ -63,8 +63,7 @@ public class SSHUtils {
         return null;
     }
 
-
-    public static List<String> operation(String operation, String srcFilePath, String descFilePath){
+    public static List<String> operation(String operation, String srcFilePath, String descFilePath) {
         Session session = null;
 
         InstanceModel instance = ApplicationConfiguration.getInstance();
@@ -85,12 +84,12 @@ public class SSHUtils {
 
             String operatingPath = builder(instance.getSharedResourceLocation(), srcFilePath);
 
-            switch (operation){
+            switch (operation) {
                 case PUSH:
-                    channelSftp.put(operatingPath, "/home/harshshah1295/d2_db/"+descFilePath);
+                    channelSftp.put(operatingPath, "/home/harshshah1295/d2_db/" + descFilePath);
                     break;
                 case PULL:
-                    channelSftp.get(operatingPath, "/home/harshshah1295/d2_db/"+descFilePath);
+                    channelSftp.get(operatingPath, "/home/harshshah1295/d2_db/" + descFilePath);
                     break;
                 case PEEK:
                     InputStream inputStream = channelSftp.get("/home/harshshah1295/d2_db/" + descFilePath);

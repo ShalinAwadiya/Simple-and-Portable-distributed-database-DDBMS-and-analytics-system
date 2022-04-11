@@ -1,14 +1,10 @@
 package ca.dal.database.storage.model.table;
 
-/**
- * @author Harsh Shah
- */
 public class TableMetadataHeaderModel {
 
     private String tableName;
 
     private Integer noOfColumns;
-
 
     public TableMetadataHeaderModel(String tableName, Integer noOfColumns) {
         this.tableName = tableName;
@@ -36,8 +32,7 @@ public class TableMetadataHeaderModel {
         return String.format("(%s,%d)", tableName, noOfColumns);
     }
 
-
-    public static TableMetadataHeaderModel parse(String header){
+    public static TableMetadataHeaderModel parse(String header) {
         String[] parts = header.substring(1, header.length() - 1).split(",");
         return new TableMetadataHeaderModel(parts[0], Integer.parseInt(parts[1]));
     }

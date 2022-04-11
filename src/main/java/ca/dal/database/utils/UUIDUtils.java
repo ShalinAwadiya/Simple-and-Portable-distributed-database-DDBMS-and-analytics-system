@@ -4,9 +4,10 @@ import java.util.UUID;
 
 public class UUIDUtils {
 
-    private UUIDUtils(){}
+    private UUIDUtils() {
+    }
 
-    public static String generate(){
+    public static String generate() {
         return UUID.randomUUID().toString();
     }
 }

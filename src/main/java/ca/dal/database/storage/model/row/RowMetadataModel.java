@@ -4,14 +4,11 @@ import ca.dal.database.utils.UUIDUtils;
 
 import static ca.dal.database.constant.ApplicationConstants.BLANK_SPACE;
 
-/**
- * @author Harsh Shah
- */
 public class RowMetadataModel {
 
     private Long index;
 
-    private String identifier;
+    private final String identifier;
 
     public RowMetadataModel(Long index) {
         this.index = index;
@@ -35,10 +32,10 @@ public class RowMetadataModel {
         this.index = index;
     }
 
-    public static RowMetadataModel parseHeader(String line){
+    public static RowMetadataModel parseHeader(String line) {
         String[] parts = line.substring(1, line.length() - 1).split(BLANK_SPACE);
 
-        if(parts.length != 2){
+        if (parts.length != 2) {
             return null;
         }
 

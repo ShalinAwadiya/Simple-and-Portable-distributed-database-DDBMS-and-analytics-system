@@ -1,8 +1,5 @@
 package ca.dal.database.storage.model.column;
 
-/**
- * @author Harsh Shah
- */
 public class ForeignKeyConstraintModel {
 
     private String tableName;

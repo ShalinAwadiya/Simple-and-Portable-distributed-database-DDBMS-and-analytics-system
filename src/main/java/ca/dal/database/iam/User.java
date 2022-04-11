@@ -17,7 +17,7 @@ public class User {
     private String ans;
     private String encryptedUid;
     private String encryptedPwd;
-    final static String user_profile_path = Path.of("datastore","system", "UserProfile.txt").toString();
+    final static String user_profile_path = Path.of("datastore", "system", "UserProfile.txt").toString();
 
     final static String separator = "%^&";
     final static String separator_regex = "%\\^&";
@@ -91,7 +91,7 @@ public class User {
     }
 
 
-    public String serializeUser() {
+    public String getUser() {
         String data = "";
         data += getHash(getUid()) + separator;
         data += getHash(getPwd()) + separator;
@@ -102,7 +102,7 @@ public class User {
     public void save() {
         File f = new File(user_profile_path);
 
-        if(!f.exists()){
+        if (!f.exists()) {
             new File(f.getParent()).mkdirs();
             try {
                 f.createNewFile();
@@ -113,7 +113,7 @@ public class User {
 
         try {
             FileWriter fileWriter = new FileWriter(f.getAbsolutePath(), true);
-            fileWriter.write(serializeUser());
+            fileWriter.write(getUser());
             fileWriter.flush();
             fileWriter.close();
         } catch (Exception e) {
@@ -121,10 +121,10 @@ public class User {
         }
     }
 
-    public User[] deserializeUsers() {
+    public User[] writeUsers() {
         File f = new File(user_profile_path);
 
-        if(!f.exists()){
+        if (!f.exists()) {
             new File(f.getParent()).mkdirs();
             try {
                 f.createNewFile();
@@ -150,7 +150,7 @@ public class User {
             Scanner sc = new Scanner(new FileReader(f.getAbsolutePath()));
             int counter = 0;
             while (sc.hasNext()) {
-                users[counter] = deserialize(sc.nextLine());
+                users[counter] = writeData(sc.nextLine());
                 counter++;
             }
         } catch (Exception e) {
@@ -159,7 +159,7 @@ public class User {
         return users;
     }
 
-    public User deserialize(String data) {
+    public User writeData(String data) {
         String[] dataArr = data.split(separator_regex);
         User user = new User();
         if (dataArr[0] != null && dataArr[1] != null && dataArr[2] != null && dataArr[3] != null) {
@@ -169,7 +169,7 @@ public class User {
     }
 
     public boolean userIdCheck(String userId) {
-        User[] users = deserializeUsers();
+        User[] users = writeUsers();
         boolean isFound = false;
         for (int i = 0; i < users.length; i++) {
             if (users[i].getEncryptedUid().equals(getHash(userId))) {
@@ -181,7 +181,7 @@ public class User {
     }
 
     public User validateUserIdAndPassword(String userId, String password) {
-        User[] users = deserializeUsers();
+        User[] users = writeUsers();
         boolean isFound = false;
         User user = null;
         for (int i = 0; i < users.length; i++) {
