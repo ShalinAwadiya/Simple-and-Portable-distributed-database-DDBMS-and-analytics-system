@@ -30,7 +30,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>ca.dal.Application</mainClass>
+                            <mainClass>ca.dal.database.Application</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

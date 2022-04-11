@@ -44,8 +44,8 @@ public class DatastoreModel {
         if (this.databaseMetadataHeaderModels == null) {
             this.databaseMetadataHeaderModels = new ArrayList<>();
         }
-
         this.databaseMetadataHeaderModels.add(databaseMetadataHeaderModel);
+        this.noOfDatabase = this.databaseMetadataHeaderModels.size();
     }
 
     public String toMetaString() {

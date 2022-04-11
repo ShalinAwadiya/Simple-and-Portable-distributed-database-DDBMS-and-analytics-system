@@ -21,6 +21,10 @@ public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
     }
 
     public List<TableMetadataHeaderModel> getTableHeaderMetadataModels() {
+        if(tableMetadataHeaderModels == null){
+            tableMetadataHeaderModels = new ArrayList<>();
+        }
+
         return tableMetadataHeaderModels;
     }
 
