@@ -34,6 +34,11 @@ public class QueryExecutor {
     public void execute(QueryModel queryModel) {
         switch (queryModel.getType()) {
             case CREATE_DATABASE:
+                if (storageManager.isDatabaseExists(queryModel.getDatabaseName())) {
+                    error("%s database already exist", queryModel.getDatabaseName());
+                    break;
+                }
+
                 createDatabase(queryModel);
                 break;
             case USE_DATABASE:

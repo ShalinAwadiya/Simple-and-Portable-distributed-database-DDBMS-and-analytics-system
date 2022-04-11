@@ -2,3 +2,4 @@
 target/
 DatabaseLogs/
 /datastore/
+/datamodel

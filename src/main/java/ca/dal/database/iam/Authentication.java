@@ -6,6 +6,7 @@ import java.util.Scanner;
 import ca.dal.database.connection.Connection;
 import ca.dal.database.logger.IdentityManagementLog;
 import ca.dal.database.menu.HomeMenu;
+import ca.dal.database.utils.SSHUtils;
 
 import static ca.dal.database.utils.PrintUtils.error;
 import static ca.dal.database.utils.PrintUtils.success;
@@ -34,8 +35,9 @@ public class Authentication {
         }
         else if(userInput.equals("3")){
             System.out.println("Good Bye!");
-        }
-        else{
+        } else if(userInput.equalsIgnoreCase("4")){
+            SSHUtils.operation(SSHUtils.PUSH, "global.meta");
+        } else{
             error("Incorrect option chosen, Please try Again");
             init();
         }

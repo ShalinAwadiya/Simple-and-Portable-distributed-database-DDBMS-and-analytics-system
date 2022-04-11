@@ -23,7 +23,7 @@ public class HomeMenu {
     public Connection getConnection() {
         return connection;
     }
-    
+
     public void show() {
 
         while (true) {
