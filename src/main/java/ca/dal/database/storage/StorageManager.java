@@ -594,6 +594,30 @@ public class StorageManager {
                 .collect(Collectors.toList());
     }
 
+
+    /**
+     * @param databaseName 
+     * @param tableName
+     * @return
+     */
+    public List<RowModel> fetchAllRowsWithType(String databaseName, String tableName) {
+
+        List<RowModel> fromStorage = fetchAllRowsFromStorage(databaseName, tableName);
+
+        TableMetadataModel metadata = getTableMetadata(databaseName, tableName);
+
+        for(RowModel row: fromStorage){
+            for(int i = 0; i < row.getValues().size(); i++){
+                ColumnMetadataModel column = metadata.getColumnsMetadata().get(i);
+                if(column.getType().contains("varchar")){
+                    row.getValues().set(i, "\""+row.getValues().get(i)+"\"");
+                }
+            }
+        }
+
+        return fromStorage;
+    }
+
     /**
      * @param databaseName
      * @param tableName

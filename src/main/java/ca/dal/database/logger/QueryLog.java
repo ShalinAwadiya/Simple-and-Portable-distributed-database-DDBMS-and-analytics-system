@@ -86,7 +86,7 @@ public class QueryLog {
             bw.write(String.valueOf(data));
             bw.write("\n");
 
-            System.out.println("Log written Successfully");
+            //System.out.println("Log written Successfully");
 
         } catch (IOException e) {
             System.out.println("Exception:" + e.getMessage());

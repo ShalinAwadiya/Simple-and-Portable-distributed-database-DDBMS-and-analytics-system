@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import static ca.dal.database.utils.PathUtils.builder;
-import static ca.dal.database.utils.PrintUtils.print;
 
 public class SSHUtils {
 
@@ -18,7 +17,7 @@ public class SSHUtils {
     public static final String PULL = "PULL";
     public static final String PEEK = "PEEK";
 
-    public static List<String> operation(String operation, String fileName) {
+    public static List<String> operation(String operation, String fileName){
         Session session = null;
 
         InstanceModel instance = ApplicationConfiguration.getInstance();
@@ -84,7 +83,7 @@ public class SSHUtils {
 
             String operatingPath = builder(instance.getSharedResourceLocation(), srcFilePath);
 
-            switch (operation) {
+            switch (operation){
                 case PUSH:
                     channelSftp.put(operatingPath, operatingPath);
                     break;
