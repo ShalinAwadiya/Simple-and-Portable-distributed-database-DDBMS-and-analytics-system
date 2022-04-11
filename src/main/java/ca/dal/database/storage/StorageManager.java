@@ -25,11 +25,7 @@ import static ca.dal.database.utils.PrintUtils.*;
 import static ca.dal.database.utils.StringUtils.builder;
 import static ca.dal.database.utils.StringUtils.isEmpty;
 
-/**
- * @author Harsh Shah
- */
 public class StorageManager {
-
 
     private Connection connection = null;
     private TransactionManager transactionManager = null;
@@ -49,10 +45,6 @@ public class StorageManager {
     private static final String TABLE_FILE_EXTENSION = DOT + "rows";
     private static final String TABLE_METADATA = DOT + "meta";
 
-
-    /**
-     * @author Harsh Shah
-     */
     public static void init() {
         // Create datastore
         FileUtils.createDirectory(ROOT);
@@ -75,7 +67,6 @@ public class StorageManager {
 
     /**
      * @return
-     * @author Harsh Shah
      */
     private DatastoreModel getDatastoreMetadata() {
         List<String> lines = read(ROOT, builder(ROOT, DATASTORE_METADATA));
@@ -85,13 +76,11 @@ public class StorageManager {
     /**
      * @param databaseName
      * @return
-     * @author Harsh Shah
      */
     public boolean isDatabaseExists(String databaseName) {
         DatastoreModel datastoreMetadata = getDatastoreMetadata();
 
-        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels()
-                .stream().filter(itr -> itr.getDatabaseName().equals(databaseName)).findFirst();
+        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels().stream().filter(itr -> itr.getDatabaseName().equals(databaseName)).findFirst();
 
         return exists.isPresent();
 
@@ -99,14 +88,12 @@ public class StorageManager {
 
     /**
      * @param databaseName
-     * @author Harsh Shah
      */
     public void createDatabase(String databaseName) {
 
         DatastoreModel datastoreMetadata = getDatastoreMetadata();
 
-        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels().stream().filter(itr ->
-                itr.getDatabaseName().equals(databaseName)).findFirst();
+        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels().stream().filter(itr -> itr.getDatabaseName().equals(databaseName)).findFirst();
 
         if (exists.isPresent()) {
             error("%s database already exists", databaseName);
@@ -131,7 +118,6 @@ public class StorageManager {
     /**
      * @param databaseName
      * @param metadataModel
-     * @author Harsh Shah
      */
     public void updateDatabaseMetadata(String databaseName, TableMetadataModel metadataModel) {
 
@@ -141,19 +127,16 @@ public class StorageManager {
 
     }
 
-
     /**
      * @param databaseName
      * @param metadata
-     * @author Harsh Shah
      */
     public void createTable(String databaseName, TableMetadataModel metadata) {
 
         String tableName = metadata.getTableName();
 
         DatabaseMetadataModel databaseMetadata = getDatabaseMetadata(databaseName);
-        Optional<TableMetadataHeaderModel> exists = databaseMetadata.getTableHeaderMetadataModels().stream()
-                .filter(itr -> itr.getTableName().equals(tableName)).findFirst();
+        Optional<TableMetadataHeaderModel> exists = databaseMetadata.getTableHeaderMetadataModels().stream().filter(itr -> itr.getTableName().equals(tableName)).findFirst();
 
         if (exists.isPresent()) {
             error("%s table already exists", tableName);
@@ -181,13 +164,11 @@ public class StorageManager {
     /**
      * @param databaseName
      * @param metadataModel
-     * @author Harsh Shah
      */
     public void updateTableMetadata(String databaseName, TableMetadataModel metadataModel) {
         String tableName = metadataModel.getTableName();
 
-        write(metadataModel.toStringList(), ROOT, databaseName, tableName,
-                builder(tableName, DATABASE_METADATA));
+        write(metadataModel.toStringList(), ROOT, databaseName, tableName, builder(tableName, DATABASE_METADATA));
     }
 
     /**
@@ -195,10 +176,8 @@ public class StorageManager {
      * @param tableName
      * @param columns
      * @param condition
-     * @author Harsh Shah
      */
-    public void fetchRows(String databaseName, String tableName,
-                          List<String> columns, Map<String, Object> condition) {
+    public void fetchRows(String databaseName, String tableName, List<String> columns, Map<String, Object> condition) {
 
         String columnName = null;
         String columnValue = null;
@@ -252,7 +231,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @param row
-     * @author Harsh Shah
      */
     public void insertRow(String rawQuery, String databaseName, String tableName, RowModel row) {
 
@@ -264,8 +242,7 @@ public class StorageManager {
         if (isTransaction()) {
             transactionManager.perform(databaseName, tableName, row, rawQuery);
         } else {
-            append(newRow.toString(), ROOT, databaseName, tableName,
-                    builder(tableName, TABLE_FILE_EXTENSION));
+            append(newRow.toString(), ROOT, databaseName, tableName, builder(tableName, TABLE_FILE_EXTENSION));
 
             updateTableMetadata(databaseName, new TableMetadataModel(metadata, nextIndex));
         }
@@ -278,10 +255,8 @@ public class StorageManager {
      * @param tableName
      * @param column
      * @param newValue
-     * @author Harsh Shah
      */
-    public void updateRow(String rawQuery, String databaseName, String tableName, String column,
-                          String newValue, Map<String, Object> condition) {
+    public void updateRow(String rawQuery, String databaseName, String tableName, String column, String newValue, Map<String, Object> condition) {
 
         String columnName = null;
         String columnValue = null;
@@ -327,8 +302,7 @@ public class StorageManager {
         }
 
         if (isTransaction()) {
-            transactionManager.perform(QueryType.UPDATE_ROW, databaseName, tableName,
-                    updatedRows, rawQuery);
+            transactionManager.perform(QueryType.UPDATE_ROW, databaseName, tableName, updatedRows, rawQuery);
         } else {
             updateAllRows(databaseName, tableName, rows);
         }
@@ -340,7 +314,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @param condition
-     * @author Harsh Shah
      */
     public void deleteRow(String rawQuery, String databaseName, String tableName, Map<String, Object> condition) {
 
@@ -383,8 +356,7 @@ public class StorageManager {
 
         if (isTransaction()) {
 
-            transactionManager.perform(QueryType.DELETE_ROW, databaseName, tableName,
-                    deletedRows, rawQuery);
+            transactionManager.perform(QueryType.DELETE_ROW, databaseName, tableName, deletedRows, rawQuery);
         } else {
             updateAllRows(databaseName, tableName, remainingRows);
             updateTableMetadata(databaseName, new TableMetadataModel(tableMetadata, (long) remainingRows.size()));
@@ -396,12 +368,10 @@ public class StorageManager {
     /**
      * @param databaseName
      * @return
-     * @author Harsh Shah
      */
     public DatabaseMetadataModel getDatabaseMetadata(String databaseName) {
 
-        List<String> lines = read(ROOT, databaseName,
-                builder(databaseName, DATABASE_METADATA));
+        List<String> lines = read(ROOT, databaseName, builder(databaseName, DATABASE_METADATA));
 
         return DatabaseMetadataModel.parse(lines);
     }
@@ -410,12 +380,10 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @return
-     * @author Harsh Shah
      */
     public TableMetadataModel getTableMetadata(String databaseName, String tableName) {
 
-        List<String> lines = read(ROOT, databaseName, tableName,
-                builder(tableName, TABLE_METADATA));
+        List<String> lines = read(ROOT, databaseName, tableName, builder(tableName, TABLE_METADATA));
 
         return TableMetadataModel.parse(lines);
     }
@@ -425,7 +393,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @return
-     * @author Harsh Shah
      */
     public List<RowModel> fetchAllRows(String databaseName, String tableName) {
 
@@ -450,16 +417,13 @@ public class StorageManager {
 
         Set<String> deletedIdentifiers = fromBuffer.getDeletedRowsIdentifiers();
 
-        return fromStorage.stream()
-                .filter(itr -> !(deletedIdentifiers.contains(itr.getMetadata().getIdentifier())))
-                .collect(Collectors.toList());
+        return fromStorage.stream().filter(itr -> !(deletedIdentifiers.contains(itr.getMetadata().getIdentifier()))).collect(Collectors.toList());
     }
 
     /**
      * @param databaseName
      * @param tableName
      * @return
-     * @author Harsh Shah
      */
     private List<RowModel> fetchAllRowsFromStorage(String databaseName, String tableName) {
 
@@ -488,7 +452,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @param rows
-     * @author Harsh Shah
      */
     private void updateAllRows(String databaseName, String tableName, List<RowModel> rows) {
         List<String> output = new ArrayList<>();
@@ -496,16 +459,12 @@ public class StorageManager {
         write(output, ROOT, databaseName, tableName, builder(tableName, TABLE_FILE_EXTENSION));
     }
 
-    /**
-     * @author Harsh Shah
-     */
     public void rollback() {
         transactionManager.rollback();
     }
 
     /**
      * @param databaseName
-     * @author Harsh Shah
      */
     public void commit(String databaseName) {
 

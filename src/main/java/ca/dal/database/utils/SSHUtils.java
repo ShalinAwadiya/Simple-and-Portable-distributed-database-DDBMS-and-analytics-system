@@ -11,7 +11,7 @@ public class SSHUtils {
     public static final String PUSH = "PUSH";
     public static final String PULL = "PULL";
 
-    public void transfer(String transferType, String fileName){
+    public void transfer(String transferType, String fileName) {
         Session session = null;
 
         InstanceModel instance = ApplicationConfiguration.getInstance();
@@ -30,9 +30,9 @@ public class SSHUtils {
 
             ChannelSftp c = (ChannelSftp) channel;
 
-            if(transferType.equalsIgnoreCase(PUSH)){
+            if (transferType.equalsIgnoreCase(PUSH)) {
                 c.put(instance.getSharedResourceLocation(), instance.getSharedResourceLocation());
-            }else if(transferType.equalsIgnoreCase(PULL)){
+            } else if (transferType.equalsIgnoreCase(PULL)) {
                 c.get(instance.getSharedResourceLocation(), instance.getSharedResourceLocation());
             }
 

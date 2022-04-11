@@ -19,9 +19,6 @@ import static ca.dal.database.utils.StringUtils.replace;
 import static ca.dal.database.utils.StringUtils.splitAndTrim;
 import static java.util.Arrays.asList;
 
-/**
- * @author Nishit Mistry
- */
 public class QueryParser {
 
     private static final QueryLog queryLog = new QueryLog();
@@ -70,8 +67,12 @@ public class QueryParser {
                     case "DELETE":
                         queryModel = deleteQuery(token, newQuery);
                         break;
-                    case "START TRANSACTION":
-                        queryModel = startTransactionQuery(newQuery);
+                    case "START":
+                        if (token[1].equalsIgnoreCase("TRANSACTION")) {
+                            queryModel = startTransactionQuery(newQuery);
+                        } else {
+                            error("Enter Valid Transaction Query");
+                        }
                         break;
                     case "END":
                         queryModel = endTransactionQuery(newQuery);

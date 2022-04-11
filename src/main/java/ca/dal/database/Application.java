@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import static ca.dal.database.utils.PathUtils.absolute;
 
 /**
- * @author Harsh Shah
+ * @
  */
 public class Application {
 

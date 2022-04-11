@@ -10,9 +10,6 @@ import static ca.dal.database.utils.PrintUtils.error;
 import static ca.dal.database.utils.PrintUtils.success;
 import static ca.dal.database.utils.StringUtils.isEmpty;
 
-/**
- * @author Nishit Mistry
- */
 public class QueryExecutor {
 
     private final StorageManager storageManager;
@@ -159,16 +156,12 @@ public class QueryExecutor {
         storageManager.commit(databaseName);
     }
 
-    /**
-     * @author Harsh Shah
-     */
     private void rollback() {
         storageManager.rollback();
     }
 
     /**
      * @param queryModel
-     * @author Harsh Shah
      */
     private void useDatabase(QueryModel queryModel) {
         setDatabaseName(queryModel.getDatabaseName());
@@ -178,7 +171,6 @@ public class QueryExecutor {
     /**
      * @param databaseName
      * @param queryModel
-     * @author Harsh Shah
      */
     private void deleteRows(String databaseName, QueryModel queryModel) {
         storageManager.deleteRow(queryModel.getRawQuery(), databaseName, queryModel.getTableName(), queryModel.getCondition());
@@ -187,7 +179,6 @@ public class QueryExecutor {
     /**
      * @param databaseName
      * @param queryModel
-     * @author Harsh Shah
      */
     private void updateRows(String databaseName, QueryModel queryModel) {
         storageManager.updateRow(queryModel.getRawQuery(), databaseName, queryModel.getTableName(), queryModel.getColumns().get(0), (String) queryModel.getValues().get(0), queryModel.getCondition());
@@ -196,7 +187,6 @@ public class QueryExecutor {
     /**
      * @param databaseName
      * @param queryModel
-     * @author Harsh Shah
      */
     private void fetchRows(String databaseName, QueryModel queryModel) {
         storageManager.fetchRows(databaseName, queryModel.getTableName(), queryModel.getColumns(), queryModel.getCondition());
@@ -204,7 +194,6 @@ public class QueryExecutor {
 
     /**
      * @param queryModel
-     * @author Harsh Shah
      */
     private void insertRow(QueryModel queryModel) {
         storageManager.insertRow(queryModel.getRawQuery(), getDatabaseName(), queryModel.getTableName(), new RowModel(queryModel.getValues()));
@@ -212,7 +201,6 @@ public class QueryExecutor {
 
     /**
      * @param queryModel
-     * @author Harsh Shah
      */
     private void createTable(QueryModel queryModel) {
         storageManager.createTable(getDatabaseName(), new TableMetadataModel(queryModel.getTableName(), queryModel.getColumnDefinition()));
@@ -220,7 +208,6 @@ public class QueryExecutor {
 
     /**
      * @param queryModel
-     * @author Harsh Shah
      */
     private void createDatabase(QueryModel queryModel) {
         storageManager.createDatabase(queryModel.getDatabaseName());

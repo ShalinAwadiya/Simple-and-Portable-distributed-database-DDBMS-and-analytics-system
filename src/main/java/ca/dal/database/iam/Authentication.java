@@ -40,13 +40,13 @@ public class Authentication {
 
     }
 
-    private void userRegistration(){
+    private void userRegistration() {
         Scanner sc = new Scanner(System.in);
         User u = new User();
 
         boolean isUserIdCorrect = false;
         while (!isUserIdCorrect) {
-            System.out.println("");
+            System.out.println();
             System.out.print("Enter UserId: ");
             String userId = sc.nextLine();
             if (userId.length() < 1) {
@@ -124,7 +124,7 @@ public class Authentication {
 
         boolean isUserIdCorrect = false;
         while (!isUserIdCorrect) {
-            System.out.println("");
+            System.out.println();
             System.out.print("Enter UserId: ");
             userId = sc.nextLine();
             if (userId.length() < 1) {
@@ -138,7 +138,11 @@ public class Authentication {
         while (!isPasswordCorrect) {
 
             System.out.print("Enter Password: ");
-            password = sc.nextLine();
+            if (System.console() == null) {
+                password = sc.nextLine();
+            } else {
+                password = String.valueOf(System.console().readPassword());
+            }
             if (password.length() < 1) {
                 error("password cannot be empty");
                 continue;

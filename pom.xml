@@ -19,7 +19,7 @@
     </dependencies>
 
     <build>
-        <finalName>distributed-database</finalName>
+        <finalName>D2_DB</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

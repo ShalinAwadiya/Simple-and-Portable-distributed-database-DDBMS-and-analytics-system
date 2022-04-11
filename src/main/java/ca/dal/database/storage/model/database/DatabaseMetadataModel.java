@@ -6,9 +6,6 @@ import ca.dal.database.storage.model.table.TableMetadataModel;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Harsh Shah
- */
 public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
 
     private List<TableMetadataHeaderModel> tableMetadataHeaderModels;
@@ -29,7 +26,7 @@ public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
 
 
     public void addTableHeaderMetadataModel(TableMetadataHeaderModel headerModel) {
-        if(null == this.tableMetadataHeaderModels){
+        if (null == this.tableMetadataHeaderModels) {
             this.tableMetadataHeaderModels = new ArrayList<>();
         }
         this.tableMetadataHeaderModels.add(headerModel);
@@ -46,7 +43,7 @@ public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
     }
 
     public String toMetaString() {
-        return String.format("[HEADER,%s,%d]",getDatabaseName(), getNoOfTables());
+        return String.format("[HEADER,%s,%d]", getDatabaseName(), getNoOfTables());
     }
 
     public List<String> toListString() {
@@ -55,9 +52,9 @@ public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
 
         list.add(toMetaString());
 
-        for(TableMetadataHeaderModel tableMetadataHeaderModel: tableMetadataHeaderModels){
+        for (TableMetadataHeaderModel tableMetadataHeaderModel : tableMetadataHeaderModels) {
 
-            if(tableMetadataHeaderModel instanceof TableMetadataModel){
+            if (tableMetadataHeaderModel instanceof TableMetadataModel) {
                 list.add(((TableMetadataModel) tableMetadataHeaderModel).toHeaderString());
             } else {
                 list.add(tableMetadataHeaderModel.toString());
@@ -67,7 +64,7 @@ public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
         return list;
     }
 
-    public static DatabaseMetadataModel parse(List<String> lines){
+    public static DatabaseMetadataModel parse(List<String> lines) {
 
         String header = lines.get(0);
         String[] parts = header.substring(1, header.length() - 1).split(",");
@@ -75,7 +72,7 @@ public class DatabaseMetadataModel extends DatabaseMetadataHeaderModel {
 
         List<TableMetadataHeaderModel> tableHeaders = new ArrayList<>();
 
-        for(int index = 1; index < lines.size(); index++){
+        for (int index = 1; index < lines.size(); index++) {
             TableMetadataHeaderModel tableHeader = TableMetadataHeaderModel.parse(lines.get(index));
             tableHeaders.add(tableHeader);
         }

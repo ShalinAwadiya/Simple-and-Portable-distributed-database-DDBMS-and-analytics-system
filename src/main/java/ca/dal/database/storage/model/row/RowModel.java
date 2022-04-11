@@ -7,12 +7,9 @@ import java.util.stream.Collectors;
 import static ca.dal.database.constant.ApplicationConstants.LINE_FEED;
 import static ca.dal.database.utils.StringUtils.valueOf;
 
-/**
- * @author Harsh Shah
- */
 public class RowModel {
 
-    private RowMetadataModel metadata;
+    private final RowMetadataModel metadata;
 
     private List<Object> values;
 
@@ -48,24 +45,24 @@ public class RowModel {
         this.values = values;
     }
 
-    public static RowModel parse(List<String> lines){
-        if(lines == null || lines.isEmpty()){
+    public static RowModel parse(List<String> lines) {
+        if (lines == null || lines.isEmpty()) {
             return null;
         }
 
         List<Object> values = new ArrayList<>();
-        for(int i = 1; i < lines.size(); i++){
+        for (int i = 1; i < lines.size(); i++) {
             values.add(lines.get(i));
         }
 
-        return new RowModel(RowMetadataModel.parseHeader(lines.get(0)),  values);
+        return new RowModel(RowMetadataModel.parseHeader(lines.get(0)), values);
     }
 
-    public List<String> toList(){
+    public List<String> toList() {
         List<String> list = new ArrayList<>();
 
         list.add(metadata.toString());
-        for(Object value : values){
+        for (Object value : values) {
             list.add(valueOf(value));
         }
 
