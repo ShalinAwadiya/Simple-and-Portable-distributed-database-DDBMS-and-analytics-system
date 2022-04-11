@@ -7,20 +7,20 @@ import java.util.UUID;
 
 
 
-public class GeneralLog{
+public class GeneralLog {
 
     private static int logId=0;
     String delimeter="<!!>";
 
-    public static void main(String []args)
-    {
-        IdentityManagementLog generalLog=new IdentityManagementLog();
-
-        HashMap<String,String> data=new HashMap<>();
-        data.put("one","two");
-        generalLog.writeLog("Information Log","Query","There are 3 tables and 42 records",data);
-        generalLog.readLog();
-    }
+//    public static void main(String []args)
+//    {
+//        GeneralLog generalLog =new GeneralLog();
+//
+//        HashMap<String,String> data=new HashMap<>();
+//        data.put("one","two");
+//        generalLog.writeLog("Information Log","Query","There are 3 tables and 42 records",data);
+//        generalLog.readLog();
+//    }
     public void readLog()
     {
         BufferedReader br=null;
@@ -63,13 +63,11 @@ public class GeneralLog{
                 directory.mkdirs();
             }
             File file = new File("DatabaseLogs/GeneralLogs.txt");
-            if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
-            } else {
-                System.out.println("File already exists.");
+            if (!file.exists()) {
+                file.createNewFile();
             }
 
-            FileWriter fw = new FileWriter(file);
+            FileWriter fw = new FileWriter(file,true);
             bw = new BufferedWriter(fw);
 
             logId=logId+1;
@@ -93,8 +91,9 @@ public class GeneralLog{
             bw.write(subject+delimeter);
             bw.write(message+delimeter);
             bw.write(String.valueOf(data));
+            bw.write("\n");
 
-            System.out.println("File written Successfully");
+            System.out.println("Log written Successfully");
 
         }catch(IOException e)
         {

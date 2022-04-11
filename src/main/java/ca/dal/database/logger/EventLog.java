@@ -5,18 +5,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class EventLog{
+
+
+public class EventLog {
 
     private static int logId=0;
-    public static void main (String []args)
-    {
-        EventLog eventLog= new EventLog();
+    String delimeter="<!!>";
 
-        HashMap<String,String> data=new HashMap<>();
-        data.put("one","two");
-        eventLog.writeLog("Warning Log","Event has started",data);
-        eventLog.readLog();
-    }
+    //    public static void main(String []args)
+//    {
+//        EventLog eventLog =new EventLog();
+//
+//        HashMap<String,String> data=new HashMap<>();
+//        data.put("one","two");
+//        eventLog.writeLog("Information Log","Event","Database crashed",data);
+//        eventLog.readLog();
+//    }
     public void readLog()
     {
         BufferedReader br=null;
@@ -28,7 +32,7 @@ public class EventLog{
             while (line != null) {
                 System.out.println(line);
 
-                String[] logProperties = line.split("\t");
+                String[] logProperties = line.split(delimeter);
                 for (int i = 0; i < logProperties.length; i++)
                 {
                     System.out.println(logProperties[i]);
@@ -50,7 +54,7 @@ public class EventLog{
         }
     }
 
-    public void writeLog(String type, String message, HashMap<String,String> data)
+    public void writeLog(String type, String subject, String message, HashMap<String,String> data)
     {
         BufferedWriter bw=null;
         try {
@@ -59,37 +63,37 @@ public class EventLog{
                 directory.mkdirs();
             }
             File file = new File("DatabaseLogs/EventLogs.txt");
-            if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
-            } else {
-                System.out.println("File already exists.");
+            if (!file.exists()) {
+                file.createNewFile();
             }
 
-            FileWriter fw = new FileWriter(file);
+            FileWriter fw = new FileWriter(file,true);
             bw = new BufferedWriter(fw);
 
             logId=logId+1;
-            bw.write(String.valueOf(logId)+"\t");
+            bw.write(String.valueOf(logId)+delimeter);
 
 
-            String uuid= UUID.randomUUID().toString();
-            bw.write(uuid+"\t");
+            String uuid=UUID.randomUUID().toString();
+            bw.write(uuid+delimeter);
 
 
             String date=String.valueOf(java.time.LocalDate.now());
-            bw.write(date+"\t");
+            bw.write(date+delimeter);
 
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
             String time=dtf.format(java.time.LocalTime.now());
-            bw.write(time+"\t");
+            bw.write(time+delimeter);
 
 
-            bw.write(type+"\t");
-            bw.write(message+"\t");
+            bw.write(type+delimeter);
+            bw.write(subject+delimeter);
+            bw.write(message+delimeter);
             bw.write(String.valueOf(data));
+            bw.write("\n");
 
-            System.out.println("File written Successfully");
+            System.out.println("Log written Successfully");
 
         }catch(IOException e)
         {
@@ -105,3 +109,4 @@ public class EventLog{
         }
     }
 }
+
