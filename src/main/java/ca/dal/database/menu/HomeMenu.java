@@ -12,14 +12,20 @@ import static ca.dal.database.utils.PrintUtils.*;
 
 public class HomeMenu {
 
-    private Connection connection;
-    private AnalyticsMenu analyticsMenu;
+    private final Connection connection;
+    private final AnalyticsMenu analyticsMenu;
 
+    /**
+     * @param connection
+     */
     public HomeMenu(Connection connection) {
         analyticsMenu = new AnalyticsMenu(connection);
         this.connection = connection;
     }
 
+    /**
+     * @return connection
+     */
     public Connection getConnection() {
         return connection;
     }
@@ -59,6 +65,7 @@ public class HomeMenu {
                     exportDataModel();
                     break;
                 case 4:
+                    analyticsMenu.show();
                     break;
                 case 5:
                     printWithMargin("Good Bye!");
@@ -97,7 +104,7 @@ public class HomeMenu {
     }
 
     /**
-     * @return
+     * @return -1
      */
     private int runQuery() {
         Scanner sc = new Scanner(System.in);

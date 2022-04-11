@@ -18,19 +18,31 @@ public class QueryExecutor {
     private final StorageManager storageManager;
     private Connection connection = null;
 
+    /**
+     * @return getDatabaseName
+     */
     private String getDatabaseName() {
         return this.connection.getDatabaseName();
     }
 
+    /**
+     * @param databaseName
+     */
     private void setDatabaseName(String databaseName) {
         this.connection.setDatabaseName(databaseName);
     }
 
+    /**
+     * @param connection
+     */
     public QueryExecutor(Connection connection) {
         storageManager = new StorageManager(connection);
         this.connection = connection;
     }
 
+    /**
+     * @param queryModel
+     */
     public void execute(QueryModel queryModel) {
         switch (queryModel.getType()) {
             case CREATE_DATABASE:
@@ -113,7 +125,7 @@ public class QueryExecutor {
 
             case COMMIT:
 
-                if ( connection.isAutoCommit()) {
+                if (connection.isAutoCommit()) {
                     error("No transaction is running");
                 }
 
@@ -133,12 +145,21 @@ public class QueryExecutor {
                 success("Transaction rollback successfully!");
                 break;
 
+            case COUNT_QUERIES:
+                break;
+
+            case COUNT_UPDATE:
+                break;
+
             default:
                 error("Invalid Query Option, Please try again!");
                 break;
         }
     }
 
+    /**
+     * @param databaseName
+     */
     private void commit(String databaseName) {
         storageManager.commit(databaseName);
     }
@@ -174,10 +195,7 @@ public class QueryExecutor {
      * @author Harsh Shah
      */
     private void updateRows(String databaseName, QueryModel queryModel) {
-        storageManager.updateRow(queryModel.getRawQuery(), databaseName, queryModel.getTableName(),
-                queryModel.getColumns().get(0),
-                (String) queryModel.getValues().get(0),
-                queryModel.getCondition());
+        storageManager.updateRow(queryModel.getRawQuery(), databaseName, queryModel.getTableName(), queryModel.getColumns().get(0), (String) queryModel.getValues().get(0), queryModel.getCondition());
     }
 
     /**
@@ -194,8 +212,7 @@ public class QueryExecutor {
      * @author Harsh Shah
      */
     private void insertRow(QueryModel queryModel) {
-        storageManager.insertRow(queryModel.getRawQuery(),getDatabaseName(), queryModel.getTableName(),
-                new RowModel(queryModel.getValues()));
+        storageManager.insertRow(queryModel.getRawQuery(), getDatabaseName(), queryModel.getTableName(), new RowModel(queryModel.getValues()));
     }
 
     /**

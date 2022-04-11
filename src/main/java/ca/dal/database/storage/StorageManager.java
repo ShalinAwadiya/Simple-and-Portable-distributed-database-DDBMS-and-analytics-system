@@ -43,13 +43,21 @@ public class StorageManager {
     private static final String DATABASE_METADATA = DOT + "meta";
     private static final String TABLE_FILE_EXTENSION = DOT + "rows";
     private static final String TABLE_METADATA = DOT + "meta";
+
+
     public static GlobalDataDictionary globalDataDictionary = null;
     private Connection connection = null;
     private TransactionManager transactionManager = null;
+
     public StorageManager(Connection connection) {
         transactionManager = new TransactionManager(connection);
         this.connection = connection;
     }
+
+    private boolean isTransaction() {
+        return !this.connection.isAutoCommit();
+    }
+
 
     /**
      * @author Harsh Shah
@@ -110,10 +118,6 @@ public class StorageManager {
 
     private static List<String> readLocalCopyOfGlobalMetadata() {
         return FileUtils.read(ROOT, SHARED, builder(GLOBAL, DATASTORE_METADATA));
-    }
-
-    private boolean isTransaction() {
-        return !this.connection.isAutoCommit();
     }
 
     /**
@@ -589,7 +593,7 @@ public class StorageManager {
      * @return
      * @author Harsh Shah
      */
-    private List<RowModel> fetchAllRows(String databaseName, String tableName) {
+    public List<RowModel> fetchAllRows(String databaseName, String tableName) {
 
         List<RowModel> fromStorage = fetchAllRowsFromStorage(databaseName, tableName);
 

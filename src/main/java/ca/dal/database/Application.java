@@ -27,6 +27,7 @@ public class Application {
     public static void main(String[] args) {
         StorageManager.init();
         authentication.init();
+
     }
 
     public static void setup() {

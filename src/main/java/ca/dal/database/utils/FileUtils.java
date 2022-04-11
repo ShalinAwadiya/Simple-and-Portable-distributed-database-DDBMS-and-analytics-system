@@ -87,7 +87,7 @@ public class FileUtils {
             if (!Files.exists(path)) {
                 return null;
             }
-            print(Files.readAllLines(path).toString());
+
             return Files.readAllLines(path);
         } catch (IOException e) {
             return Collections.emptyList();

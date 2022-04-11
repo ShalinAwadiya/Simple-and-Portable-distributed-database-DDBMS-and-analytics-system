@@ -39,17 +39,15 @@ public class SSHUtils {
 
             String operatingPath = builder(instance.getSharedResourceLocation(), fileName);
 
-            print(operatingPath);
-
             switch (operation){
                 case PUSH:
-                    channelSftp.put(operatingPath, "/home/harshshah1295/d2_db/"+fileName);
+                    channelSftp.put(operatingPath, operatingPath);
                     break;
                 case PULL:
-                    channelSftp.get(operatingPath, "/home/harshshah1295/d2_db/"+fileName);
+                    channelSftp.get(operatingPath, operatingPath);
                     break;
                 case PEEK:
-                    InputStream inputStream = channelSftp.get("/home/harshshah1295/d2_db/"+fileName);
+                    InputStream inputStream = channelSftp.get(operatingPath);
                     return FileUtils.read(inputStream);
                 default:
             }
