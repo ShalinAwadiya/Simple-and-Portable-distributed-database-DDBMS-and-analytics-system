@@ -16,6 +16,14 @@ public class QueryExecutor {
     private Connection connection = null;
 
     /**
+     * @param connection
+     */
+    public QueryExecutor(Connection connection) {
+        storageManager = new StorageManager(connection);
+        this.connection = connection;
+    }
+
+    /**
      * @return getDatabaseName
      */
     private String getDatabaseName() {
@@ -27,14 +35,6 @@ public class QueryExecutor {
      */
     private void setDatabaseName(String databaseName) {
         this.connection.setDatabaseName(databaseName);
-    }
-
-    /**
-     * @param connection
-     */
-    public QueryExecutor(Connection connection) {
-        storageManager = new StorageManager(connection);
-        this.connection = connection;
     }
 
     /**

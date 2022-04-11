@@ -11,7 +11,7 @@ public class PathUtils {
         return Path.of(start, more).toAbsolutePath().toString();
     }
 
-    public static String builder(String start, String... more) {
+    public static String builder(String start, String... more){
         return absolute(start, more);
     }
 }

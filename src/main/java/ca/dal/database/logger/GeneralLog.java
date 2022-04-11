@@ -3,7 +3,9 @@ package ca.dal.database.logger;
 import java.io.*;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
 
 public class GeneralLog {
 
@@ -12,7 +14,7 @@ public class GeneralLog {
 
     //    public static void main(String []args)
 //    {
-//        IdentityManagementLog generalLog=new IdentityManagementLog();
+//        GeneralLog generalLog =new GeneralLog();
 //
 //        HashMap<String,String> data=new HashMap<>();
 //        data.put("one","two");
@@ -41,14 +43,15 @@ public class GeneralLog {
             System.out.println("Exception:" + e.getMessage());
         } finally {
             try {
-                if (br != null) br.close();
+                if (br != null)
+                    br.close();
             } catch (Exception ex) {
                 System.out.println("Error in closing the BufferedReader" + ex);
             }
         }
     }
 
-    public void writeLog(String type, String subject, String message, HashMap<String, String> data) {
+    public void writeLog(String type, String subject, String message, Map<String, String> data) {
         BufferedWriter bw = null;
         try {
             File directory = new File("DatabaseLogs");
@@ -56,17 +59,15 @@ public class GeneralLog {
                 directory.mkdirs();
             }
             File file = new File("DatabaseLogs/GeneralLogs.txt");
-            if (file.createNewFile()) {
-                System.out.println("File created: " + file.getName());
-            } else {
-                System.out.println("File already exists.");
+            if (!file.exists()) {
+                file.createNewFile();
             }
 
-            FileWriter fw = new FileWriter(file);
+            FileWriter fw = new FileWriter(file, true);
             bw = new BufferedWriter(fw);
 
             logId = logId + 1;
-            bw.write(logId + delimeter);
+            bw.write(String.valueOf(logId) + delimeter);
 
 
             String uuid = UUID.randomUUID().toString();
@@ -86,18 +87,19 @@ public class GeneralLog {
             bw.write(subject + delimeter);
             bw.write(message + delimeter);
             bw.write(String.valueOf(data));
+            bw.write("\n");
 
-            System.out.println("File written Successfully");
+            //System.out.println("Log written Successfully");
 
         } catch (IOException e) {
             System.out.println("Exception:" + e.getMessage());
         } finally {
             try {
-                if (bw != null) bw.close();
+                if (bw != null)
+                    bw.close();
             } catch (Exception ex) {
                 System.out.println("Error in closing the BufferedWriter" + ex);
             }
         }
     }
 }
-
