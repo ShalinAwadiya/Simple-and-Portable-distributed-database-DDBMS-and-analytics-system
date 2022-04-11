@@ -61,7 +61,7 @@ public class DataExtract {
                 }
                 bufferedWriter.write(create + primaryKeyLocal + foreignKeyLocal + ";");
                 bufferedWriter.write("\n");
-                List<RowModel> rowModelList = storageManager.fetchAllRows(database, tableName);
+                List<RowModel> rowModelList = storageManager.fetchAllRowsWithType(database, tableName);
                 String insert = "insert into table " + tableName + " values ";
 
                 for (RowModel rowModel : rowModelList) {

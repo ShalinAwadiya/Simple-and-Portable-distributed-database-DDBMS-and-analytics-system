@@ -87,13 +87,13 @@ public class SSHUtils {
 
             switch (operation){
                 case PUSH:
-                    channelSftp.put(operatingPath, "/home/harshshah1295/d2_db/"+descFilePath);
+                    channelSftp.put(operatingPath, operatingPath);
                     break;
                 case PULL:
-                    channelSftp.get(operatingPath, "/home/harshshah1295/d2_db/"+descFilePath);
+                    channelSftp.get(operatingPath, operatingPath);
                     break;
                 case PEEK:
-                    InputStream inputStream = channelSftp.get("/home/harshshah1295/d2_db/" + descFilePath);
+                    InputStream inputStream = channelSftp.get(operatingPath);
                     return FileUtils.read(inputStream);
                 default:
             }
