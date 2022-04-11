@@ -4,20 +4,17 @@ import ca.dal.database.storage.model.row.RowModel;
 
 import java.util.*;
 
-/**
- * @author Harsh Shah
- */
 public class TableDatastoreModel {
 
-    private String tableName;
+    private final String tableName;
 
-    private List<RowModel> rowsAdded;
+    private final List<RowModel> rowsAdded;
 
-    private List<RowModel> rowsUpdated;
+    private final List<RowModel> rowsUpdated;
 
-    private Set<String> deletedRowsIdentifiers;
+    private final Set<String> deletedRowsIdentifiers;
 
-    private Map<String, Integer> updatedRowsIdentifiers;
+    private final Map<String, Integer> updatedRowsIdentifiers;
 
     public TableDatastoreModel(String tableName) {
         this.tableName = tableName;
@@ -29,24 +26,22 @@ public class TableDatastoreModel {
 
     /**
      * @param rowModel
-     * @author Harsh Shah
      */
-    public void addRow(RowModel rowModel){
+    public void addRow(RowModel rowModel) {
         this.rowsAdded.add(rowModel);
     }
 
     /**
      * @param rowModel
-     * @author Harsh Shah
      */
-    public void updateRow( RowModel rowModel){
+    public void updateRow(RowModel rowModel) {
         String identifier = rowModel.getMetadata().getIdentifier();
 
         int index = this.updatedRowsIdentifiers.getOrDefault(identifier, -1);
 
-        if(index == -1){
+        if (index == -1) {
             this.rowsUpdated.add(rowModel);
-            this.updatedRowsIdentifiers.put(identifier, this.rowsUpdated.size() -1);
+            this.updatedRowsIdentifiers.put(identifier, this.rowsUpdated.size() - 1);
         } else {
             this.rowsUpdated.set(index, rowModel);
         }
@@ -54,17 +49,15 @@ public class TableDatastoreModel {
 
     /**
      * @param identifier
-     * @author Harsh Shah
      */
-    public void deleteRow(String identifier){
+    public void deleteRow(String identifier) {
         this.deletedRowsIdentifiers.add(identifier);
     }
 
     /**
      * @return
-     * @author Harsh Shah
      */
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return rowsAdded.isEmpty() && updatedRowsIdentifiers.isEmpty() && deletedRowsIdentifiers.isEmpty();
     }
 
@@ -86,9 +79,8 @@ public class TableDatastoreModel {
 
     /**
      * @return
-     * @author Harsh Shah
      */
-    public boolean isNotEmpty(){
+    public boolean isNotEmpty() {
         return !isEmpty();
     }
 }

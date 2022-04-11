@@ -19,32 +19,32 @@ public class PrintUtils {
      * @param message
      */
     public static void printWithMargin(String message) {
-        System.out.println("");
+        System.out.println();
         System.out.println(message);
-        System.out.println("");
+        System.out.println();
     }
 
     /**
      * @param messages
      */
     public static void printWithMargin(String... messages) {
-        System.out.println("");
+        System.out.println();
         for (String message : messages) {
             System.out.println(message);
         }
-        System.out.println("");
+        System.out.println();
     }
 
     /**
      * @param message
      */
     public static void success(String message) {
-        System.out.println("");
+        System.out.println();
         System.out.println("\u2714 " + message);
-        System.out.println("");
+        System.out.println();
     }
 
-    public static void success(String message, Object... values){
+    public static void success(String message, Object... values) {
         success(String.format(message, values));
     }
 
@@ -52,9 +52,9 @@ public class PrintUtils {
      * @param message
      */
     public static void error(String message) {
-        System.out.println("");
+        System.out.println();
         System.out.println("\u2716 " + message);
-        System.out.println("");
+        System.out.println();
     }
 
     /**

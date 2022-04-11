@@ -16,9 +16,6 @@ import java.util.logging.Logger;
 import static ca.dal.database.constant.ApplicationConstants.LINE_FEED;
 import static ca.dal.database.utils.PrintUtils.print;
 
-/**
- * @author Harsh Shah
- */
 public class FileUtils {
 
     private static final Logger logger = Logger.getLogger(TransactionManager.class.getName());
@@ -27,7 +24,6 @@ public class FileUtils {
      * @param start
      * @param tails
      * @return
-     * @author Harsh Shah
      */
     public static int createDirectory(String start, String... tails) {
 
@@ -52,7 +48,6 @@ public class FileUtils {
      * @param start
      * @param tails
      * @return
-     * @author Harsh Shah
      */
     public static int createFile(String start, String... tails) {
 
@@ -76,7 +71,6 @@ public class FileUtils {
      * @param startLocation
      * @param location
      * @return
-     * @author Harsh Shah
      */
     public static List<String> read(String startLocation, String... location) {
         try {
@@ -134,8 +128,7 @@ public class FileUtils {
      * @param location
      * @return
      */
-    public static int write(List<String> lines, StandardOpenOption option,
-                            String startDirectory, String... location) {
+    public static int write(List<String> lines, StandardOpenOption option, String startDirectory, String... location) {
 
         Path path = Path.of(startDirectory, location);
 
@@ -165,10 +158,8 @@ public class FileUtils {
      * @param start
      * @param tails
      * @return
-     * @author Harsh Shah
      */
-    public static int writeAt(int index, String line,
-                              String start, String... tails) {
+    public static int writeAt(int index, String line, String start, String... tails) {
 
         String path = buildAndValidatePathString(start, tails);
 
@@ -177,7 +168,7 @@ public class FileUtils {
         }
 
         try {
-            writeAt(path.toString(), index, line);
+            writeAt(path, index, line);
         } catch (IOException e) {
             return -1;
         }
@@ -194,7 +185,6 @@ public class FileUtils {
         }
 
         List<Long> pointers = new ArrayList<>();
-
 
         for (int i = 0; i < index && raf.readLine() != null; i++) {
             pointers.add(raf.getFilePointer());
@@ -281,4 +271,3 @@ public class FileUtils {
         return Files.exists(path);
     }
 }
-

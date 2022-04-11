@@ -14,7 +14,7 @@ import java.util.Properties;
 import static ca.dal.database.utils.PathUtils.absolute;
 
 /**
- * @author Harsh Shah
+ * @
  */
 public class Application {
 

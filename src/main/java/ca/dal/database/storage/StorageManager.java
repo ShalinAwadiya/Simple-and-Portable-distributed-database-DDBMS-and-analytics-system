@@ -30,11 +30,7 @@ import static ca.dal.database.utils.PrintUtils.*;
 import static ca.dal.database.utils.StringUtils.builder;
 import static ca.dal.database.utils.StringUtils.isEmpty;
 
-/**
- * @author Harsh Shah
- */
 public class StorageManager {
-
 
     public static final String ROOT = "datastore";
     public static final String SHARED = "shared";
@@ -43,7 +39,6 @@ public class StorageManager {
     private static final String DATABASE_METADATA = DOT + "meta";
     private static final String TABLE_FILE_EXTENSION = DOT + "rows";
     private static final String TABLE_METADATA = DOT + "meta";
-
 
     public static GlobalDataDictionary globalDataDictionary = null;
     private Connection connection = null;
@@ -58,10 +53,6 @@ public class StorageManager {
         return !this.connection.isAutoCommit();
     }
 
-
-    /**
-     * @author Harsh Shah
-     */
     public static void init() {
         // Create datastore
         FileUtils.createDirectory(ROOT);
@@ -92,7 +83,8 @@ public class StorageManager {
 
     public static void syncGlobalMetadata() {
 
-        List<String> remoteLines = SSHUtils.operation(SSHUtils.PEEK, builder("datastore/shared/", GLOBAL, DATASTORE_METADATA));
+        List<String> remoteLines = SSHUtils.operation(SSHUtils.PEEK,
+                builder("datastore/shared/", GLOBAL, DATASTORE_METADATA));
         List<String> localLines = readLocalCopyOfGlobalMetadata();
 
         Set<DataDictionaryEntry> entries = new HashSet<>();
@@ -136,7 +128,6 @@ public class StorageManager {
 
     /**
      * @return
-     * @author Harsh Shah
      */
     private DatastoreModel getDatastoreMetadata() {
         List<String> lines = read(ROOT, builder(ROOT, DATASTORE_METADATA));
@@ -146,13 +137,12 @@ public class StorageManager {
     /**
      * @param databaseName
      * @return
-     * @author Harsh Shah
      */
     public boolean isDatabaseExists(String databaseName) {
         DatastoreModel datastoreMetadata = getDatastoreMetadata();
 
-        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels()
-                .stream().filter(itr -> itr.getDatabaseName().equals(databaseName)).findFirst();
+        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels().stream()
+                .filter(itr -> itr.getDatabaseName().equals(databaseName)).findFirst();
 
         if (exists.isPresent()) {
             return true;
@@ -161,19 +151,19 @@ public class StorageManager {
         // Sync Metadata
         syncGlobalMetadata();
 
-        return globalDataDictionary.getEntries().stream().filter(itr -> itr.getDatabaseName().equals(databaseName)).findFirst().isPresent();
+        return globalDataDictionary.getEntries().stream().filter(itr -> itr.getDatabaseName().equals(databaseName))
+                .findFirst().isPresent();
     }
 
     /**
      * @param databaseName
-     * @author Harsh Shah
      */
     public void createDatabase(String databaseName) {
 
         DatastoreModel datastoreMetadata = getDatastoreMetadata();
 
-        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels().stream().filter(itr ->
-                itr.getDatabaseName().equals(databaseName)).findFirst();
+        Optional<DatabaseMetadataHeaderModel> exists = datastoreMetadata.getDatabaseMetadataHeaderModels().stream()
+                .filter(itr -> itr.getDatabaseName().equals(databaseName)).findFirst();
 
         if (exists.isPresent()) {
             error("%s database already exists", databaseName);
@@ -198,7 +188,6 @@ public class StorageManager {
     /**
      * @param databaseName
      * @param metadataModel
-     * @author Harsh Shah
      */
     public void updateDatabaseMetadata(String databaseName, TableMetadataModel metadataModel) {
         DatabaseMetadataModel metadata = getDatabaseMetadata(databaseName);
@@ -237,7 +226,6 @@ public class StorageManager {
     /**
      * @param databaseName
      * @param metadata
-     * @author Harsh Shah
      */
     public void createTable(String databaseName, TableMetadataModel metadata) {
 
@@ -273,14 +261,13 @@ public class StorageManager {
     /**
      * @param databaseName
      * @param metadataModel
-     * @author Harsh Shah
      */
     public void updateTableMetadata(String databaseName, TableMetadataModel metadataModel) {
         String tableName = metadataModel.getTableName();
 
         DataDictionaryEntry entry = globalDataDictionary.getInstanceInvolved(databaseName, tableName).get();
 
-        if(ApplicationConfiguration.isCurrentInstance(entry)) {
+        if (ApplicationConfiguration.isCurrentInstance(entry)) {
 
             write(metadataModel.toStringList(), ROOT, databaseName, tableName,
                     builder(tableName, TABLE_METADATA));
@@ -294,10 +281,8 @@ public class StorageManager {
      * @param tableName
      * @param columns
      * @param condition
-     * @author Harsh Shah
      */
-    public void fetchRows(String databaseName, String tableName,
-                          List<String> columns, Map<String, Object> condition) {
+    public void fetchRows(String databaseName, String tableName, List<String> columns, Map<String, Object> condition) {
 
         String columnName = null;
         String columnValue = null;
@@ -351,7 +336,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @param row
-     * @author Harsh Shah
      */
     public void insertRow(String rawQuery, String databaseName, String tableName, RowModel row) {
 
@@ -364,10 +348,9 @@ public class StorageManager {
             transactionManager.perform(databaseName, tableName, row, rawQuery);
         } else {
 
-
             DataDictionaryEntry entry = globalDataDictionary.getInstanceInvolved(databaseName, tableName).get();
 
-            if(ApplicationConfiguration.isCurrentInstance(entry)) {
+            if (ApplicationConfiguration.isCurrentInstance(entry)) {
                 append(newRow.toString(), ROOT, databaseName, tableName,
                         builder(tableName, TABLE_FILE_EXTENSION));
 
@@ -386,10 +369,9 @@ public class StorageManager {
      * @param tableName
      * @param column
      * @param newValue
-     * @author Harsh Shah
      */
-    public void updateRow(String rawQuery, String databaseName, String tableName, String column,
-                          String newValue, Map<String, Object> condition) {
+    public void updateRow(String rawQuery, String databaseName, String tableName, String column, String newValue,
+            Map<String, Object> condition) {
 
         String columnName = null;
         String columnValue = null;
@@ -435,8 +417,7 @@ public class StorageManager {
         }
 
         if (isTransaction()) {
-            transactionManager.perform(QueryType.UPDATE_ROW, databaseName, tableName,
-                    updatedRows, rawQuery);
+            transactionManager.perform(QueryType.UPDATE_ROW, databaseName, tableName, updatedRows, rawQuery);
         } else {
             updateAllRows(databaseName, tableName, rows);
         }
@@ -447,7 +428,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @param condition
-     * @author Harsh Shah
      */
     public void deleteRow(String rawQuery, String databaseName, String tableName, Map<String, Object> condition) {
 
@@ -490,8 +470,7 @@ public class StorageManager {
 
         if (isTransaction()) {
 
-            transactionManager.perform(QueryType.DELETE_ROW, databaseName, tableName,
-                    deletedRows, rawQuery);
+            transactionManager.perform(QueryType.DELETE_ROW, databaseName, tableName, deletedRows, rawQuery);
         } else {
             updateAllRows(databaseName, tableName, remainingRows);
             updateTableMetadata(databaseName, new TableMetadataModel(tableMetadata, (long) remainingRows.size()));
@@ -503,7 +482,6 @@ public class StorageManager {
     /**
      * @param databaseName
      * @return
-     * @author Harsh Shah
      */
     public DatabaseMetadataModel getDatabaseMetadata(String databaseName) {
 
@@ -512,7 +490,7 @@ public class StorageManager {
         List<String> remoteLines = null;
 
         int count = 0;
-        if(instances.size() == 2){
+        if (instances.size() == 2) {
             remoteLines = SSHUtils.operation(SSHUtils.PEEK, builder("datastore/",
                     databaseName, "/",
                     builder(databaseName, DATABASE_METADATA)));
@@ -526,18 +504,17 @@ public class StorageManager {
 
         List<String> lines = null;
 
-        if(instances.contains(ApplicationConfiguration.getCurrentInstance())){
+        if (instances.contains(ApplicationConfiguration.getCurrentInstance())) {
             lines = read(ROOT, databaseName,
                     builder(databaseName, DATABASE_METADATA));
             count++;
 
         }
 
-
         if (lines == null) {
             lines = new ArrayList<>();
         } else {
-            if(count == 2) {
+            if (count == 2) {
                 lines = lines.subList(1, lines.size());
             }
         }
@@ -561,7 +538,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @return
-     * @author Harsh Shah
      */
     public TableMetadataModel getTableMetadata(String databaseName, String tableName) {
 
@@ -571,8 +547,7 @@ public class StorageManager {
 
         List<String> lines = null;
 
-        if(ApplicationConfiguration.isCurrentInstance(entry)){
-
+        if (ApplicationConfiguration.isCurrentInstance(entry)) {
 
             lines = read(ROOT, databaseName, tableName,
                     builder(tableName, TABLE_METADATA));
@@ -591,7 +566,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @return
-     * @author Harsh Shah
      */
     public List<RowModel> fetchAllRows(String databaseName, String tableName) {
 
@@ -616,8 +590,7 @@ public class StorageManager {
 
         Set<String> deletedIdentifiers = fromBuffer.getDeletedRowsIdentifiers();
 
-        return fromStorage.stream()
-                .filter(itr -> !(deletedIdentifiers.contains(itr.getMetadata().getIdentifier())))
+        return fromStorage.stream().filter(itr -> !(deletedIdentifiers.contains(itr.getMetadata().getIdentifier())))
                 .collect(Collectors.toList());
     }
 
@@ -625,7 +598,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @return
-     * @author Harsh Shah
      */
     private List<RowModel> fetchAllRowsFromStorage(String databaseName, String tableName) {
 
@@ -661,7 +633,7 @@ public class StorageManager {
 
         DataDictionaryEntry entry = entryOptional.get();
 
-        if(ApplicationConfiguration.isCurrentInstance(entry)) {
+        if (ApplicationConfiguration.isCurrentInstance(entry)) {
 
             return read(ROOT, databaseName, tableName, builder(tableName, TABLE_FILE_EXTENSION));
 
@@ -677,7 +649,6 @@ public class StorageManager {
      * @param databaseName
      * @param tableName
      * @param rows
-     * @author Harsh Shah
      */
     private void updateAllRows(String databaseName, String tableName, List<RowModel> rows) {
         List<String> output = new ArrayList<>();
@@ -685,23 +656,19 @@ public class StorageManager {
 
         DataDictionaryEntry entry = globalDataDictionary.getInstanceInvolved(databaseName, tableName).get();
 
-        if(ApplicationConfiguration.isCurrentInstance(entry)){
+        if (ApplicationConfiguration.isCurrentInstance(entry)) {
             write(output, ROOT, databaseName, tableName, builder(tableName, TABLE_FILE_EXTENSION));
         } else {
-            updateTableOnRemote(databaseName,tableName, output);
+            updateTableOnRemote(databaseName, tableName, output);
         }
     }
 
-    /**
-     * @author Harsh Shah
-     */
     public void rollback() {
         transactionManager.rollback();
     }
 
     /**
      * @param databaseName
-     * @author Harsh Shah
      */
     public void commit(String databaseName) {
 
@@ -727,10 +694,9 @@ public class StorageManager {
     }
 
     private void syncDatabaseMetadata(String databaseName) {
-        SSHUtils.operation(SSHUtils.PUSH, builder(ROOT, "/", databaseName, "/", builder(databaseName, DATABASE_METADATA)));
+        SSHUtils.operation(SSHUtils.PUSH,
+                builder(ROOT, "/", databaseName, "/", builder(databaseName, DATABASE_METADATA)));
     }
-
-
 
     private void appendTableOnRemote(String databaseName, String tableName, List<String> rows) {
         List<String> lines = SSHUtils.operation(SSHUtils.PEEK, builder("datastore/",
@@ -741,18 +707,17 @@ public class StorageManager {
 
         String tempTableId = UUIDUtils.generate();
         FileUtils.createTempFile("datastore", tempTableId, lines);
-        SSHUtils.operation(SSHUtils.PUSH, "datastore/temp/"+tempTableId,
+        SSHUtils.operation(SSHUtils.PUSH, "datastore/temp/" + tempTableId,
                 builder("datastore/", databaseName, "/", tableName, "/", builder(tableName, TABLE_FILE_EXTENSION)));
 
         FileUtils.removeTempFile("datastore", tempTableId);
 
     }
 
-
     private void updateTableOnRemote(String databaseName, String tableName, List<String> rows) {
         String tempTableId = UUIDUtils.generate();
         FileUtils.createTempFile("datastore", tempTableId, rows);
-        SSHUtils.operation(SSHUtils.PUSH, "datastore/temp/"+tempTableId,
+        SSHUtils.operation(SSHUtils.PUSH, "datastore/temp/" + tempTableId,
                 builder("datastore/", databaseName, "/", tableName, "/", builder(tableName, TABLE_FILE_EXTENSION)));
 
         FileUtils.removeTempFile("datastore", tempTableId);
@@ -761,7 +726,7 @@ public class StorageManager {
     private void updateTableMetadataOnRemote(String databaseName, String tableName, TableMetadataModel metadataModel) {
         String tempTableMetaId = UUIDUtils.generate();
         FileUtils.createTempFile("datastore", tempTableMetaId, metadataModel.toStringList());
-        SSHUtils.operation(SSHUtils.PUSH, "datastore/temp/"+tempTableMetaId,
+        SSHUtils.operation(SSHUtils.PUSH, "datastore/temp/" + tempTableMetaId,
                 builder("datastore/", databaseName, "/", tableName, "/", builder(tableName, TABLE_METADATA)));
 
         FileUtils.removeTempFile("datastore", tempTableMetaId);

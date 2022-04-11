@@ -77,9 +77,9 @@ public class HomeMenu {
     }
 
     /**
-     * @author Harsh Shah
+     * @
      */
-    private void exportDatabase() {
+    private void exportDataModel() {
         println("Enter Database Name: ");
         Scanner sc = new Scanner(System.in);
         String database = sc.nextLine();
@@ -92,14 +92,16 @@ public class HomeMenu {
         }
     }
 
-    /**
-     * @author Harsh Shah
-     */
-    private void exportDataModel() {
+    private void exportDatabase() {
+        println("Enter Database Name: ");
+        Scanner sc = new Scanner(System.in);
+        String database = sc.nextLine();
+
         DataExtract extract = new DataExtract();
-        int result = extract.exportDB("datastore");
+        int result = extract.exportDB(database);
+
         if (result == 0) {
-            success("Data Model exported successfully!");
+            success("Data Dump created successfully!");
         }
     }
 
