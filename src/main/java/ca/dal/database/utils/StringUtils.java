@@ -19,7 +19,6 @@ public class StringUtils {
     /**
      * @param str
      * @return
-     * @author Harsh Shah
      */
     public static boolean isNotEmpty(String str) {
         if (str == null) {
@@ -34,7 +33,6 @@ public class StringUtils {
     /**
      * @param str
      * @return
-     * @author Harsh Shah
      */
     public static boolean isEmpty(String str) {
         return !isNotEmpty(str);
@@ -43,7 +41,6 @@ public class StringUtils {
     /**
      * @param strs
      * @return
-     * @author Harsh Shah
      */
     public static boolean isAnyEmpty(String... strs) {
         for (String str : strs) {
@@ -58,7 +55,6 @@ public class StringUtils {
     /**
      * @param strings
      * @return
-     * @author Harsh Shah
      */
     public static boolean isAllEmpty(String... strings) {
         for (String str : strings) {
@@ -73,7 +69,6 @@ public class StringUtils {
     /**
      * @param values
      * @return
-     * @author Harsh Shah
      */
     public static String builder(String... values) {
 
@@ -89,7 +84,6 @@ public class StringUtils {
     /**
      * @param value
      * @return
-     * @author Harsh Shah
      */
     public static String valueOf(Object value) {
         return String.valueOf(value);
@@ -98,7 +92,6 @@ public class StringUtils {
     /**
      * @param string
      * @return
-     * @author Harsh Shah
      */
     public static String getHash(String string) {
         MessageDigest digest = null;
@@ -113,7 +106,6 @@ public class StringUtils {
     /**
      * @param hash
      * @return
-     * @author Harsh Shah
      */
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
@@ -131,7 +123,6 @@ public class StringUtils {
      * @param str
      * @param count
      * @return
-     * @author Harsh Shah
      */
     public static String repeat(String str, int count) {
         return str.repeat(count);
@@ -142,7 +133,6 @@ public class StringUtils {
      * @param count
      * @param with
      * @return
-     * @author Harsh Shah
      */
     public static String repeadAndjoin(String str, int count, String with) {
 
@@ -159,7 +149,6 @@ public class StringUtils {
      * @param str
      * @param regex
      * @return
-     * @author Harsh Shah
      */
     public static String[] splitAndTrim(String str, String regex) {
         String[] parts = str.split(regex);
@@ -176,7 +165,6 @@ public class StringUtils {
      * @param regex
      * @param replacement
      * @return
-     * @author Harsh Shah
      */
     public static String[] replace(String[] strs, String regex, String replacement) {
 
@@ -192,7 +180,6 @@ public class StringUtils {
      * @param regex
      * @param replacement
      * @return
-     * @author Harsh Shah
      */
     public static String replace(String str, String regex, String replacement) {
         return str.replaceAll(regex, replacement);
